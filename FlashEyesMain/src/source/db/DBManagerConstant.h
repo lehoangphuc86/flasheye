@@ -1,0 +1,62 @@
+
+#include "../../FlashEyesMain.h"
+#ifndef _DB_MANAGER_CONSTANT_H
+#define _DB_MANAGER_CONSTANT_H
+#if (_CONF_DB_MANAGER_CONSTANT_ENABLED)
+
+/////////////////////////////////////////////////
+// INCLUDE
+
+/////////////////////////////////////////////////
+// PREPROCESSOR
+
+/////////////////////////////////////////////////
+// DEFINE
+
+#define DB_TBL_CONFIG_ID                          0
+#define DB_TBL_USER_ID                            1
+#define DB_TBL_ID_MAX                             2
+
+#define DB_QUERY_LEN_MAX                          64
+
+/////////////////////////////////////////////////
+// MARCO
+
+/////////////////////////////////////////////////
+// DATA TYPE (TYPEDEF)
+
+/////////////////////////////////////////////////
+// DATA TYPE (ENUM)
+
+/////////////////////////////////////////////////
+// DATA TYPE (STRUCT)
+typedef struct _dbManagerConfigTAG
+{
+  const char * dbPath;
+  byte reserved : 8;
+} DBManagerConfigTAG;
+/////////////////////////////////////////////////
+// GLOBAL VARIABLES
+static const char* g_Db_Tbl_Names[] = {
+                            "TBL_CONFIG",
+                            "TBL_USER"
+                          };
+/////////////////////////////////////////////////
+// GLOBAL FUNCTIONS
+
+/////////////////////////////////////////////////
+// STATIC DATA
+
+/////////////////////////////////////////////////
+// STATIC FUNCTIONS
+
+/////////////////////////////////////////////////
+// EXTERN
+
+/////////////////////////////////////////////////
+// CLASS DEFINITION
+
+
+#endif // _CONF_DB_MANAGER_CONSTANT_ENABLED
+
+#endif // _DB_MANAGER_CONSTANT_H

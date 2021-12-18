@@ -1,0 +1,373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\os_system\SystemCriticalSession.cpp">
+      <Filter>shared\os_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\os_system\SystemLightQueue.cpp">
+      <Filter>shared\os_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\os_system\SystemMutex.cpp">
+      <Filter>shared\os_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\utility\Utility.cpp">
+      <Filter>shared\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataItem.cpp">
+      <Filter>shared\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataManager.cpp">
+      <Filter>shared\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataQueue.cpp">
+      <Filter>shared\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\event_manager\EventDataItem.cpp">
+      <Filter>shared\event_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\event_manager\EventManager.cpp">
+      <Filter>shared\event_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskManager.cpp">
+      <Filter>shared\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskSystemThread.cpp">
+      <Filter>shared\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\CommClientManager.cpp">
+      <Filter>shared\task_comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerial.cpp">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialReceiver.cpp">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSender.cpp">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSetting.cpp">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSystemSocket.cpp">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_codec\TaskCodec.cpp">
+      <Filter>shared\task_codec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_manager\PingpongTask.cpp">
+      <Filter>sharedTest\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_comm\task_comm_serial\CommSerialTest.cpp">
+      <Filter>sharedTest\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_manager\OpcodeInputTask.cpp">
+      <Filter>sharedTest\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadManager.cpp">
+      <Filter>shared\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadPoolManager.cpp">
+      <Filter>shared\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManager.cpp">
+      <Filter>shared\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManagerTpl.cpp">
+      <Filter>shared\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\event_manager\EventPoolManager.cpp">
+      <Filter>shared\event_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\BufferDataManager.cpp">
+      <Filter>shared\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialTest.cpp">
+      <Filter>sharedTest\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCEngine.cpp">
+      <Filter>shared\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCProcessor.cpp">
+      <Filter>shared\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCSetting.cpp">
+      <Filter>shared\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.cpp">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.cpp">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.cpp">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\timer_manager\TimerManagerTest.cpp">
+      <Filter>sharedTest\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTask.cpp">
+      <Filter>shared\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTaskFactory.cpp">
+      <Filter>shared\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\TimerManager.cpp">
+      <Filter>shared\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\linux\TimerControlTaskImpl.cpp">
+      <Filter>shared\timer_manager\linux</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="sharedTest">
+      <UniqueIdentifier>{29df8db2-96de-4390-be18-2fd3b4a053e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sharedTest\task_manager">
+      <UniqueIdentifier>{0d343c29-9f55-457b-858e-9ba6f36c7538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared">
+      <UniqueIdentifier>{a069078c-2a29-4bec-b483-905d10408079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\os_system">
+      <UniqueIdentifier>{ec77ab82-6fff-4bf8-a575-20036d2da93a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\utility">
+      <UniqueIdentifier>{c0142067-60fd-4892-8e6b-71cda42e1595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\data_manager">
+      <UniqueIdentifier>{08be201e-aaad-45a8-bf4b-c54904e9bd34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\event_manager">
+      <UniqueIdentifier>{0ad6591e-9ea1-48b4-b35c-43f49ced4092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\task_manager">
+      <UniqueIdentifier>{bd3ebda9-218c-49da-8345-036a75991a51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\task_comm">
+      <UniqueIdentifier>{e93c6854-ff4e-4127-8d33-64d2a19fe56d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\task_comm\task_comm_serial">
+      <UniqueIdentifier>{b701e46c-37a4-4093-9fc4-18c0d9f27c3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\task_codec">
+      <UniqueIdentifier>{1bf1211b-7cc4-472f-be45-44d55424d3af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sharedTest\task_comm">
+      <UniqueIdentifier>{5b8b9c87-69ab-44a2-88c8-772e4a03b06e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sharedTest\task_comm\task_comm_serial">
+      <UniqueIdentifier>{a0db499c-f4d0-4181-95e8-edf8a6daee9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sharedTest\task_comm_mbc">
+      <UniqueIdentifier>{6b433e5c-d866-4851-bb7d-84548fcef26f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sharedTest\task_comm_mbc\task_comm_mbc_serial">
+      <UniqueIdentifier>{c2ce8cee-5737-41e8-8538-e0bfb2399e35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\task_comm_mbc">
+      <UniqueIdentifier>{0d4fb3ea-1fe1-4898-a7ff-7686e01db3fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\task_comm_mbc\task_comm_mbc_i2c">
+      <UniqueIdentifier>{41d99b97-7463-491a-b514-5abf860bfc89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\task_comm_mbc\task_comm_mbc_serial">
+      <UniqueIdentifier>{85904114-a111-4529-9e88-c15123e3daf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\timer_manager">
+      <UniqueIdentifier>{0d5a7fc3-a52a-4d95-a3f4-6807b9ec86a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sharedTest\timer_manager">
+      <UniqueIdentifier>{ad8c5ed7-7bf2-45cf-9dc3-57d6356d4c39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\timer_manager\linux">
+      <UniqueIdentifier>{b95fef41-d647-43c4-88aa-382632cfeb20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\os_system\pc">
+      <UniqueIdentifier>{72399058-3558-4efb-ba99-fb7988f55ed5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemCommon.h">
+      <Filter>shared\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemCriticalSession.h">
+      <Filter>shared\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemLightQueue.h">
+      <Filter>shared\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemMutex.h">
+      <Filter>shared\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\FlashEyesCoreLib.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\FlashEyesCoreLibConfig.h">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\utility\Utility.h">
+      <Filter>shared\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataItem.h">
+      <Filter>shared\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataManager.h">
+      <Filter>shared\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataManagerConstant.h">
+      <Filter>shared\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataQueue.h">
+      <Filter>shared\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventDataItem.h">
+      <Filter>shared\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventManager.h">
+      <Filter>shared\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventManagerConstant.h">
+      <Filter>shared\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskManager.h">
+      <Filter>shared\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskManagerConstant.h">
+      <Filter>shared\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskSystemThread.h">
+      <Filter>shared\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\CommClientManager.h">
+      <Filter>shared\task_comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\CommConstant.h">
+      <Filter>shared\task_comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerial.h">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialConstant.h">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialReceiver.h">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSender.h">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSetting.h">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSystemSocket.h">
+      <Filter>shared\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_codec\TaskCodec.h">
+      <Filter>shared\task_codec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_codec\TaskCodecConstant.h">
+      <Filter>shared\task_codec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_manager\PingpongTask.h">
+      <Filter>sharedTest\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_manager\TaskManagerTestMain.h">
+      <Filter>sharedTest\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm\task_comm_serial\CommSerialTest.h">
+      <Filter>sharedTest\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm\task_comm_serial\TaskCommSerialTestMain.h">
+      <Filter>sharedTest\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\FlashEyeCoreTestConfig.h">
+      <Filter>sharedTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_manager\OpcodeInputTask.h">
+      <Filter>sharedTest\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadManager.h">
+      <Filter>shared\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadPoolManager.h">
+      <Filter>shared\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManager.h">
+      <Filter>shared\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManagerTpl.h">
+      <Filter>shared\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventPoolManager.h">
+      <Filter>shared\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\BufferDataManager.h">
+      <Filter>shared\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialTest.h">
+      <Filter>sharedTest\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm_mbc\task_comm_mbc_serial\TaskCommMBCSerialTestMain.h">
+      <Filter>sharedTest\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCConstant.h">
+      <Filter>shared\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCEngine.h">
+      <Filter>shared\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCProcessor.h">
+      <Filter>shared\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCSetting.h">
+      <Filter>shared\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.h">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CConstant.h">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.h">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.h">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialConstant.h">
+      <Filter>shared\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\timer_manager\TimerManagerTest.h">
+      <Filter>sharedTest\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\timer_manager\TimerManagerTestMain.h">
+      <Filter>sharedTest\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTask.h">
+      <Filter>shared\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTaskFactory.h">
+      <Filter>shared\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerManager.h">
+      <Filter>shared\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerManagerConstant.h">
+      <Filter>shared\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\linux\TimerControlTaskImpl.h">
+      <Filter>shared\timer_manager\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\pc\SystemCommonLinux.h">
+      <Filter>shared\os_system\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\pc\SystemCommonPC.h">
+      <Filter>shared\os_system\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\pc\SystemCommonWin.h">
+      <Filter>shared\os_system\pc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

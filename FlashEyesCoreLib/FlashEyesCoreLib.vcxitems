@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{be5d6c72-3f9a-4ae2-a72a-675d4b4b891e}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
+    <Text Include="$(MSBuildThisFileDirectory)library.properties" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- <ClInclude Include="$(MSBuildThisFileDirectory)FlashEyesCoreLib.h" /> -->
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\BufferDataManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataItem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManagerTpl.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataQueue.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventDataItem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventPoolManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemCriticalSession.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemLightQueue.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemMutex.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_codec\TaskCodec.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\CommClientManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSetting.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSocket.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CClient.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CServer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSystemSocket.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialReceiver.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSender.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSetting.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerial.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSystemSocket.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCSetting.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessor.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceController.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceInfo.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorControlTask.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceController.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceInfo.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskSystemThread.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadPoolManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\esp\TimerDeviceTimerImpl.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\std\TimerControlTaskImpl.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTask.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTaskFactory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerDeviceTimer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\utility\Utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\BufferDataManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataItem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataManagerConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManagerTpl.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventDataItem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventManagerConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventPoolManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLib.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLibConfig.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonArduino.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonAVR.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonESP.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\pc\SystemCommonLinux.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\pc\SystemCommonPC.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\pc\SystemCommonWin.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemCommon.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemCriticalSession.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemLightQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemMutex.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_codec\TaskCodec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_codec\TaskCodecConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\CommClientManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\CommConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSetting.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSocket.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CClient.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CServer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSystemSocket.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialReceiver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSender.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSetting.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerial.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSystemSocket.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCEngine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCSetting.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceController.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceInfo.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayEngine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayTaskCommon.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorControlTask.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceController.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceInfo.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorEngine.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorTaskCommon.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskManagerConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskSystemThread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadPoolManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\esp\TimerDeviceTimerImpl.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\std\TimerControlTaskImpl.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTask.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTaskFactory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerDeviceTimer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManagerConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\utility\Utility.h" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,436 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{5f877a07-2fd1-4650-9cb7-6068eb2ac17e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\os_system">
+      <UniqueIdentifier>{8c2ae070-de5a-44a6-a436-056d40712148}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\data_manager">
+      <UniqueIdentifier>{496b2478-d049-4496-a6dc-c9492fb23bf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\event_manager">
+      <UniqueIdentifier>{63548a19-b001-4b21-9f11-ca25b2394125}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm">
+      <UniqueIdentifier>{06d2846f-425d-46d2-9d9c-60279665d77e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm\task_comm_i2c">
+      <UniqueIdentifier>{55ca4fca-3a2f-481d-8f8b-944fac8e9b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_display">
+      <UniqueIdentifier>{a5095df0-f071-402f-84d3-066f72f48e78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_distance_sensor">
+      <UniqueIdentifier>{c6eb7e2a-c4b9-467a-919d-ee9c2085dff8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_manager">
+      <UniqueIdentifier>{58765a62-c54d-4fd3-9a04-6cf3c12b4d54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc">
+      <UniqueIdentifier>{2e0d378e-edbe-4d26-b613-89487f2b4a35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc\task_comm_mbc_i2c">
+      <UniqueIdentifier>{deb2197c-2b70-4123-8e0c-6baeb814a371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm\task_comm_serial">
+      <UniqueIdentifier>{3aedebf7-384f-43b4-9f1a-41ba1eb8d10f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility">
+      <UniqueIdentifier>{fe2200d2-adc0-4dcc-acf4-9bb6d3b456f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_codec">
+      <UniqueIdentifier>{e86424fb-5229-4fce-80c5-9f4e438e0fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc\task_comm_mbc_serial">
+      <UniqueIdentifier>{b6049697-67c3-4585-a0de-e948719c6668}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager">
+      <UniqueIdentifier>{316b168b-d80b-4b25-8cad-a61d7946cb84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager\std">
+      <UniqueIdentifier>{17be6969-ff96-4005-9841-a2b825ab31a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager\avr">
+      <UniqueIdentifier>{ae484064-e52c-45cd-b5f6-37ec64d63b06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager\esp">
+      <UniqueIdentifier>{044b2171-7db4-40f4-a4be-5884365cd352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\os_system\pc">
+      <UniqueIdentifier>{88fe7501-247d-419b-bab6-20ccde975bd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\os_system\arduino">
+      <UniqueIdentifier>{92fce519-012d-448e-a626-1f41fd9d6287}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
+    <Text Include="$(MSBuildThisFileDirectory)library.properties" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemCriticalSession.cpp">
+      <Filter>src\os_system</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemLightQueue.cpp">
+      <Filter>src\os_system</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemMutex.cpp">
+      <Filter>src\os_system</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataItem.cpp">
+      <Filter>src\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataManager.cpp">
+      <Filter>src\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataQueue.cpp">
+      <Filter>src\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventDataItem.cpp">
+      <Filter>src\event_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventManager.cpp">
+      <Filter>src\event_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSetting.cpp">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSocket.cpp">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CClient.cpp">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CServer.cpp">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSystemSocket.cpp">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceController.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceInfo.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayEngine.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorControlTask.cpp">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceController.cpp">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceInfo.cpp">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorEngine.cpp">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskManager.cpp">
+      <Filter>src\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCEngine.cpp">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCSetting.cpp">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessor.cpp">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.cpp">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.cpp">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\CommClientManager.cpp">
+      <Filter>src\task_comm</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialReceiver.cpp">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSender.cpp">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSetting.cpp">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerial.cpp">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSystemSocket.cpp">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\utility\Utility.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_codec\TaskCodec.cpp">
+      <Filter>src\task_codec</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskSystemThread.cpp">
+      <Filter>src\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.cpp">
+      <Filter>src\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadPoolManager.cpp">
+      <Filter>src\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadManager.cpp">
+      <Filter>src\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManagerTpl.cpp">
+      <Filter>src\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventPoolManager.cpp">
+      <Filter>src\event_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\BufferDataManager.cpp">
+      <Filter>src\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManager.cpp">
+      <Filter>src\data_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTask.cpp">
+      <Filter>src\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTaskFactory.cpp">
+      <Filter>src\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerDeviceTimer.cpp">
+      <Filter>src\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManager.cpp">
+      <Filter>src\timer_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\std\TimerControlTaskImpl.cpp">
+      <Filter>src\timer_manager\std</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\esp\TimerDeviceTimerImpl.cpp">
+      <Filter>src\timer_manager\esp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLib.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemCommon.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemCriticalSession.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemLightQueue.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\SystemMutex.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataItem.h">
+      <Filter>src\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataManager.h">
+      <Filter>src\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataManagerConstant.h">
+      <Filter>src\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataQueue.h">
+      <Filter>src\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLibConfig.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventDataItem.h">
+      <Filter>src\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventManager.h">
+      <Filter>src\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventManagerConstant.h">
+      <Filter>src\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\CommConstant.h">
+      <Filter>src\task_comm</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CConstant.h">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSetting.h">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSocket.h">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CClient.h">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CServer.h">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSystemSocket.h">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceController.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceInfo.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayEngine.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayTaskCommon.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorControlTask.h">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceController.h">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceInfo.h">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorEngine.h">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorTaskCommon.h">
+      <Filter>src\task_distance_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskManager.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCEngine.h">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCConstant.h">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCSetting.h">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessor.h">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CConstant.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\CommClientManager.h">
+      <Filter>src\task_comm</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialConstant.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialReceiver.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSender.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSetting.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerial.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSystemSocket.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\utility\Utility.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_codec\TaskCodec.h">
+      <Filter>src\task_codec</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_codec\TaskCodecConstant.h">
+      <Filter>src\task_codec</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskSystemThread.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskManagerConstant.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialConstant.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadPoolManager.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadManager.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManagerTpl.h">
+      <Filter>src\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventPoolManager.h">
+      <Filter>src\event_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\BufferDataManager.h">
+      <Filter>src\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\data_manager\DataPoolManager.h">
+      <Filter>src\data_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTask.h">
+      <Filter>src\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTaskFactory.h">
+      <Filter>src\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerDeviceTimer.h">
+      <Filter>src\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManager.h">
+      <Filter>src\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManagerConstant.h">
+      <Filter>src\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\std\TimerControlTaskImpl.h">
+      <Filter>src\timer_manager\std</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\esp\TimerDeviceTimerImpl.h">
+      <Filter>src\timer_manager\esp</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\pc\SystemCommonLinux.h">
+      <Filter>src\os_system\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\pc\SystemCommonPC.h">
+      <Filter>src\os_system\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\pc\SystemCommonWin.h">
+      <Filter>src\os_system\pc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonArduino.h">
+      <Filter>src\os_system\arduino</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonAVR.h">
+      <Filter>src\os_system\arduino</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonESP.h">
+      <Filter>src\os_system\arduino</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

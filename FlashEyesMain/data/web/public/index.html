@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FlashEye</title>
+    <script>
+      function submitSettings(element) {
+        var name = document.getElementById("fname").value;
+        var age = document.getElementById("rAge").value;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+             if (this.readyState == 4 && this.status == 200) {
+				 document.getElementById("sRes").innerHTML = this.responseText;
+             }
+        };
+        xhttp.open("POST", "/api/v1/system/update", true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send(JSON.stringify({ "name": name, "age": age }));
+      }
+	</script>
+</head>
+<body>
+
+<h2>Settings</h2>
+  <label for="fname">Name:</label><br>
+  <input type="text" id="fname" name="fname" value="John"><br>
+  <label for="rAge">Age:</label><br>
+  <input type="number" id="rAge" min="1" max="100" value="50"><br>
+  <input type="submit" value="Submit" onclick ="submitSettings(this)" id = "btnSubmit">
+  <h1>"Res:" <span id="sRes"></span></h1>
+</body>
+</html>
+

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{8d225ede-6872-4237-94cc-fde3a173a8da}</ProjectGuid>
+    <RootNamespace>FlashEyesCoreTestWindows</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>FlashEyesCoreTestWindows</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlashEyesCoreLib\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)FlashEyesCoreLib\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\BufferDataManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataItem.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManagerTpl.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\data_manager\DataQueue.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\event_manager\EventDataItem.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\event_manager\EventManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\event_manager\EventPoolManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\os_system\SystemCriticalSession.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\os_system\SystemLightQueue.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\os_system\SystemMutex.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_codec\TaskCodec.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\CommClientManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerial.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialReceiver.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSender.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSetting.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSystemSocket.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCEngine.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCProcessor.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCSetting.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskSystemThread.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadPoolManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\std\TimerControlTaskImpl.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTask.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTaskFactory.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\TimerDeviceTimer.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\TimerManager.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\timer_manager\win\TimerDeviceTimerImpl.cpp" />
+    <ClCompile Include="..\FlashEyesCoreLib\src\utility\Utility.cpp" />
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_comm\task_comm_serial\CommSerialTest.cpp" />
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialTest.cpp" />
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_manager\OpcodeInputTask.cpp" />
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\task_manager\PingpongTask.cpp" />
+    <ClCompile Include="..\FlashEyesCoreTestArduino\src\timer_manager\TimerManagerTest.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\BufferDataManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataItem.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataManagerConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataPoolManagerTpl.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\data_manager\DataQueue.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventDataItem.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventManagerConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\event_manager\EventPoolManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\FlashEyesCoreLib.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\FlashEyesCoreLibConfig.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\pc\SystemCommonLinux.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\pc\SystemCommonPC.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\pc\SystemCommonWin.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemCommon.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemCommonArduinoBased.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemCommonPCBased.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemCriticalSession.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemLightQueue.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\os_system\SystemMutex.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_codec\TaskCodec.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_codec\TaskCodecConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\CommClientManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\CommConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerial.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialReceiver.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSender.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSetting.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm\task_comm_serial\CommSerialSystemSocket.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCEngine.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCProcessor.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\CommMBCSetting.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CServer.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerial.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskManagerConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskSystemThread.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\task_manager\TaskThreadPoolManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\std\TimerControlTaskImpl.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTask.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerControlTaskFactory.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerDeviceTimer.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerManager.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\TimerManagerConstant.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\timer_manager\win\TimerDeviceTimerImpl.h" />
+    <ClInclude Include="..\FlashEyesCoreLib\src\utility\Utility.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\FlashEyeCoreTestConfig.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm\task_comm_serial\CommSerialTest.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm\task_comm_serial\TaskCommSerialTestMain.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialTest.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_comm_mbc\task_comm_mbc_serial\TaskCommMBCSerialTestMain.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_manager\OpcodeInputTask.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_manager\PingpongTask.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\task_manager\TaskManagerTestMain.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\timer_manager\TimerManagerTest.h" />
+    <ClInclude Include="..\FlashEyesCoreTestArduino\src\timer_manager\TimerManagerTestMain.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

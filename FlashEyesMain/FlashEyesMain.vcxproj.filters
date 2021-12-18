@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4e36e623-2fce-4be8-8134-0afa04dacf3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs">
+      <UniqueIdentifier>{8722924f-52dc-480f-8245-9d55fbe3f39b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers">
+      <UniqueIdentifier>{8e3ee042-4f3f-4a3f-aacb-7a200284dc9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\sqlite3">
+      <UniqueIdentifier>{e6ca727f-a547-4c7e-aa73-715df9b897da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\esp32">
+      <UniqueIdentifier>{37234f4a-dacc-4895-9e1a-6e511cdbbd01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\esp32\fs">
+      <UniqueIdentifier>{564a69eb-8b50-446b-8e41-cc1b97f159cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source">
+      <UniqueIdentifier>{f51e4600-edc0-4bcd-8559-1215c7655648}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\db">
+      <UniqueIdentifier>{bd35239a-ddb4-4a9a-a560-3f11f66ffcb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\file_system">
+      <UniqueIdentifier>{d89515b2-4f5a-44a4-87e3-4b8e631b7ac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\task_main">
+      <UniqueIdentifier>{a1b25dd3-a35e-429e-934d-aa43301dd02f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\esp32\db">
+      <UniqueIdentifier>{e5d1e026-6899-451b-a487-0cc37691338d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\esp32\http">
+      <UniqueIdentifier>{4255d56b-768a-4f89-bd80-792e402dc09e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\esp32\net">
+      <UniqueIdentifier>{f0929b5c-8a50-4377-896b-12539d6aebcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\esp32\net\wifi">
+      <UniqueIdentifier>{b9991468-2d42-48e4-adc5-6adbe121c918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\task_net">
+      <UniqueIdentifier>{31351969-2740-458a-babb-9953d2aaec4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\task_net\wifi">
+      <UniqueIdentifier>{e1452e35-463f-4475-b56f-447f71a9742b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\task_http">
+      <UniqueIdentifier>{6722d1d0-a5e2-4ef6-964a-d072af55f47e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\jsmn">
+      <UniqueIdentifier>{2aa771e5-0a86-4685-9374-eb1193b44166}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FlashEyesMain.ino" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.FlashEyesMain.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drivers\esp32\fs\file_system.h">
+      <Filter>src\drivers\esp32\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlashEyesMain.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlashEyesMainConfig.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\file_system\FileSystemManager.h">
+      <Filter>src\source\file_system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\file_system\FileSystemManagerConstant.h">
+      <Filter>src\source\file_system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\main.h">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\db\DBManager.h">
+      <Filter>src\source\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\db\DBManagerConstant.h">
+      <Filter>src\source\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libs\sqlite3\config_ext.h">
+      <Filter>src\libs\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libs\sqlite3\shox96_0_2.h">
+      <Filter>src\libs\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libs\sqlite3\sqlite3.h">
+      <Filter>src\libs\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drivers\esp32\db\dbms.h">
+      <Filter>src\drivers\esp32\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drivers\esp32\http\http.h">
+      <Filter>src\drivers\esp32\http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drivers\esp32\net\wifi\wifi.h">
+      <Filter>src\drivers\esp32\net\wifi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_net\wifi\WifiControllerTask.h">
+      <Filter>src\source\task_net\wifi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_net\wifi\WifiManagerConstant.h">
+      <Filter>src\source\task_net\wifi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_http\CommHttp.h">
+      <Filter>src\source\task_http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_http\CommHttpConstant.h">
+      <Filter>src\source\task_http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_net\NetManagerConstant.h">
+      <Filter>src\source\task_net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_http\CommHttpClient.h">
+      <Filter>src\source\task_http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_http\CommHttpServer.h">
+      <Filter>src\source\task_http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libs\jsmn\jsmn.h">
+      <Filter>src\libs\jsmn</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FlashEyesMain.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\source\file_system\FileSystemManager.cpp">
+      <Filter>src\source\file_system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\main.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\db\DBManager.cpp">
+      <Filter>src\source\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libs\sqlite3\shox96_0_2.cpp">
+      <Filter>src\libs\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libs\sqlite3\sqlite3.c">
+      <Filter>src\libs\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libs\sqlite3\esp32.cpp">
+      <Filter>src\libs\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_net\wifi\WifiControllerTask.cpp">
+      <Filter>src\source\task_net\wifi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_http\CommHttp.cpp">
+      <Filter>src\source\task_http</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_http\CommHttpClient.cpp">
+      <Filter>src\source\task_http</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_http\CommHttpServer.cpp">
+      <Filter>src\source\task_http</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{aa0c40e4-a330-4a78-9a60-a5f989520e2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\os_system">
+      <UniqueIdentifier>{79c87fea-255f-4fb7-a3e9-75ee5a517156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_manager">
+      <UniqueIdentifier>{e8b49340-aac1-432e-a895-26b736da99fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm">
+      <UniqueIdentifier>{c0c2f672-b505-44c5-8e81-2ee3b3d37106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm\task_comm_serial">
+      <UniqueIdentifier>{bc1ce50a-ebae-4a8e-b131-9791a1787536}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm\task_comm_i2c">
+      <UniqueIdentifier>{85ad24a0-5c43-41e2-864c-fbea2c8fbbb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm\task_comm_i2c\i2cClient">
+      <UniqueIdentifier>{1ee929f1-90b8-4429-94f3-2ff45b0dc4b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm\task_comm_i2c\i2cServer">
+      <UniqueIdentifier>{cf729cac-d296-4181-9c4e-2c44b2f50270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc">
+      <UniqueIdentifier>{60974d1c-011e-4973-8435-e4ea06bd51be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc\task_comm_mbc_serial">
+      <UniqueIdentifier>{a4c11744-167d-4b98-a34b-bd17573bbe2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc\task_comm_mbc_i2c">
+      <UniqueIdentifier>{f6629b6c-e75c-43ac-8ea4-afbd09b68aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cClient">
+      <UniqueIdentifier>{badb842c-9d61-46fb-9587-8d12b2e32b3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cServer">
+      <UniqueIdentifier>{a9ac86dd-ce9e-4845-b468-df4fb9e503cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager">
+      <UniqueIdentifier>{bbe69be9-73e2-462d-8dbf-6c0e85085281}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FlashEyesCoreTestArduino.ino" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.FlashEyesCoreTest.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\os_system\TestCriticalSession.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\os_system\TestSystemLightQueue.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\os_system\TestSystemMutexLocker.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\os_system\TestSystemMutexNotify.h">
+      <Filter>src\os_system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_manager\PingpongTask.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_manager\TaskManagerTestMain.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm\task_comm_serial\CommSerialTest.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm\task_comm_serial\TaskCommSerialTestMain.h">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FlashEyeCoreTestConfig.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm\task_comm_i2c\i2cClient\I2CClientTestMain.h">
+      <Filter>src\task_comm\task_comm_i2c\i2cClient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm\task_comm_i2c\i2cClient\I2CClientTask.h">
+      <Filter>src\task_comm\task_comm_i2c\i2cClient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm\task_comm_i2c\i2cServer\I2CServerTestMain.h">
+      <Filter>src\task_comm\task_comm_i2c\i2cServer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm\task_comm_i2c\i2cServer\I2CServerTask.h">
+      <Filter>src\task_comm\task_comm_i2c\i2cServer</Filter>
+    </ClInclude>
+    <ClInclude Include="__vm\.FlashEyesCoreTestArduino.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialTest.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm_mbc\task_comm_mbc_serial\TaskCommMBCSerialTestMain.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_manager\OpcodeInputTask.h">
+      <Filter>src\task_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm\task_comm_i2c\I2CTestConstant.h">
+      <Filter>src\task_comm\task_comm_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm_mbc\task_comm_mbc_i2c\MBCI2CTestConstant.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cClient\MBCI2CClientTask.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c\i2cClient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cClient\MBCI2CClientTestMain.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c\i2cClient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cServer\MBCI2CServerTask.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c\i2cServer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cServer\MBCI2CServerTestMain.h">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c\i2cServer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timer_manager\TimerManagerTest.h">
+      <Filter>src\timer_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timer_manager\TimerManagerTestMain.h">
+      <Filter>src\timer_manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\task_manager\PingpongTask.cpp">
+      <Filter>src\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\task_comm\task_comm_serial\CommSerialTest.cpp">
+      <Filter>src\task_comm\task_comm_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="src\task_comm\task_comm_i2c\i2cClient\I2CClientTask.cpp">
+      <Filter>src\task_comm\task_comm_i2c\i2cClient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\task_comm\task_comm_i2c\i2cServer\I2CServerTask.cpp">
+      <Filter>src\task_comm\task_comm_i2c\i2cServer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\task_comm_mbc\task_comm_mbc_serial\CommMBCSerialTest.cpp">
+      <Filter>src\task_comm_mbc\task_comm_mbc_serial</Filter>
+    </ClCompile>
+    <ClCompile Include="src\task_manager\OpcodeInputTask.cpp">
+      <Filter>src\task_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cClient\MBCI2CClientTask.cpp">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c\i2cClient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\task_comm_mbc\task_comm_mbc_i2c\i2cServer\MBCI2CServerTask.cpp">
+      <Filter>src\task_comm_mbc\task_comm_mbc_i2c\i2cServer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timer_manager\TimerManagerTest.cpp">
+      <Filter>src\timer_manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

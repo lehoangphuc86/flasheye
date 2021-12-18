@@ -1,0 +1,59 @@
+#include "TimerManagerConstant.h"
+
+#if (_CONF_TIMER_CONTROL_TASK_ENABLED)
+
+#ifndef _TIMER_CONTROL_TASK_FACTORY_H
+#define _TIMER_CONTROL_TASK_FACTORY_H
+
+/////////////////////////////////////////////////
+// INCLUDE
+#include "TimerControlTask.h"
+/////////////////////////////////////////////////
+// PREPROCESSOR
+
+/////////////////////////////////////////////////
+// DEFINE
+
+/////////////////////////////////////////////////
+// MARCO
+
+/////////////////////////////////////////////////
+// GLOBAL VARIABLES
+
+/////////////////////////////////////////////////
+// GLOBAL FUNCTIONS
+
+/////////////////////////////////////////////////
+// DATA TYPE (TYPEDEF)
+
+/////////////////////////////////////////////////
+// DATA TYPE (ENUM)
+
+/////////////////////////////////////////////////
+// DATA TYPE (STRUCT)
+
+/////////////////////////////////////////////////
+// STATIC DATA
+
+/////////////////////////////////////////////////
+// STATIC FUNCTIONS
+
+/////////////////////////////////////////////////
+// EXTERN
+
+/////////////////////////////////////////////////
+// CLASS DEFINITION
+/*TimerControlTaskFactory*/
+class TimerControlTaskFactory
+{
+public:
+  TimerControlTaskFactory(void);
+  // WARNING: if inherite from this class, deconstructor must be virtual
+  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~TimerControlTaskFactory(void);
+public:
+  static TimerControlTask*                                      generate(void);
+  static void                                                   release(TimerControlTask*& controlTask);
+};
+#endif // _TIMER_CONTROL_TASK_FACTORY_H
+
+#endif // _CONF_TIMER_CONTROL_TASK_ENABLED
