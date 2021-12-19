@@ -1,0 +1,5 @@
+# FlashEyesMain build property overrides
+#
+# Modify Maximum sizes to align with custom partition tables
+upload.maximum_size=2621440
+
