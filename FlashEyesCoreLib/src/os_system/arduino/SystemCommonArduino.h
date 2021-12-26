@@ -117,6 +117,8 @@ typedef uint32_t                                          TimerOVFCount_t;
 typedef byte                                              TimerHanlder_t;
 typedef uint8_t                                           MessageId_t;
 typedef uint16_t                                          HttpReqId_t;
+typedef uint8_t                                           MbcMessageId_t;
+typedef uint16_t                                          MbcDataSize_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 

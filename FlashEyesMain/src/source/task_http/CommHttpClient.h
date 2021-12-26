@@ -46,7 +46,7 @@ class CommHttpClient
 public:
   CommHttpClient(void);
   virtual ~CommHttpClient(void);
-  int                                                           request(CommHttpClientRequestParamsTAG& params, HttpReqId_t& reqId);
+  virtual int                                                   request(CommHttpClientRequestParamsTAG& params, HttpReqId_t& reqId);
 protected:
   //void                                                          cleanUp(void) override;
   void                                                          regEventSize(void) override;
@@ -54,13 +54,13 @@ protected:
   int                                                           sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataSize_t bufferLen);
   int                                                           sendFileData(CommHttpUriRequestTAG* httpReq, char* buffer, DataSize_t bufferLen);
   void                                                          proc(void) override;
-  int                                                           onEventCommHttpStart(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpConnectionOpened(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpDataReceived(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpClientRequest(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpConnectionClosed(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpStop(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpFinished(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpStart(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpConnectionOpened(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpDataReceived(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpClientRequest(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpConnectionClosed(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpStop(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpFinished(unsigned char* data, unsigned int dataSize);
   int                                                           cbEventCommHttpHandler(void* eventData);
 private:
   static HttpRet_t                                              cbHttpEventHandlerNavigator(HttpClientEvent_t* evt);

@@ -28,6 +28,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventDataItem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\event_manager\EventPoolManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\libs\mjson\mjson.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemCriticalSession.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemLightQueue.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\os_system\SystemMutex.cpp" />
@@ -44,6 +45,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerial.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSystemSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCJsonDataProcessor.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessorFactory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCPureDataProcessor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCSetting.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessor.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.cpp" />
@@ -67,6 +71,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTaskFactory.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerDeviceTimer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\utility\JsonParser.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +88,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\event_manager\EventPoolManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLib.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLibConfig.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\mjson\mjson.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonArduino.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonAVR.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonESP.h" />
@@ -111,6 +117,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_serial\CommSerialSystemSocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCEngine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCJsonDataProcessor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessorFactory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCPureDataProcessor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCSetting.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\task_comm_mbc_i2c\CommMBCI2CClient.h" />
@@ -140,6 +149,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerDeviceTimer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerManagerConstant.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\utility\JsonParser.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\utility\Utility.h" />
   </ItemGroup>
 </Project>

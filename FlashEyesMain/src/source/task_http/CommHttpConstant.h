@@ -88,14 +88,14 @@ typedef int(*CommHttpCbOnUriResponse)(void* arg, _commHttpUriRequestTAG* uriRequ
 
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
-typedef struct _commHtttpTaskConfigTAG
+typedef struct _commHttpTaskConfigTAG
 {
   //size_t maxPackSize; // maximum package size
   //size_t maxTruckSize; // max size to read traffic each time
   BufferDataManagerConfigTAG bufferConfig;
   TaskManagerConfigTAG taskManagerConfig;
   TaskThreadConfigTAG taskThreadConfig;
-} CommHtttpTaskConfigTAG;
+} CommHttpTaskConfigTAG;
 
 typedef struct _commHttpClientConfigTAG
 {
@@ -270,9 +270,14 @@ typedef struct _commHttpPackageTAG
     this->dataManager = NULL;
   }
 
-  ~_commHttpPackageTAG(void)
+  virtual ~_commHttpPackageTAG(void)
   {
     //this->clear();
+  }
+
+  virtual DataSize_t headerSize(void)
+  {
+    return sizeof(CommHttpHeaderTAG);
   }
 
   bool isValid(void)
@@ -313,40 +318,40 @@ typedef struct _commHttpPackageTAG
       this->dataManager = dataMgr;
       this->dataItem = this->dataManager->get();
       if ((this->dataItem == NULL)
-        || (this->dataItem->bufferLength() < sizeof(CommHttpHeaderTAG))
+        || (this->dataItem->bufferLength() < this->headerSize())
         )
       {
         break;
       }
-      return this->dataItem->setDataLen(sizeof(CommHttpHeaderTAG));
+      return this->dataItem->setDataLen(this->headerSize());
     } while (0);
     this->clear();
     return -1;
   }
 
-  CommHttpHeaderTAG* header(void)
+  void* header(void)
   {
-    return (CommHttpHeaderTAG*)this->dataItem->bufferAddress();
+    return (void*)this->dataItem->bufferAddress();
   }
 
   char* body(void)
   {
-    return (char*)(this->dataItem->bufferAddress() + sizeof(CommHttpHeaderTAG));
+    return (char*)(this->dataItem->bufferAddress() + this->headerSize());
   }
 
   DataSize_t bodyLen(void)
   {
-    return this->dataItem->dataLength() - sizeof(CommHttpHeaderTAG);
+    return this->dataItem->dataLength() - this->headerSize();
   }
 
   int bodyLen(DataSize_t bodyLen)
   {
-    return this->dataItem->setDataLen(bodyLen + sizeof(CommHttpHeaderTAG));
+    return this->dataItem->setDataLen(bodyLen + this->headerSize());
   }
 
   DataSize_t bodyMaxLen(void)
   {
-    return this->dataItem->bufferLength() - sizeof(CommHttpHeaderTAG);
+    return this->dataItem->bufferLength() - this->headerSize();
   }
 
   void releaseData(void)

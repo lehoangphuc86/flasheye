@@ -1,13 +1,18 @@
+#include "CommMBCConstant.h"
+
+#if (_CONF_COMM_MBC_PROCESSOR_FACTORY_ENABLED)
+
+#ifndef _COMM_MBC_PROCESSOR_FACTORY_H
+#define _COMM_MBC_PROCESSOR_FACTORY_H
+
 /////////////////////////////////////////////////
 // INCLUDE
 #include "CommMBCProcessor.h"
-#if (_CONF_COMM_MBC_PROCESSOR_ENABLED)
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
 /////////////////////////////////////////////////
 // DEFINE
-
 
 /////////////////////////////////////////////////
 // MARCO
@@ -17,6 +22,9 @@
 
 /////////////////////////////////////////////////
 // GLOBAL FUNCTIONS
+
+/////////////////////////////////////////////////
+// DATA TYPE (TYPEDEF)
 
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
@@ -34,22 +42,18 @@
 // EXTERN
 
 /////////////////////////////////////////////////
-// CLASS IMPLEMENTAION
-//
-/*CommMBCProcessor*/
-CommMBCProcessor::CommMBCProcessor(byte processorType)
-  : processor_Type(processorType)
+// CLASS DEFINITION
+/*CommMBCProcessorFactory*/
+class CommMBCProcessorFactory
 {
-  
-}
+public:
+  CommMBCProcessorFactory(void);
+  // WARNING: if inherite from this class, deconstructor must be virtual
+  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~CommMBCProcessorFactory(void);
+public:
+  static CommMBCProcessor*                                      generate(byte processorType);
+  static void                                                   release(CommMBCProcessor*& mbcProcessor);
+};
+#endif // _COMM_MBC_PROCESSOR_FACTORY_H
 
-CommMBCProcessor::~CommMBCProcessor(void)
-{
-
-}
-
-bool CommMBCProcessor::isValid(void)
-{
-  return (this->processor_Type >= CommMBCDataType::CommMbcDataTypeMax ? false : true);
-}
-#endif // _CONF_COMM_MBC_PROCESSOR_ENABLED
+#endif // _CONF_COMM_MBC_PROCESSOR_FACTORY_ENABLED

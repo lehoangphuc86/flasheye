@@ -64,6 +64,12 @@
     <Filter Include="src\os_system\arduino">
       <UniqueIdentifier>{92fce519-012d-448e-a626-1f41fd9d6287}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\libs">
+      <UniqueIdentifier>{7691cd80-9c10-433d-bbc2-c9c8ef421488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\mjson">
+      <UniqueIdentifier>{90e94dbd-7eac-434c-9ba3-54456214328b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
@@ -216,6 +222,21 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\esp\TimerDeviceTimerImpl.cpp">
       <Filter>src\timer_manager\esp</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCPureDataProcessor.cpp">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessorFactory.cpp">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCJsonDataProcessor.cpp">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\utility\JsonParser.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\libs\mjson\mjson.c">
+      <Filter>src\libs\mjson</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -431,6 +452,21 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\os_system\arduino\SystemCommonESP.h">
       <Filter>src\os_system\arduino</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCPureDataProcessor.h">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCProcessorFactory.h">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm_mbc\CommMBCJsonDataProcessor.h">
+      <Filter>src\task_comm_mbc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\utility\JsonParser.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\mjson\mjson.h">
+      <Filter>src\libs\mjson</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

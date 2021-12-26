@@ -461,7 +461,7 @@ int CommHttpServer::sendResponse(HttpReq_t* httpReq, CommHttpPackageTAG& package
 #endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
       break;
     }
-    header = package.header();;
+    header = (CommHttpHeaderTAG*)package.header();;
     body = package.body();
     bodyLen = package.bodyLen();
     if (header->resStatusCode >= COMM_HTTP_STATUS_CODE_MAX)
@@ -537,12 +537,12 @@ int CommHttpServer::cbCommHttpDefaultUriHandler(CommHttpUriRequestTAG* uriReqInf
 #endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
   do
   {
-    CommHttpHeaderTAG* reqHeader = reqPackage->header();
+    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
     if (resPackage->setData(&this->data_Manager) !=0)
     {
       break;
     }
-    CommHttpHeaderTAG* resHeader = resPackage->header();
+    CommHttpHeaderTAG* resHeader = (CommHttpHeaderTAG*)resPackage->header();
     char* resBody = resPackage->body();
     DataSize_t bodyMaxLen = resPackage->bodyMaxLen() - 1;
     //set default header
@@ -720,7 +720,7 @@ int CommHttpServer::cbCommHttpRequestHandler(HttpReq_t* httpReq)
     // read header
     {
       //header
-      CommHttpHeaderTAG* reqHeader = reqPackage->header();
+      CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
       reqHeader->dataType = uriInfo->dataType;
       reqHeader->reqMethod = uriInfo->method;
       reqHeader->uri = httpReq->uri;

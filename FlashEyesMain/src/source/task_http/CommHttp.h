@@ -50,30 +50,23 @@ class CommHttp
 public:
   CommHttp(bool isServer);
   virtual ~CommHttp(void);
-  int                                                           inititialize(void);
+  virtual int                                                   inititialize(void);
   bool                                                          isStarted(void);
   bool                                                          isServer(void);
-  int                                                           startTask(CommHtttpTaskConfigTAG& commHttpConfig);
-  int                                                           startHttp(CommHttpConnectionConfigTAG& commHttpConnConfig, bool waitCompletion = true);
+  virtual int                                                   startTask(CommHttpTaskConfigTAG& commHttpConfig);
+  virtual int                                                   startHttp(CommHttpConnectionConfigTAG& commHttpConnConfig, bool waitCompletion = true);
   BufferDataItem*                                               getCommData(void);
   BufferDataManager*                                            dataManager(void);
   void                                                          releaseCommData(BufferDataItem* dataItem);
-  void                                                          stopHttp(bool waitCompletion = true);
-  void                                                          stopTask(void);
+  virtual void                                                  stopHttp(bool waitCompletion = true);
+  virtual void                                                  stopTask(void);
   virtual void                                                  cleanUp(void);
 protected:
   HttpReqId_t                                                   nextReqId(void);
   virtual void                                                  regEventSize(void) = 0;
-  int                                                           prepare(void);
-  //void                                                          proc(void) override;
+  virtual int                                                   prepare(void);
   virtual int                                                   onEventCommHttpStart(unsigned char* data, unsigned int dataSize) = 0;
   virtual int                                                   onEventCommHttpStop(unsigned char* data, unsigned int dataSize) = 0;
-  /*int                                                           onEventWifiStarted(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventWifiStopped(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventWifiConnectionOpened(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventWifiConnectionClosed(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventWifiNetGotIPV4(unsigned char* data, unsigned int dataSize);*/
-
 protected:
   bool                                                          is_Server : 1;
   bool                                                          is_Started : 1;

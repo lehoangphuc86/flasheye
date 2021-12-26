@@ -88,7 +88,7 @@ bool CommHttp::isServer(void)
   return this->is_Server;
 }
 
-int CommHttp::startTask(CommHtttpTaskConfigTAG& commHttpConfig)
+int CommHttp::startTask(CommHttpTaskConfigTAG& commHttpConfig)
 {
   do
   {

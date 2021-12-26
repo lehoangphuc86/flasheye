@@ -56,8 +56,11 @@
     <Filter Include="src\source\task_http">
       <UniqueIdentifier>{6722d1d0-a5e2-4ef6-964a-d072af55f47e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\libs\jsmn">
-      <UniqueIdentifier>{2aa771e5-0a86-4685-9374-eb1193b44166}</UniqueIdentifier>
+    <Filter Include="src\source\task_comm_mbc">
+      <UniqueIdentifier>{0d838217-09de-4f4b-b92d-0b137f345c00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\task_comm_mbc\task_comm_mbc_http">
+      <UniqueIdentifier>{d97159e0-c562-40f7-833c-e59bd01eb5a7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -130,8 +133,14 @@
     <ClInclude Include="src\source\task_http\CommHttpServer.h">
       <Filter>src\source\task_http</Filter>
     </ClInclude>
-    <ClInclude Include="src\libs\jsmn\jsmn.h">
-      <Filter>src\libs\jsmn</Filter>
+    <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.h">
+      <Filter>src\source\task_comm_mbc\task_comm_mbc_http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpConstant.h">
+      <Filter>src\source\task_comm_mbc\task_comm_mbc_http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.h">
+      <Filter>src\source\task_comm_mbc\task_comm_mbc_http</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,5 +177,14 @@
     <ClCompile Include="src\source\task_http\CommHttpServer.cpp">
       <Filter>src\source\task_http</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.cpp">
+      <Filter>src\source\task_comm_mbc\task_comm_mbc_http</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.cpp">
+      <Filter>src\source\task_comm_mbc\task_comm_mbc_http</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="board.txt" />
   </ItemGroup>
 </Project>

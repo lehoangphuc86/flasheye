@@ -2,6 +2,7 @@
 // INCLUDE
 #include "CommMBCEngine.h"
 #if (_CONF_COMM_MBC_ENGINE_ENABLED)
+#include "CommMBCProcessorFactory.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -36,10 +37,12 @@
 // CLASS IMPLEMENTAION
 
 /* CommMBCEngine*/
-CommMBCEngine::CommMBCEngine(void)
+CommMBCEngine::CommMBCEngine(byte dataType)
   : max_Buffer_Size(0)
+  , mbc_Processor(NULL)
+  , mbc_Data_Type(dataType)
 {
-  
+ this->mbc_Processor = CommMBCProcessorFactory::generate(dataType);
 }
 
 CommMBCEngine::~CommMBCEngine(void)
@@ -62,26 +65,38 @@ bool CommMBCEngine::isValid(void)
   return false;
 }
 
-uint16_t CommMBCEngine::maxBufferSize(void)
+bool CommMBCEngine::isValidProcessor(void)
+{
+  return (this->mbc_Processor == NULL ? false : true);
+}
+
+MbcDataSize_t CommMBCEngine::maxBufferSize(void)
 {
   return this->max_Buffer_Size;
 }
 
-uint16_t CommMBCEngine::registerMessageId(uint8_t messageId, uint16_t maxRawSize)
+MbcDataSize_t CommMBCEngine::registerMessageId(MbcMessageId_t messageId, MbcDataSize_t maxRawSize)
 {
-  bool isHeadLess = (messageId == (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess? true : false);
-  uint16_t maxEncodedSize = (isHeadLess == false? CommMBCProcessor::getMaxEncodedSize(messageId): maxRawSize);
-  uint16_t maxDecodedSize = (isHeadLess == false? CommMBCProcessor::getMaxDecodedSize(messageId): maxRawSize);
-  if (maxEncodedSize > this->max_Buffer_Size)
+  do
   {
-    this->max_Buffer_Size = maxEncodedSize;
-  }
+    if (this->isValidProcessor() == false)
+    {
+      break;
+    }
+    bool isHeadLess = (messageId == (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess ? true : false);
+    MbcDataSize_t maxEncodedSize = (isHeadLess == false ? this->mbc_Processor->getMaxEncodedSize(messageId) : maxRawSize);
+    MbcDataSize_t maxDecodedSize = (isHeadLess == false ? this->mbc_Processor->getMaxDecodedSize(messageId) : maxRawSize);
+    if (maxEncodedSize > this->max_Buffer_Size)
+    {
+      this->max_Buffer_Size = maxEncodedSize;
+    }
 
-  if (maxDecodedSize > this->max_Buffer_Size)
-  {
-    this->max_Buffer_Size = maxDecodedSize;
-  }
+    if (maxDecodedSize > this->max_Buffer_Size)
+    {
+      this->max_Buffer_Size = maxDecodedSize;
+    }
 
+  } while (0);
   return this->max_Buffer_Size;
 }
 
@@ -93,6 +108,10 @@ int CommMBCEngine::setConfig(CommMBCSettingParamTAG& commMbcSettingParams)
     //{
     //  break; // already valid
     //}
+    if (this->isValidProcessor() == false)
+    {
+      break;
+    }
     return this->mbc_Setting.setConfig(commMbcSettingParams);
   } while (0);
   return -1;
@@ -106,6 +125,10 @@ int CommMBCEngine::prepare(void)
     //{
     //  break; // already valid
     //}
+    if (this->isValidProcessor() == false)
+    {
+      break;
+    }
 
     if (this->max_Buffer_Size <= 0)
     {
@@ -123,6 +146,11 @@ int CommMBCEngine::start(void)
   //int result = 0;
   do
   {
+    if (this->isValidProcessor() == false)
+    {
+      break;
+    }
+
     if (this->isValid() == false)
     {
       break; // not config
@@ -138,13 +166,19 @@ int CommMBCEngine::start(void)
 
 void CommMBCEngine::clear(void)
 {
+  CommMBCProcessorFactory::release(this->mbc_Processor);
   return;
 }
 
-int CommMBCEngine::encodeData(uint8_t messageId, unsigned char* inputBuffer, int16_t inputSize, BufferDataItem* outputDataItem)
+int CommMBCEngine::encodeData(MbcMessageId_t messageId, unsigned char* inputBuffer, MbcDataSize_t inputSize, BufferDataItem* outputDataItem)
 {
   do
   {
+    if (this->isValidProcessor() == false)
+    {
+      break;
+    }
+
     if ((CommMBCConstant::isValidMessageId(messageId) == false)
       || (inputBuffer == NULL)
       )
@@ -159,10 +193,10 @@ int CommMBCEngine::encodeData(uint8_t messageId, unsigned char* inputBuffer, int
       break;
     }
 
-    uint16_t outputBodyUsedSize = 0;
-    uint16_t mbcHeaderSize = 0;
+    MbcDataSize_t outputBodyUsedSize = 0;
+    MbcDataSize_t mbcHeaderSize = 0;
     CommMBCHeaderTAG* mbcHeader = NULL;
-    if (messageId == (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess)
+    if (messageId == (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess)
     {
       mbcHeaderSize = 0;
     }
@@ -174,20 +208,21 @@ int CommMBCEngine::encodeData(uint8_t messageId, unsigned char* inputBuffer, int
     }
     
     unsigned char* bodyBuffer = outputDataItem->bufferAddress() + mbcHeaderSize;
-    uint16_t bodyBufferSize = (uint16_t) (outputDataItem->bufferLength() - mbcHeaderSize);
+    MbcDataSize_t bodyBufferSize = (MbcDataSize_t) (outputDataItem->bufferLength() - mbcHeaderSize);
     int ret = 0;   
     switch (messageId)
     {
-    case (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess:
-      ret = CommMBCProcessor::encodeRawData(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess:
+      ret = this->mbc_Processor->encodeRawData(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
       break;
-    case (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCStart1:
-      ret = CommMBCProcessor::encodeStart1(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCStart1:
+      ret = this->mbc_Processor->encodeStart1(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
       break;
-    case (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCResult1:
-      ret = CommMBCProcessor::encodeResult1(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
-      //CommMBCResult1PlainTAG* encodedPlain = (CommMBCResult1PlainTAG *)bodyBuffer;
-
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCResult1:
+      ret = this->mbc_Processor->encodeResult1(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
+      break;
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
+      ret = this->mbc_Processor->encodeSystemSetting(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
       break;
     default:
       ret = -1;
@@ -217,10 +252,15 @@ int CommMBCEngine::encodeData(uint8_t messageId, unsigned char* inputBuffer, int
   return -1;
 }
 
-int CommMBCEngine::decodeData(bool isHeadless, unsigned char* inputBuffer, int16_t inputSize, uint8_t& outMessageId, BufferDataItem* outputDataItem)
+int CommMBCEngine::decodeData(bool isHeadless, unsigned char* inputBuffer, MbcDataSize_t inputSize, MbcMessageId_t& outMessageId, BufferDataItem* outputDataItem)
 {
   do
   {
+    if (this->isValidProcessor() == false)
+    {
+      break;
+    }
+
     //CONSOLE_LOG("[mbcE] de %i", 0);
     if (inputBuffer == NULL)
     {
@@ -236,12 +276,12 @@ int CommMBCEngine::decodeData(bool isHeadless, unsigned char* inputBuffer, int16
       break;
     }
 
-    uint16_t mbcHeaderSize = 0;
+    MbcDataSize_t mbcHeaderSize = 0;
 
     if (isHeadless != false)
     {
       mbcHeaderSize = 0;
-      outMessageId = (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess;
+      outMessageId = (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess;
     }
     else
     {
@@ -251,19 +291,22 @@ int CommMBCEngine::decodeData(bool isHeadless, unsigned char* inputBuffer, int16
     }
     //CONSOLE_LOG("[mbcE] de %i %i", 3, outMessageId);
     int ret = 0;
-    uint16_t ouputUsedSize = 0;
+    MbcDataSize_t ouputUsedSize = 0;
     unsigned char* inputbodyBuffer = inputBuffer + mbcHeaderSize;
-    uint16_t inputBodyBufferSize = (uint16_t)(inputSize - mbcHeaderSize);
+    MbcDataSize_t inputBodyBufferSize = (MbcDataSize_t)(inputSize - mbcHeaderSize);
     switch (outMessageId)
     {
-    case (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess:
-      ret = CommMBCProcessor::decodeRawData(inputbodyBuffer, inputBodyBufferSize, outputDataItem->bufferAddress(), outputDataItem->bufferLength(), ouputUsedSize);
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess:
+      ret = this->mbc_Processor->decodeRawData(inputbodyBuffer, inputBodyBufferSize, outputDataItem->bufferAddress(), outputDataItem->bufferLength(), ouputUsedSize);
       break;
-    case (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCStart1:
-      ret = CommMBCProcessor::decodeStart1(inputbodyBuffer, inputBodyBufferSize, outputDataItem->bufferAddress(), outputDataItem->bufferLength(), ouputUsedSize);
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCStart1:
+      ret = this->mbc_Processor->decodeStart1(inputbodyBuffer, inputBodyBufferSize, outputDataItem->bufferAddress(), outputDataItem->bufferLength(), ouputUsedSize);
       break;
-    case (uint8_t)CommMBCConstant::CommMBCMessageId::CommMBCResult1:
-      ret = CommMBCProcessor::decodeResult1(inputbodyBuffer, inputBodyBufferSize, outputDataItem->bufferAddress(), outputDataItem->bufferLength(), ouputUsedSize);
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCResult1:
+      ret = this->mbc_Processor->decodeResult1(inputbodyBuffer, inputBodyBufferSize, outputDataItem->bufferAddress(), outputDataItem->bufferLength(), ouputUsedSize);
+      break;
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
+      ret = this->mbc_Processor->decodeSystemSetting(inputbodyBuffer, inputBodyBufferSize, outputDataItem->bufferAddress(), outputDataItem->bufferLength(), ouputUsedSize);
       break;
     default:
       ret = -1;

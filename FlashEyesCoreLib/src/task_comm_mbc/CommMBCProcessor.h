@@ -28,7 +28,25 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (TYPEDEF)
+typedef struct _commMbcPureDataProcessorConfigTag
+{
+  byte reserved;
+} CommMbcPureDataProcessorConfigTAG;
 
+typedef struct _commMbcJsonDataProcessorConfigTag
+{
+  uint16_t reserved;
+} CommMbcJsonDataProcessorConfigTAG;
+
+typedef struct _commMbcProcessorConfigTag
+{
+  union 
+  {
+    CommMbcPureDataProcessorConfigTAG pureData;
+    CommMbcJsonDataProcessorConfigTAG jsonData;
+  } config;
+
+} CommMbcProcessorConfigTAG;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 
@@ -46,27 +64,31 @@
 
 /////////////////////////////////////////////////
 // CLASS DEFINITION
-
 /*CommMBCProcessor*/
 class CommMBCProcessor
 {
 public:
-  static uint16_t                                               getMaxEncodedSize(uint8_t messageId);
-  static uint16_t                                               getMaxDecodedSize(uint8_t messageId);
-  static uint16_t                                               getMaxProceededSize(uint8_t messageId);
-  static int                                                    encodeRawData(unsigned char* inputBuffer, uint16_t inputSize, unsigned char* outputBuffer, uint16_t outputSize, uint16_t &outputUsedSize);
-  static int                                                    encodeStart1(unsigned char* inputBuffer, uint16_t inputSize, unsigned char* outputBuffer, uint16_t outputSize, uint16_t& outputUsedSize);
-  static int                                                    encodeResult1(unsigned char* inputBuffer, uint16_t inputSize, unsigned char* outputBuffer, uint16_t outputSize, uint16_t& outputUsedSize);
-
-  static int                                                    decodeRawData(unsigned char* inputBuffer, uint16_t inputSize, unsigned char* outputBuffer, uint16_t outputSize, uint16_t& outputUsedSize);
-  static int                                                    decodeStart1(unsigned char* inputBuffer, uint16_t inputSize, unsigned char* outputBuffer, uint16_t outputSize, uint16_t& outputUsedSize);
-  static int                                                    decodeResult1(unsigned char* inputBuffer, uint16_t inputSize, unsigned char* outputBuffer, uint16_t outputSize, uint16_t& outputUsedSize);
+  CommMBCProcessor(byte processorType);
+  virtual ~CommMBCProcessor(void);
 public:
-  CommMBCProcessor(void);
-  // WARNING: if inherite from this class, deconstructor must be virtual
-  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~CommMBCProcessor(void);
-};
+  virtual bool                                                  isValid(void);
+  virtual int                                                   setConfig(CommMbcProcessorConfigTAG& processorConfig) = 0;
+  virtual MbcDataSize_t                                         getMaxEncodedSize(MbcMessageId_t messageId) = 0;
+  virtual MbcDataSize_t                                         getMaxDecodedSize(MbcMessageId_t messageId) = 0;
+  virtual MbcDataSize_t                                         getMaxProceededSize(MbcMessageId_t messageId) = 0;
+  virtual int                                                   encodeRawData(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
+  virtual int                                                   encodeStart1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
+  virtual int                                                   encodeResult1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
+  virtual int                                                   encodeSystemSetting(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
 
+  virtual int                                                   decodeRawData(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
+  virtual int                                                   decodeStart1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
+  virtual int                                                   decodeResult1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
+  virtual int                                                   decodeSystemSetting(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
+
+protected:
+  byte                                                          processor_Type;
+};
 
 #endif // _COMM_MBC_PROCESSOR_H
 

@@ -86,14 +86,14 @@ int cbCommHttpUriHandler(void* arg, CommHttpUriRequestTAG* uriReqInfo)
   int error = 0;
   do
   {
-    CommHttpHeaderTAG* reqHeader = reqPackage->header();
+    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
     CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[m] %s: %i id=%i", "cb1", 0, reqHeader->uriId);
     CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", reqHeader->uri);
     if (resPackage->setData(serverHandler->dataManager()) != 0)
     {
       break;
     }
-    CommHttpHeaderTAG* resHeader = resPackage->header();
+    CommHttpHeaderTAG* resHeader = (CommHttpHeaderTAG*)resPackage->header();
 
     switch (reqHeader->uriId)
     {
@@ -113,7 +113,7 @@ int cbCommHttpUriHandler(void* arg, CommHttpUriRequestTAG* uriReqInfo)
         char* reqBody = reqPackage->body();
         char* resBody = resPackage->body();
         DataSize_t reqBodySize = reqPackage->bodyLen();
-        CommHttpHeaderTAG* reqHeader = reqPackage->header();
+        CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
         if ( (reqHeader->dataType != COMM_HTTP_DATA_TYPE_APP_JS)
           && (reqBodySize <= 0)
           )
@@ -168,7 +168,7 @@ int cbHttpClientResponse(void* arg, CommHttpUriRequestTAG* uriRequest)
     }
 
     CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[m] %s %i rId=%d ","cbCR", 1, uriRequest->requestId);
-    CommHttpHeaderTAG* resHeader = resPackage->header();
+    CommHttpHeaderTAG* resHeader = (CommHttpHeaderTAG*)resPackage->header();
     char* resBody = resPackage->body();
     CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[m] %s", resHeader->uri);
     CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[m] %s %i sc=%d dt=%d", "cbCR", 1, resHeader->resStatusCode, resHeader->dataType);

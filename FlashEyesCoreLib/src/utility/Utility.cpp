@@ -196,4 +196,4 @@ bool Utility::checkFileExtension(const char* filePath, const char* ext)
   
 }
 
-#endif // _CONF_COMM_SERIAL_RECEIVER_ENABLED
+#endif // _CONF_UTILITY_ENABLED

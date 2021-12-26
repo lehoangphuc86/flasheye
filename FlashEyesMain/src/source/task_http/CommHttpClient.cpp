@@ -126,7 +126,7 @@ int CommHttpClient::request(CommHttpClientRequestParamsTAG& params, HttpReqId_t&
     }
 
     CommHttpPackageTAG* reqPackage = &sendRequestData.param.reqData;
-    CommHttpHeaderTAG* reqHeader = reqPackage->header();
+    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
     char* reqBody = reqPackage->body();
     memcpy(reqHeader, &params.header, sizeof(CommHttpHeaderTAG));
     memcpy(reqBody, params.body, params.bodyLen);
@@ -614,7 +614,7 @@ int CommHttpClient::onEventCommHttpClientRequest(unsigned char* data, unsigned i
     CommHttpUriRequestTAG* httpReq = &eventData->param;
     reqPackage = &httpReq->reqData;
     resPackage = &httpReq->resData;
-    CommHttpHeaderTAG* reqHeader = reqPackage->header();
+    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
     CommHttpNotifierTAG* notifier = &httpReq->resNoti;
     if ((reqHeader->reqMethod >= COMM_HTTP_METHOD_MAX)
       || (reqHeader->dataType >= COMM_HTTP_DATA_TYPE_MAX)
@@ -679,7 +679,7 @@ int CommHttpClient::onEventCommHttpClientRequest(unsigned char* data, unsigned i
     CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 16);
 #endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     // download response
-    CommHttpHeaderTAG* resHeader = resPackage->header();
+    CommHttpHeaderTAG* resHeader = (CommHttpHeaderTAG*)resPackage->header();
     {
       char* headerKey = COMM_HTTP_HEADER_CONTENT_NAME;
       char* headerVal = NULL;

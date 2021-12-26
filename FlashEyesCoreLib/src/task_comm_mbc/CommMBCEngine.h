@@ -63,22 +63,25 @@
 class CommMBCEngine
 {
 public:
-  CommMBCEngine(void);
+  CommMBCEngine(byte dataType);
   // WARNING: if inherite from this class, deconstructor must be virtual
   __ATTRIBUTE_VIRTUAL_OPTIMIZED ~CommMBCEngine(void);
   bool                                                          isValid(void);
-  uint16_t                                                      maxBufferSize(void);
-  uint16_t                                                      registerMessageId(uint8_t messageId, uint16_t maxRawSize = 0);
+  bool                                                          isValidProcessor(void);
+  MbcDataSize_t                                                 maxBufferSize(void);
+  MbcDataSize_t                                                 registerMessageId(MbcMessageId_t messageId, MbcDataSize_t maxRawSize = 0);
   int                                                           setConfig(CommMBCSettingParamTAG& commMbcSettingParams);
   int                                                           prepare(void);
   int                                                           start(void);
   void                                                          clear(void);
-  int                                                           encodeData(uint8_t messageId, unsigned char* inputBuffer, int16_t inputSize, BufferDataItem* outputDataItem);
-  int                                                           decodeData(bool isHeadless, unsigned char* inputBuffer, int16_t inputSize, uint8_t &outMessageId, BufferDataItem* outputDataItem);
+  int                                                           encodeData(MbcMessageId_t messageId, unsigned char* inputBuffer, MbcDataSize_t inputSize, BufferDataItem* outputDataItem);
+  int                                                           decodeData(bool isHeadless, unsigned char* inputBuffer, MbcDataSize_t inputSize, MbcMessageId_t& outMessageId, BufferDataItem* outputDataItem);
   
 protected:
-  uint16_t                                                      max_Buffer_Size;
+  MbcDataSize_t                                                 max_Buffer_Size;
   CommMBCSetting                                                mbc_Setting;
+  CommMBCProcessor*                                             mbc_Processor;
+  byte                                                          mbc_Data_Type;
 };
 
 #endif // _COMM_MBC_ENGINE_H
