@@ -60,7 +60,7 @@ public:
   //int                                                           listDir(const char* dirname, uint8_t levels);
   size_t                                                        fileSize(const char* path);
   bool                                                          exist(const char* path);
-  bool                                                          isValidFileHandler(FileHandler_t fileHandler);
+  
   FileHandler_t                                                 openFile(const char* path, const char* mode);
   void                                                          closeFile(FileHandler_t fileHandler);
   int                                                           renameFile(const char* oldPath, const char* newPath);
@@ -69,6 +69,9 @@ public:
   int                                                           renameDir(const char* oldPath, const char* newPath);
   int                                                           deleteDir(const char* path);
   void                                                          finalize(void);
+public:
+  static bool                                                   isValidFileHandler(FileHandler_t fileHandler);
+
 protected:
   //char                                                          base_Path[FS_MGR_BASE_PATH_LEN_MAX + 1];
   char                                                          partition_Label[FS_MGR_PARTITION_LABEL_LEN_MAX + 1];

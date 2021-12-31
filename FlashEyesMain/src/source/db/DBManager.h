@@ -11,7 +11,7 @@
 #define DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
-
+#define DB_MANAGER_LINE_TERMINATOR_DEFAULT       '\n'
 
 /////////////////////////////////////////////////
 // MARCO
@@ -69,8 +69,8 @@ public:
   template <typename ValTypeT>
   int                                                           updateCell(const char* format, byte tableId, const char* colName, const char* keyName, unsigned int id, ValTypeT newVal);
   void                                                          finalize(void);
-  int                                                           exec(DBHandler_t dbHandler, const char* sql, int (*callback)(void*, int, char**, char**), void*, char** errmsg);
-  int                                                           exeScriptFile(const char* scriptFile);
+  int                                                           exec(const char* sql, int (*callback)(void*, int, char**, char**), void*, char** errmsg);
+  int                                                           exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tmpBufSize, const char lineTeminator = DB_MANAGER_LINE_TERMINATOR_DEFAULT);
 private:
   static int                                                    cbSelectCell(void* data, int argc, char** argv, char** azColName);
 protected:
@@ -102,20 +102,27 @@ int DBManager::selectCell(byte tableId, const char* colName, const char* keyName
     DbCbArgDataTAG retStruct = DbCbArgDataTAG();
     retStruct.dataType = TypeClassT<RetTypeT>::value;
     retStruct.data = val;
-
+    //char* errorMess = NULL;
     {
       SystemMutexLocker locker(this->db_Locker[tableId]);
       SYSTEM_PRINT_BUF(this->sql_Query[tableId], DB_QUERY_LEN_MAX, "SELECT %s FROM %s WHERE %s=%u", colName, g_Db_Tbl_Names[tableId], keyName, id);
-
-      /*CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i", "dbse", 1);
-      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[%s] %i %s", "dbse", 2, this->sql_Query[tableId]);
-      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[%s] %i %i %i", "dbse", 3, retStruct.data, sizeof(retStruct.data));*/
+#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      /*CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] sC %i", 1);
+      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[db] sC %i %s", 2, this->sql_Query[tableId]);
+      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[db] sC %i %i %i", 3, retStruct.data, sizeof(retStruct.data));*/
+#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
       ret = sqlite3_exec(this->db_Handler, this->sql_Query[tableId], DBManager::cbSelectCell, (void*)&retStruct, NULL);
-      ///CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i %i %i", "dbse", 7, *((RetTypeT*)val), *((RetTypeT*)retStruct.data));
+//#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+//      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db]: sC %i %i %i %i", 7, ret , *((RetTypeT*)val), *((RetTypeT*)retStruct.data));
+//#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
     }
 
     if (ret != DB_RET_OK)
     {
+#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      /*CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", errorMess);
+      sqlite3_free(errorMess);*/
+#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
       break;
     }
 

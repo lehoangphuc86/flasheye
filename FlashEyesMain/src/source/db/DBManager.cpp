@@ -75,13 +75,17 @@ int DBManager::initialize(DBManagerConfigTAG& dbConfig)
   {
     if (this->isValid() != false)
     {
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
       CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i", "dbini", -11);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       return -1; // already initialized
     }
 
     if (dbConfig.dbPath == NULL)
     {
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
       CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i", "dbini", -22);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -89,7 +93,9 @@ int DBManager::initialize(DBManagerConfigTAG& dbConfig)
     result = sqlite3_initialize();
     if (result != DB_RET_OK)
     {
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
       CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i", "dbini", -1);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -97,11 +103,12 @@ int DBManager::initialize(DBManagerConfigTAG& dbConfig)
     if ((result != DB_RET_OK)
       || (this->db_Handler ==NULL)
       )
-    { ///spiffs/test1.db
+    { 
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
       CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i", "dbini", -2);
       CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %s", "dbini", dbConfig.dbPath);
       CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %s", "dbini", sqlite3_errmsg(this->db_Handler));
-      
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -128,7 +135,7 @@ void DBManager::finalize(void)
   return;
 }
 
-int DBManager::exec(DBHandler_t dbHandler, const char* sql, int (*callback)(void*, int, char**, char**), void* arg, char** errmsg)
+int DBManager::exec(const char* sql, int (*callback)(void*, int, char**, char**), void* arg, char** errmsg)
 {
   do
   {
@@ -153,11 +160,20 @@ int DBManager::exec(DBHandler_t dbHandler, const char* sql, int (*callback)(void
   return -1;
 }
 
-int DBManager::exeScriptFile(const char* scriptFile)
+int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tmpBufSize, const char lineTeminator)
 {
   FileHandler_t scriptFileHandler = FS_FILE_HANDLER_INVALID;
-  uint8_t* scriptBuf = NULL;
   size_t fileSize = 0;
+  size_t readLen = 0;
+  size_t totalReadLen = 0;
+  size_t curCmdLen = 0;
+  size_t tmpValidSize = 0;
+  char readCh = 0;
+  bool error = false;
+  int ret = 0;
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", 0);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
   do
   {
     if (this->isValid() == false)
@@ -165,11 +181,16 @@ int DBManager::exeScriptFile(const char* scriptFile)
       break;
     }
 
-    if (scriptFile == NULL)
+    if ((scriptFile == NULL)
+      || (tmpBuf == NULL)
+      || (tmpBufSize <=1)
+      )
     {
       break;
     }
-    
+
+    tmpValidSize = tmpBufSize - 1; // 1 char is required for NULL terminator
+
     if (FileSystemManager::getInstance().exist(scriptFile) == false)
     {
       break;
@@ -183,32 +204,71 @@ int DBManager::exeScriptFile(const char* scriptFile)
 
     fileSize = FileSystemManager::getInstance().fileSize(scriptFile);
 
-    scriptBuf = new uint8_t[fileSize + 1];
-    if (scriptBuf == NULL)
+    while (totalReadLen < fileSize)
+    {
+      if (curCmdLen >= tmpValidSize)
+      {
+        error = true;
+//#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+//        CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i %i %i", -1, curCmdLen , tmpBufSize);
+//#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+        break;
+      }
+      // read 1 char
+      readLen = fread(&readCh, 1, 1, scriptFileHandler);
+      if (readLen <= 0)
+      {
+        error = true;
+        break;
+      }
+
+      totalReadLen++;
+
+      // check it is a line
+      if ( (readCh != lineTeminator) // not teminator
+        && (totalReadLen < fileSize) // and not end of file
+        )
+      {
+        tmpBuf[curCmdLen] = readCh;
+        curCmdLen++;
+        continue;
+      }
+
+      // run 
+      tmpBuf[curCmdLen] = '\0';
+      ret = sqlite3_exec(this->db_Handler, tmpBuf, NULL, NULL, NULL);
+//#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+//      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i %i %i", 6, ret, curCmdLen);
+//      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", tmpBuf);
+//#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+      curCmdLen = 0;
+      if (ret != DB_RET_OK)
+      {
+        error = true;
+        break;
+      }
+    }
+
+    if (error != false)
     {
       break;
     }
 
-    fread(scriptBuf, 1, fileSize, scriptFileHandler);
-    int ret = sqlite3_exec(this->db_Handler, (char*)scriptBuf, NULL, NULL, NULL);
-    if (ret != DB_RET_OK)
-    {
-      break;
-    }
     FileSystemManager::getInstance().closeFile(scriptFileHandler);
-    delete[] scriptBuf;
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", 99);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
 
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", -99);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
   if (FileSystemManager::getInstance().isValidFileHandler(scriptFileHandler) != false)
   {
     FileSystemManager::getInstance().closeFile(scriptFileHandler);
   }
 
-  if (scriptBuf != NULL)
-  {
-    delete[] scriptBuf;
-  }
   return -1;
 }
 
@@ -224,10 +284,10 @@ int DBManager::cbSelectCell(void* data, int argc, char** argv, char** azColName)
     DbCbArgDataTAG* cusData = (DbCbArgDataTAG*)data;
     byte dataType = cusData->dataType;
     void* reqData = cusData->data;
-#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i %i", "dbcb", 1, dataType);
-    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i %s", "dbcb", argc, argv[0]);
-#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+//#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cb %i %i", 1, dataType);
+//    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cb %i %s", argc, argv[0]);
+//#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
     switch (dataType)
     {
       case TypeClass::TChar_t:

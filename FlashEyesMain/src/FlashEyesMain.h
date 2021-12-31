@@ -66,6 +66,8 @@
 // DB
 #define FEM_DB_PATH                                   "/spiffs/db/FEM_DB_01_01.db"
 
+#define FEM_DB_TBL_CONFIG_SCRIPT_PATH                 "/spiffs/db/sc/DB_INIT_TBL_CONFIG.sql"
+
 // Wifi
 #define FEM_WIFI_SERVER_TASK_MEM                      2048
 #define FEM_WIFI_SERVER_TASK_PRIORITY                 FEM_TASK_PRIORITY_DEFAULT

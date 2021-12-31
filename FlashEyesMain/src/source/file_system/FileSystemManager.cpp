@@ -233,7 +233,7 @@ void FileSystemManager::finalize(void)
 size_t FileSystemManager::fileSize(const char* path)
 {
   struct stat statInfo;
-  if (stat(path, &statInfo) == 0)
+  if (stat(path, &statInfo) != 0)
   {
     return 0;
   }
@@ -244,11 +244,6 @@ bool FileSystemManager::exist(const char* path)
 {
   struct stat statInfo;
   return (stat(path, &statInfo) == 0);
-}
-
-bool FileSystemManager::isValidFileHandler(FileHandler_t fileHandler)
-{
-  return (fileHandler == FS_FILE_HANDLER_INVALID? false :true);
 }
 
 FileHandler_t FileSystemManager::openFile(const char* path, const char* mode)
@@ -286,4 +281,8 @@ int FileSystemManager::deleteDir(const char* path)
   return rmdir(path);
 }
 
+bool FileSystemManager::isValidFileHandler(FileHandler_t fileHandler)
+{
+  return (fileHandler == FS_FILE_HANDLER_INVALID ? false : true);
+}
 #endif // _CONF_FILE_SYSTEM_MANAGER_ENABLED

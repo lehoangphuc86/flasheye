@@ -330,6 +330,10 @@ int main(void)
 
     //result = DBManager::getInstance().exec(dbHandler, "INSERT INTO TBL_CONFIG (Name, Type, Value) VALUES('StartMode', 1, '2')", callback, (void*)data, NULL);
     //result += DBManager::getInstance().exec(dbHandler, "INSERT INTO TBL_CONFIG (Name, Type, Value) VALUES('ScanMode', 2, '3')", callback, (void*)data, NULL);
+    char* tmpSqlCmdBuf = new char[250];
+    result = DBManager::getInstance().exeScriptFile(FEM_DB_TBL_CONFIG_SCRIPT_PATH, tmpSqlCmdBuf, 250);
+    delete[] tmpSqlCmdBuf;
+    tmpSqlCmdBuf = NULL;
     if (result != 0)
     {
       CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i", "set", -5);
@@ -342,18 +346,31 @@ int main(void)
       CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i", "set", -6);
       break;
     }*/
-    //char valCh[32] = {};
-    ////char* val = valCh;
-    //long val = 0;
-    //result = DBManager::getInstance().selectCell(DB_TBL_CONFIG_ID, "Type", "id", 2, &val);
-    //if (result != 0)
-    //{
-    //  CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i", "set", -6);
-    //  break;
-    //}
-    //CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i %i", "set", 7, val);
+    char valCh[32] = {};
+    //char* val = valCh;
+    long val = 0;
+    result = DBManager::getInstance().selectCell(DB_TBL_CONFIG_ID, "Type", "id", 2, &val);
+    if (result != 0)
+    {
+      CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i", "set", -6);
+      break;
+    }
+    CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i %i", "set", 7, val);
 
+    result = DBManager::getInstance().updateCell(DB_TBL_CONFIG_ID, "Type", "id", 2, 5);
+    if (result != 0)
+    {
+      CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i", "set", -71);
+      break;
+    }
 
+    result = DBManager::getInstance().selectCell(DB_TBL_CONFIG_ID, "Type", "id", 2, &val);
+    if (result != 0)
+    {
+      CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i", "set", -72);
+      break;
+    }
+    CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i %i", "set", 73, val);
 
     //------------------------
     //if (0)
