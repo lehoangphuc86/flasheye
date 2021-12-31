@@ -68,6 +68,7 @@ public:
   __ATTRIBUTE_VIRTUAL_OPTIMIZED ~CommMBCEngine(void);
   bool                                                          isValid(void);
   bool                                                          isValidProcessor(void);
+  bool                                                          isHeaderLess(void);
   MbcDataSize_t                                                 maxBufferSize(void);
   MbcDataSize_t                                                 registerMessageId(MbcMessageId_t messageId, MbcDataSize_t maxRawSize = 0);
   int                                                           setConfig(CommMBCSettingParamTAG& commMbcSettingParams);
@@ -75,7 +76,9 @@ public:
   int                                                           start(void);
   void                                                          clear(void);
   int                                                           encodeData(MbcMessageId_t messageId, unsigned char* inputBuffer, MbcDataSize_t inputSize, BufferDataItem* outputDataItem);
+  int                                                           encodeData(MbcMessageId_t messageId, unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outBuffer, MbcDataSize_t outSize, MbcDataSize_t& encodedSize);
   int                                                           decodeData(bool isHeadless, unsigned char* inputBuffer, MbcDataSize_t inputSize, MbcMessageId_t& outMessageId, BufferDataItem* outputDataItem);
+  int                                                           decodeData(bool isHeadless, unsigned char* inputBuffer, MbcDataSize_t inputSize, MbcMessageId_t& outMessageId, unsigned char* outBuffer, MbcDataSize_t outSize, MbcDataSize_t& decodedSize);
   
 protected:
   MbcDataSize_t                                                 max_Buffer_Size;

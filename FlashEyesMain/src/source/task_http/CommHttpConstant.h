@@ -148,8 +148,8 @@ typedef struct _commHttpUriInfoTAG
   byte method;
   byte dataType;
   void* serverHandler; // for internal use
-  CommHttpCbOnUriRequest reqCallback;
-  //CommHttpCbOnUriRespond resCallback;
+  //CommHttpCbOnUriRequest reqCallback;
+  void* reqCallback;
   void* userArg;
 
   _commHttpUriInfoTAG(void)
@@ -363,48 +363,6 @@ typedef struct _commHttpPackageTAG
     BufferDataItem* dataItem;
     BufferDataManager* dataManager;
 } CommHttpPackageTAG;
-
-//typedef struct _commHttpNotifierTag
-//{
-//  bool enabled : 1; // 0: ignore this setting
-//  bool notifyMode : 1; // 0: cb, 1: mutex
-//  byte reserved : 7;
-//  TimePoint_t expiredTime; // caller will wait for response until this time. Dont proceed if it is already expired.
-//  union
-//  {
-//    SystemMutex* waitMutex;
-//    CommHttpCbOnUriResponse callback;
-//  } notifier;
-//  void* agr;
-//
-//  bool isValid(void)
-//  {
-//    do
-//    {
-//      if (this->enabled == 0)
-//      {
-//        return true;
-//      }
-//
-//      if ( (notifyMode == COMM_HTTP_RESPOMSE_NOTIFY_MODE_CB)
-//        && (this->notifier.callback == NULL)
-//        )
-//      {
-//        break;
-//      }
-//
-//      if ((notifyMode == COMM_HTTP_RESPOMSE_NOTIFY_MODE_MUTEX)
-//        && (this->notifier.waitMutex == NULL)
-//        )
-//      {
-//        break;
-//      }
-//
-//      return true;
-//    } while (0);
-//    return false;
-//  }
-//} CommHttpNotifierTAG;
 
 typedef struct _commHttpNotifierTag
 {
@@ -640,30 +598,6 @@ public:
         return COMM_HTTP_STATUS_CODE_500;
     }
   }
-
-  //static const char* statusCode2String(byte statusCode)
-  //{
-  //  switch (statusCode)
-  //  {
-  //  case (byte)CommHttpDataType::CommHttpDataTextHtml:
-  //    return COMM_HTTP_DATA_TYPE_STR_TEXT_HTML;
-  //  case (byte)CommHttpDataType::CommHttpDataTextCss:
-  //    return COMM_HTTP_DATA_TYPE_STR_TEXT_CSS;
-  //  case (byte)CommHttpDataType::CommHttpDataTextXml:
-  //    return COMM_HTTP_DATA_TYPE_STR_TEXT_XML;
-  //  case (byte)CommHttpDataType::CommHttpDataImgPng:
-  //    return COMM_HTTP_DATA_TYPE_STR_IMG_PNG;
-  //  case (byte)CommHttpDataType::CommHttpDataImgIcon:
-  //    return COMM_HTTP_DATA_TYPE_STR_IMG_ICON;
-  //  case (byte)CommHttpDataType::CommHttpDataAppJs:
-  //    return COMM_HTTP_DATA_TYPE_STR_APP_JS;
-  //  case (byte)CommHttpDataType::CommHttpDataAppJson:
-  //    return COMM_HTTP_DATA_TYPE_STR_APP_JSON;
-  //  case (byte)CommHttpDataType::CommHttpDataTextPlain:
-  //  default:
-  //    return COMM_HTTP_DATA_TYPE_STR_TEXT_PLAIN;
-  //  }
-  //}
 };
 
 #endif // _CONF_COMM_HTTP_CONSTANT_ENABLED

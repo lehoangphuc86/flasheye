@@ -48,7 +48,6 @@ public:
   virtual ~CommHttpClient(void);
   virtual int                                                   request(CommHttpClientRequestParamsTAG& params, HttpReqId_t& reqId);
 protected:
-  //void                                                          cleanUp(void) override;
   void                                                          regEventSize(void) override;
   DataSize_t                                                    readResponse(CommHttpUriRequestTAG* httpReq, char* buffer, DataSize_t bufferLen);
   int                                                           sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataSize_t bufferLen);

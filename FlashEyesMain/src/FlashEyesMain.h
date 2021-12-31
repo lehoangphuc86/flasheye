@@ -72,10 +72,11 @@
 #define FEM_WIFI_SERVER_TASK_EVENT_NUM                5
 
 // Http server
+#define FEM_HTTP_SERVER_IS_HEADER_LESS                0
 #define FEM_HTTP_SERVER_TASK_MEM                      4096
 #define FEM_HTTP_SERVER_TASK_PRIORITY                 FEM_TASK_PRIORITY_DEFAULT
 #define FEM_HTTP_SERVER_TASK_EVENT_NUM                5
-#define FEM_HTTP_SERVER_BUFF_COUNT                    5
+#define FEM_HTTP_SERVER_BUFF_COUNT                    6
 #define FEM_HTTP_SERVER_BUFF_SIZE                     200
 
 
@@ -90,25 +91,27 @@
 #define FEM_HTTP_SERVER_URI_1_ID                      1
 #define FEM_HTTP_SERVER_URI_1_URI                     "/api/v1/system/info"
 #define FEM_HTTP_SERVER_URI_1_METHOD                  COMM_HTTP_METHOD_GET
-#define FEM_HTTP_SERVER_URI_1_DATATYPE                COMM_HTTP_DATA_TYPE_APP_JS
+#define FEM_HTTP_SERVER_URI_1_DATATYPE                COMM_HTTP_DATA_TYPE_APP_JSON
   // uri 2
 #define FEM_HTTP_SERVER_URI_2_ID                      2
 #define FEM_HTTP_SERVER_URI_2_URI                     "/api/v1/system/update"
 #define FEM_HTTP_SERVER_URI_2_METHOD                  COMM_HTTP_METHOD_POST
-#define FEM_HTTP_SERVER_URI_2_DATATYPE                COMM_HTTP_DATA_TYPE_APP_JS
+#define FEM_HTTP_SERVER_URI_2_DATATYPE                COMM_HTTP_DATA_TYPE_APP_JSON
 
 // Http client
+#define FEM_HTTP_CLIENT_IS_HEADER_LESS                0
 #define FEM_HTTP_CLIENT_TASK_MEM                      4096
 #define FEM_HTTP_CLIENT_TASK_PRIORITY                 FEM_TASK_PRIORITY_DEFAULT
 #define FEM_HTTP_CLIENT_TASK_EVENT_NUM                5
 #define FEM_HTTP_CLIENT_BUFF_COUNT                    5
 #define FEM_HTTP_CLIENT_BUFF_SIZE                     200
 
-#define FEM_HTTP_CLIENT_PATH                          "https://gorest.co.in/public/v1/users/123/todos" //"http://192.168.137.234/api/v1/system/info"
+#define FEM_HTTP_CLIENT_PATH                          "http://192.168.137.234/api/v1/system/info"
 #define FEM_HTTP_CLIENT_REQ_URI                       "http://192.168.137.234/api/v1/system/update"
 #define FEM_HTTP_CLIENT_REQ_GET_URI                   "https://gorest.co.in/public/v1/users/123/todos"
 
-#define FEM_HTTP_CLIENT_REQ_CERT                      "-----BEGIN CERTIFICATE-----\n\
+#define FEM_HTTP_CLIENT_REQ_CERT                      NULL
+#define FEM_HTTP_CLIENT_REQ_CERT_GOREST               "-----BEGIN CERTIFICATE-----\n\
 MIIFYDCCBEigAwIBAgIQQAF3ITfU6UK47naqPGQKtzANBgkqhkiG9w0BAQsFADA/\n\
 MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT\n\
 DkRTVCBSb290IENBIFgzMB4XDTIxMDEyMDE5MTQwM1oXDTI0MDkzMDE4MTQwM1ow\n\
@@ -140,6 +143,8 @@ he8Y4IWS6wY7bCkjCWDcRQJMEhg76fsO3txE+FiYruq9RUWhiF1myv4Q6W+CyBFC\n\
 Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 -----END CERTIFICATE-----"
 
+
+#define FEM_HTTP_CLIENT_REQ_BODY "{\"h\":{\"id\":4,\"sz\":73},\"b\":{\"secId\":1,\"setId\":2,\"bSet1\":16,\"eCode\":4,\"sLen\":0,\"data\":99.000000}}"
 // Timer manager
 
 // comm

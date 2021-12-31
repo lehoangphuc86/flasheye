@@ -48,8 +48,8 @@
 #define SYSTEM_CONST_MILISEC_2_NANOSEC                      1000000
 #define SYSTEM_CONST_MHZ_2_HZ                               1000000
 // SYSTEM_CONSOLE()
-#define SYSTEM_CONSOLE_OUT_BUF_LEN                        24
-//#define SYSTEM_CONSOLE_OUT_BUF_LEN                          32
+//#define SYSTEM_CONSOLE_OUT_BUF_LEN                        24
+#define SYSTEM_CONSOLE_OUT_BUF_LEN                          32
 #define CONSOLE_LOG(format, ...)                            SYSTEM_CONSOLE(format, __VA_ARGS__)
 #define CONSOLE_LOG_BUF(buf, bufLen, format, ...)           SYSTEM_CONSOLE_BUF(buf, bufLen, format, __VA_ARGS__)
 #define CONSOLE_LOG_ISR(buf, bufLen, format, ...)           SYSTEM_CONSOLE_ISR(buf, bufLen, format, __VA_ARGS__)

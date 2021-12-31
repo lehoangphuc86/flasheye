@@ -4,7 +4,7 @@
 #if (_CONF_COMM_MBC_JSON_DATA_PROCESSOR_ENABLED)
 /////////////////////////////////////////////////
 // PREPROCESSOR
-
+#define COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 #define COMM_MBC_JSON_MAKEUP_LEN_START1                 42
@@ -25,10 +25,15 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
-
+typedef struct __ATTRIBUTE_ALIGN _commMBCJsonEncodedHeaderTag
+{
+  char reserved[28] = "{\"h\":{\"id\":256,\"sz\":65535},";
+} CommMBCJsonEncodedHeaderTAG;
 /////////////////////////////////////////////////
 // STATIC DATA
-
+#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+char commMbcJsonProcessorLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 
@@ -64,6 +69,16 @@ bool CommMBCJsonDataProcessor::isValid(void)
   return false;
 }
 
+MbcDataSize_t CommMBCJsonDataProcessor::encodedHeaderSize(void)
+{
+  return sizeof(CommMBCJsonEncodedHeaderTAG);
+}
+
+MbcDataSize_t CommMBCJsonDataProcessor::encodedBodyStartPoint(bool isHeadless)
+{
+  return 0; // from json, whole message is required to decode.
+}
+
 int CommMBCJsonDataProcessor::setConfig(CommMbcProcessorConfigTAG& processorConfig)
 {
   do
@@ -90,13 +105,13 @@ MbcDataSize_t CommMBCJsonDataProcessor::getMaxEncodedSize(MbcMessageId_t message
       maxSize = 0;
       break;
     case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCStart1:
-      maxSize = this->getMaxDecodedSize(messageId) + COMM_MBC_JSON_MAKEUP_LEN_START1;
+      maxSize = this->encodedHeaderSize() + sizeof(CommMBCStart1TAG) + COMM_MBC_NAME_MAX_LEN + COMM_MBC_JSON_MAKEUP_LEN_START1;
       break;
     case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCResult1:
-      maxSize = this->getMaxDecodedSize(messageId) + COMM_MBC_JSON_MAKEUP_LEN_RESULT1;
+      maxSize = this->encodedHeaderSize() + sizeof(CommMBCResult1TAG) + COMM_MBC_NAME_MAX_LEN + COMM_MBC_JSON_MAKEUP_LEN_RESULT1;
       break;
     case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
-      maxSize = this->getMaxDecodedSize(messageId) + COMM_MBC_JSON_MAKEUP_LEN_SYSTEM_SETTING;
+      maxSize = this->encodedHeaderSize() + sizeof(CommMBCSystemSettingTAG) + COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN + COMM_MBC_JSON_MAKEUP_LEN_SYSTEM_SETTING;
       break;
     default:
       maxSize = 0;
@@ -145,10 +160,66 @@ MbcDataSize_t CommMBCJsonDataProcessor::getMaxProceededSize(MbcMessageId_t messa
   return SYSTEM_MAX(this->getMaxDecodedSize(messageId), this->getMaxEncodedSize(messageId));
 }
 
+int CommMBCJsonDataProcessor::encodeHeader(CommMBCHeaderTAG& inMbcHeader, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+  outputUsedSize = 0;
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enH %i %i %i", 0, inMbcHeader.messageId, inMbcHeader.dataLen);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  do
+  {
+    if ((outputBuffer == NULL)
+      || (outputSize < this->encodedHeaderSize())
+      )
+    {
+      break;
+    }
+    memset(outputBuffer, 0, outputSize);
+    outputUsedSize = JsonSnprintf((char*)outputBuffer, outputSize,
+      "{\"h\":{\"id\":%d,\"sz\":%d},"
+      , inMbcHeader.messageId
+      , inMbcHeader.dataLen
+    );
+
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enH %i %i %i", 1, usedSize, outputSize);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    if ((outputUsedSize < 0)
+      || (outputUsedSize >= outputSize)
+      )
+    {
+      break;
+    }
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enH %i", 99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enH %i", -99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+
 int CommMBCJsonDataProcessor::encodeRawData(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
 {
   do
   {
+    if (inputSize <= 0)
+    {
+      if ( (outputSize < 2)
+        || (outputBuffer == NULL)
+        )
+      {
+        return 0;
+      }
+      
+      JsonSnprintf((char*)outputBuffer, outputSize, "%s", "{}");
+      return 0;
+    }
+
     if ((inputBuffer == NULL)
       || (outputBuffer == NULL)
       || (outputSize < inputSize)
@@ -179,13 +250,8 @@ int CommMBCJsonDataProcessor::encodeStart1(unsigned char* inputBuffer, MbcDataSi
     }
 
     CommMBCStart1TAG* inputStart1Tag = (CommMBCStart1TAG*)inputBuffer;
-    outputUsedSize = snprintf((char*)outputBuffer, outputSize, 
-      "{\
-        \"p1\":%u,\
-        \"p2\":%u,\
-        \"nLen\":%u,\
-        \"name\":\"%s\",\
-       }"
+    outputUsedSize = JsonSnprintf((char*)outputBuffer, outputSize,
+        "\"b\":{\"p1\":%d,\"p2\":%d,\"nLen\":%d,\"name\":%Q}}"
       , inputStart1Tag->param1
       , inputStart1Tag->param2
       , inputStart1Tag->nameLen
@@ -210,12 +276,8 @@ int CommMBCJsonDataProcessor::encodeResult1(unsigned char* inputBuffer, MbcDataS
     }
 
     CommMBCResult1TAG* inputResult1Tag = (CommMBCResult1TAG*)inputBuffer;
-    outputUsedSize = snprintf((char*)outputBuffer, outputSize,
-      "{\
-        \"sta\":%u,\
-        \"nLen\":%u,\
-        \"name\":\"%s\",\
-       }"
+    outputUsedSize = JsonSnprintf((char*)outputBuffer, outputSize,
+        "\"b\":{\"sta\":%d,\"nLen\":%d,\"name\":%Q}}"
       , inputResult1Tag->status
       , inputResult1Tag->nameLen
       , inputResult1Tag->name
@@ -229,6 +291,9 @@ int CommMBCJsonDataProcessor::encodeResult1(unsigned char* inputBuffer, MbcDataS
 
 int CommMBCJsonDataProcessor::encodeSystemSetting(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
 {
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSS %i", 0);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
   do
   {
     if ((inputBuffer == NULL)
@@ -240,14 +305,8 @@ int CommMBCJsonDataProcessor::encodeSystemSetting(unsigned char* inputBuffer, Mb
     }
 
     CommMBCSystemSettingTAG* inputTag = (CommMBCSystemSettingTAG*)inputBuffer;
-    int printedLen = snprintf((char*)outputBuffer, outputSize,
-      "{\
-        \"secId\":%u,\
-        \"setId\":%u,\
-        \"bSet1\":%u,\
-        \"eCode\":%u,\
-        \"sLen\":%u,\
-       "
+    int printedLen = JsonSnprintf((char*)outputBuffer, outputSize,
+      "\"b\":{\"secId\":%d,\"setId\":%d,\"bSet1\":%d,\"eCode\":%d,\"sLen\":%d,"
       , inputTag->sectionId
       , inputTag->settingId
       , inputTag->bitSet1
@@ -266,28 +325,75 @@ int CommMBCJsonDataProcessor::encodeSystemSetting(unsigned char* inputBuffer, Mb
     outputBuffer += outputUsedSize;
     outputSize -= outputUsedSize;
     MbcDataSize_t usedSize = 0;
+    printedLen = 0;
+
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSS %i %i %i", 30, inputTag->bitSet1, inputTag->bitSet1.dataType);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     switch (inputTag->bitSet1.dataType)
     {
       case COMM_MBC_DATA_T_DOUBLE:
-        printedLen = snprintf((char*)outputBuffer, outputSize, "\"data\":%f}", inputTag->data.dVal);
+        printedLen = JsonSnprintf((char*)outputBuffer, outputSize, "\"data\":%g}}", inputTag->data.dVal);
         break;
       case COMM_MBC_DATA_T_STRING:
-        printedLen = snprintf((char*)outputBuffer, outputSize, "\"data\":\"%s\"}", inputTag->data.sVal);
+        printedLen = JsonSnprintf((char*)outputBuffer, outputSize, "\"data\":%Q}}", inputTag->data.sVal);
         break;
       default:
         break;
     }
 
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSS %i %i", 40, printedLen);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     if ((printedLen >= outputSize)
       || (printedLen < 0)
       )
     {
       break;
     }
-
+    outputUsedSize += printedLen;
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSS %i", 99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSS %i", -99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
 
+
+int CommMBCJsonDataProcessor::decodeHeader(unsigned char* inputBuffer, MbcDataSize_t inputSize, CommMBCHeaderTAG& mbcHeader)
+{
+  do
+  {
+    int ret = 0;
+    if ((inputBuffer == NULL)
+      || (inputSize < this->encodedHeaderSize())
+      )
+    {
+      break;
+    }
+
+    ret = this->js_Parser.begin((char*)inputBuffer, inputSize);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    ret |= this->js_Parser.getNumber("$.h.id", mbcHeader.messageId);
+    ret |= this->js_Parser.getNumber("$.h.sz", mbcHeader.dataLen);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    this->js_Parser.end();
+    return 0;
+  } while (0);
+  this->js_Parser.end();
   return -1;
 }
 
@@ -316,6 +422,7 @@ int CommMBCJsonDataProcessor::decodeStart1(unsigned char* inputBuffer, MbcDataSi
 {
   do
   {
+    int ret = 0;
     if ((inputBuffer == NULL)
       || (outputBuffer == NULL)
       || (inputSize <= 0)
@@ -325,25 +432,37 @@ int CommMBCJsonDataProcessor::decodeStart1(unsigned char* inputBuffer, MbcDataSi
       break;
     }
 
-    unsigned char* inputCurrentBuffer = inputBuffer;
-    CommMBCStart1PlainTAG* inputStart1PlainTag = (CommMBCStart1PlainTAG*)inputCurrentBuffer;
-
     unsigned char* outputCurrentBuffer = outputBuffer;
-    CommMBCStart1TAG* outputStart1Tag = (CommMBCStart1TAG*)outputCurrentBuffer;
+    CommMBCStart1TAG* outputTag = (CommMBCStart1TAG*)outputCurrentBuffer;
     outputCurrentBuffer += sizeof(CommMBCStart1TAG);
-    outputStart1Tag->param1 = inputStart1PlainTag->param1;
-    outputStart1Tag->param2 = inputStart1PlainTag->param2;
-    outputStart1Tag->nameLen = inputStart1PlainTag->nameLen;
+    ret = this->js_Parser.begin((char*)inputBuffer, inputSize);
+    if (ret != 0)
+    {
+      break;
+    }
 
-    memcpy(outputCurrentBuffer, inputStart1PlainTag->name, outputStart1Tag->nameLen);
-    outputStart1Tag->name = outputCurrentBuffer;
+    ret |= this->js_Parser.getNumber("$.b.p1", outputTag->param1);
+    ret |= this->js_Parser.getNumber("$.b.p2", outputTag->param2);
+    ret |= this->js_Parser.getNumber("$.b.nLen", outputTag->nameLen);
+    if (ret != 0)
+    {
+      break;
+    }
 
-    outputCurrentBuffer += outputStart1Tag->nameLen;
-
+    outputTag->name = outputCurrentBuffer;
+    DataSize_t tmpNameLen = 0;
+    ret |= this->js_Parser.getString("$.b.name", (char*)outputTag->name, COMM_MBC_NAME_MAX_LEN, tmpNameLen);
+    if (ret != 0)
+    {
+      break;
+    }
+    outputTag->nameLen = (uint8_t)tmpNameLen;
+    outputCurrentBuffer += outputTag->nameLen;
     outputUsedSize = (MbcDataSize_t)(outputCurrentBuffer - outputBuffer);
+    this->js_Parser.end();
     return 0;
   } while (0);
-
+  this->js_Parser.end();
   return -1;
 }
 
@@ -351,6 +470,7 @@ int CommMBCJsonDataProcessor::decodeResult1(unsigned char* inputBuffer, MbcDataS
 {
   do
   {
+    int ret = 0;
     if ((inputBuffer == NULL)
       || (outputBuffer == NULL)
       || (inputSize <= 0)
@@ -360,27 +480,44 @@ int CommMBCJsonDataProcessor::decodeResult1(unsigned char* inputBuffer, MbcDataS
       break;
     }
 
-    unsigned char* inputCurrentBuffer = inputBuffer;
-    CommMBCResult1PlainTAG* inputResult1PlainTag = (CommMBCResult1PlainTAG*)inputCurrentBuffer;
-
     unsigned char* outputCurrentBuffer = outputBuffer;
-    CommMBCResult1TAG* outputResult1Tag = (CommMBCResult1TAG*)outputCurrentBuffer;
+    CommMBCResult1TAG* outputTag = (CommMBCResult1TAG*)outputCurrentBuffer;
     outputCurrentBuffer += sizeof(CommMBCResult1TAG);
-    outputResult1Tag->status = inputResult1PlainTag->status;
-    outputResult1Tag->nameLen = inputResult1PlainTag->nameLen;
-    memcpy(outputCurrentBuffer, inputResult1PlainTag->name, outputResult1Tag->nameLen);
-    outputResult1Tag->name = outputCurrentBuffer;
-    outputCurrentBuffer += outputResult1Tag->nameLen;
+    ret = this->js_Parser.begin((char*)inputBuffer, inputSize);
+    if (ret != 0)
+    {
+      break;
+    }
 
+    ret |= this->js_Parser.getNumber("$.b.sta", outputTag->status);
+    ret |= this->js_Parser.getNumber("$.b.nLen", outputTag->nameLen);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    outputTag->name = outputCurrentBuffer;
+    DataSize_t tmpNameLen = 0;
+    ret |= this->js_Parser.getString("$.b.name", (char*)outputTag->name, COMM_MBC_NAME_MAX_LEN, tmpNameLen);
+    if (ret != 0)
+    {
+      break;
+    }
+    outputTag->nameLen = (uint8_t)tmpNameLen;
+    outputCurrentBuffer += outputTag->nameLen;
     outputUsedSize = (MbcDataSize_t)(outputCurrentBuffer - outputBuffer);
+    this->js_Parser.end();
     return 0;
   } while (0);
-
+  this->js_Parser.end();
   return -1;
 }
 
 int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
 {
+#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i", 0);
+#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
   do
   {
     int ret = 0;
@@ -397,18 +534,24 @@ int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
     CommMBCSystemSettingTAG* outputTag = (CommMBCSystemSettingTAG*)outputCurrentBuffer;
     outputCurrentBuffer += sizeof(CommMBCSystemSettingTAG);
     ret = this->js_Parser.begin((char*)inputBuffer, inputSize);
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i %i", 2, ret);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
       break;
     }
 
     byte bitSet = 0;
-    ret |= this->js_Parser.getNumber("$.secId", outputTag->sectionId);
-    ret |= this->js_Parser.getNumber("$.setId", outputTag->settingId);
-    ret |= this->js_Parser.getNumber("$.bSet1", bitSet);
-    ret |= this->js_Parser.getNumber("$.eCode", outputTag->errorCode);
-    ret |= this->js_Parser.getNumber("$.sLen", outputTag->sLen);
+    ret |= this->js_Parser.getNumber("$.b.secId", outputTag->sectionId);
+    ret |= this->js_Parser.getNumber("$.b.setId", outputTag->settingId);
+    ret |= this->js_Parser.getNumber("$.b.bSet1", bitSet);
+    ret |= this->js_Parser.getNumber("$.b.eCode", outputTag->errorCode);
+    ret |= this->js_Parser.getNumber("$.b.sLen", outputTag->sLen);
 
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i %i", 30, ret);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
       break;
@@ -417,19 +560,25 @@ int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
     memcpy(&outputTag->bitSet1, &bitSet, sizeof(outputTag->bitSet1));
 
     outputTag->data.sVal = (char*)outputCurrentBuffer;
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i %i %i", 40, outputTag->bitSet1, outputTag->bitSet1.dataType);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     switch (outputTag->bitSet1.dataType)
     {
       case COMM_MBC_DATA_T_DOUBLE:
-        ret |= this->js_Parser.getNumber("$.data", outputTag->data.dVal);
+        ret |= this->js_Parser.getNumber("$.b.data", outputTag->data.dVal);
         break;
       case COMM_MBC_DATA_T_STRING:
-        ret |= this->js_Parser.getString("$.data", outputTag->data.sVal, COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN, outputTag->sLen);
+        ret |= this->js_Parser.getString("$.b.data", outputTag->data.sVal, COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN, outputTag->sLen);
         break;
       default:
         ret = -1;
         break;
     }
 
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i %i", 70, ret);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
       break;
@@ -438,9 +587,15 @@ int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
     outputCurrentBuffer += outputTag->sLen;
     outputUsedSize = (MbcDataSize_t)(outputCurrentBuffer - outputBuffer);
     this->js_Parser.end();
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i", 99, outputUsedSize);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
   this->js_Parser.end();
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i", -99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
   return -1;
 }
 

@@ -62,17 +62,7 @@ int CommHttp::inititialize(void)
 {
   do
   {
-    /*if (this->data_Item.isValid() != false)
-    {
-      return 0;
-    }
-
-    if (result != 0)
-    {
-      break;
-    }*/
     return 0;
-    //return result;
   } while (0);
   this->cleanUp();
   return -1;
@@ -148,7 +138,7 @@ int CommHttp::startHttp(CommHttpConnectionConfigTAG& commHttpConnConfig, bool wa
       this->stopHttp();
     }
 #ifdef COMM_HTTP_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[http] sta %i", 0);
+    CONSOLE_LOG_BUF(commHttpLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[http] sh %i", 0);
 #endif // COMM_HTTP_CONSOLE_DEBUG_ENABLE
     {
       SystemMutexLocker locker(this->mutex_Operating);
@@ -160,9 +150,6 @@ int CommHttp::startHttp(CommHttpConnectionConfigTAG& commHttpConnConfig, bool wa
       this->mutex_wait_Start.unlock();
       this->mutex_wait_Start.lock();
       ret = this->notify((EventId_t)EventManagerConstant::EventMessageId::CommHttpStart, sizeof(EventCommHttpStartTAG), (unsigned char*)&eventStartData);
-#ifdef COMM_HTTP_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(commHttpLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[http] sta %i %i", 1, ret);
-#endif // COMM_HTTP_CONSOLE_DEBUG_ENABLE
       if (ret != 0)
       {
         break;
@@ -175,7 +162,7 @@ int CommHttp::startHttp(CommHttpConnectionConfigTAG& commHttpConnConfig, bool wa
 
       this->mutex_wait_Start.lock(COMM_HTTP_START_WAIT_TIME);
 #ifdef COMM_HTTP_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(commHttpLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[http] sta %i %i", 3, this->ret_Start);
+      CONSOLE_LOG_BUF(commHttpLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[http] sh %i %i", 3, this->ret_Start);
 #endif // COMM_HTTP_CONSOLE_DEBUG_ENABLE
       if (this->ret_Start != 0)
       {

@@ -57,6 +57,11 @@ bool CommMBCSetting::enabled(void)
   return this->comm_Mbc_Setting_Params.enabled;
 }
 
+bool CommMBCSetting::isHeaderless(void)
+{
+  return this->comm_Mbc_Setting_Params.isHeaderLess;
+}
+
 //uint16_t CommMBCSetting::bufferSize(void)
 //{
 //  return this->comm_Mbc_Setting_Params.bufferSize;

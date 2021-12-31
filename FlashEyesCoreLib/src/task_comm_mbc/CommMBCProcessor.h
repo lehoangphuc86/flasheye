@@ -72,15 +72,19 @@ public:
   virtual ~CommMBCProcessor(void);
 public:
   virtual bool                                                  isValid(void);
+  virtual MbcDataSize_t                                         encodedHeaderSize(void) = 0;
+  virtual MbcDataSize_t                                         encodedBodyStartPoint(bool isHeadless) = 0;
   virtual int                                                   setConfig(CommMbcProcessorConfigTAG& processorConfig) = 0;
   virtual MbcDataSize_t                                         getMaxEncodedSize(MbcMessageId_t messageId) = 0;
   virtual MbcDataSize_t                                         getMaxDecodedSize(MbcMessageId_t messageId) = 0;
   virtual MbcDataSize_t                                         getMaxProceededSize(MbcMessageId_t messageId) = 0;
+  virtual int                                                   encodeHeader(CommMBCHeaderTAG& inMbcHeader, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
   virtual int                                                   encodeRawData(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
   virtual int                                                   encodeStart1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
   virtual int                                                   encodeResult1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
   virtual int                                                   encodeSystemSetting(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
 
+  virtual int                                                   decodeHeader(unsigned char* inputBuffer, MbcDataSize_t inputSize, CommMBCHeaderTAG& mbcHeader) = 0;
   virtual int                                                   decodeRawData(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
   virtual int                                                   decodeStart1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;
   virtual int                                                   decodeResult1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) = 0;

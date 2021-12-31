@@ -60,6 +60,7 @@ public:
   bool                                                          isValidConfig(void);
   int                                                           setConfig(CommMBCSettingParamTAG& commMbcSettingParams);
   bool                                                          enabled(void);
+  bool                                                          isHeaderless(void);
   //uint16_t                                                       bufferSize(void);
   //uint8_t                                                       bufferCount(void);
 

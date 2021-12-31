@@ -42,7 +42,7 @@
 // DATA TYPE (ENUM)
 typedef enum _commMBCDataType
 {
-  CommMBCPureData = 0,
+  CommMbcPureData = 0,
   CommMbcJsonData,
   CommMbcDataTypeMax
 } CommMBCDataType;
@@ -52,17 +52,17 @@ typedef enum _commMBCDataType
 typedef struct __ATTRIBUTE_ALIGN _commMBCHeaderTag
 {
   MbcMessageId_t messageId;
-  uint8_t reserved;
   MbcDataSize_t dataLen;
 } CommMBCHeaderTAG;
 
 typedef struct _commMBCSettingParamTag
 {
   bool enabled;
-  byte processorType; // CommMBCProcessorType
+  byte processorType; // CommMbcDataType
   //uint8_t bufferSize;
   //uint8_t bufferCount;
-  uint8_t reserved1;
+  bool isHeaderLess : 1;
+  uint8_t reserved1 : 7;
 } CommMBCSettingParamTAG;
 
 
@@ -93,7 +93,7 @@ typedef struct _commMBCSystemSettingTag
 {
   uint8_t sectionId;
   uint8_t settingId;
-  struct _bitSet1
+  struct //_bitSet1
   {
     bool isReply : 1;
     bool isUpdate : 1; // 0: get, 1: update
@@ -106,7 +106,7 @@ typedef struct _commMBCSystemSettingTag
   union _data
   {
     double dVal;
-    char* sVal;
+    char* sVal; // COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN
   } data;
 } CommMBCSystemSettingTAG;
 // Used by comm layer formats (obsolete)
@@ -126,104 +126,6 @@ typedef struct __ATTRIBUTE_ALIGN _commMBCResult1PlainTag
   unsigned char name[COMM_MBC_NAME_MAX_LEN];
 } CommMBCResult1PlainTAG;
 
-
-//
-typedef struct _commMbcPackageTAG
-{
-  _commMbcPackageTAG(void)
-  {
-    this->dataItem = NULL;
-    this->dataManager = NULL;
-  }
-
-  ~_commMbcPackageTAG(void)
-  {
-
-  }
-
-  bool isValid(void)
-  {
-    do
-    {
-      if ((this->dataItem == NULL)
-        || (this->dataManager == NULL))
-      {
-        break;
-      }
-
-      return true;
-    } while (0);
-    return false;
-  }
-
-  void clear(void)
-  {
-    if (this->dataItem != NULL)
-    {
-      this->dataManager->release(this->dataItem);
-    }
-    this->dataItem = NULL;
-    this->dataManager = NULL;
-  }
-
-  int setData(BufferDataManager* dataMgr)
-  {
-    do
-    {
-      this->clear();
-      if (dataMgr == NULL)
-      {
-        break;
-      }
-
-      this->dataManager = dataMgr;
-      this->dataItem = this->dataManager->get();
-      if ((this->dataItem == NULL)
-        || (this->dataItem->bufferLength() < sizeof(CommMBCHeaderTAG))
-        )
-      {
-        break;
-      }
-      return this->dataItem->setDataLen(sizeof(CommMBCHeaderTAG));
-    } while (0);
-    this->clear();
-    return -1;
-  }
-
-  CommMBCHeaderTAG* header(void)
-  {
-    return (CommMBCHeaderTAG*)this->dataItem->bufferAddress();
-  }
-
-  char* body(void)
-  {
-    return (char*)(this->dataItem->bufferAddress() + sizeof(CommMBCHeaderTAG));
-  }
-
-  DataSize_t bodyLen(void)
-  {
-    return this->dataItem->dataLength() - sizeof(CommMBCHeaderTAG);
-  }
-
-  int bodyLen(DataSize_t bodyLen)
-  {
-    return this->dataItem->setDataLen(bodyLen + sizeof(CommMBCHeaderTAG));
-  }
-
-  DataSize_t bodyMaxLen(void)
-  {
-    return this->dataItem->bufferLength() - sizeof(CommMBCHeaderTAG);
-  }
-
-  void releaseData(void)
-  {
-    this->clear();
-  }
-
-protected:
-  BufferDataItem* dataItem;
-  BufferDataManager* dataManager;
-} CommMbcPackageTAG;
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
 // events

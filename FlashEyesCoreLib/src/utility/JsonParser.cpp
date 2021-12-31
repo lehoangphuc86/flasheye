@@ -283,12 +283,4 @@ JsTokType JsonParser::mjsonType2JsTokType(int mjsonType)
     return JsTokType::JsTokTypeMax;
   }
 }
-
-int JsonParser::snprintf(char* buf, size_t bufLen, const char* fmt, ...)
-{
-  va_list vaList;
-  va_start(vaList, fmt);
-  return mjson_snprintf(buf, bufLen, fmt, vaList);
-}
-
 #endif // _CONF_JSON_PARSER_ENABLED

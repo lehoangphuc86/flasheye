@@ -56,7 +56,7 @@ CommMBCProcessor* CommMBCProcessorFactory::generate(byte processorType)
   {
     switch (processorType)
     {
-      case CommMBCDataType::CommMBCPureData:
+      case CommMBCDataType::CommMbcPureData:
         mbcProcessor = new CommMBCPureDataProcessor();
         break;
       case CommMBCDataType::CommMbcJsonData:

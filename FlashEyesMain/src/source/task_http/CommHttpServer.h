@@ -46,24 +46,23 @@ class CommHttpServer
 public:
   CommHttpServer(void);
   virtual ~CommHttpServer(void);
-  int                                                           regUriHandler(CommHttpUriInfoTAG& uriInfo);
-  int                                                           regDefaultUriHandler(void);
-
+  virtual int                                                   regDefaultUriHandler(void);
+  virtual int                                                   regUriHandler(CommHttpUriInfoTAG& uriInfo);
+  
 protected:
   const char*                                                   basePath(void);
   void                                                          regEventSize(void) override;
   void                                                          proc(void) override;
-  int                                                           onEventCommHttpStart(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpDataReceived(unsigned char* data, unsigned int dataSize);
-  int                                                           onEventCommHttpStop(unsigned char* data, unsigned int dataSize);  
+  virtual int                                                   onEventCommHttpStart(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpDataReceived(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventCommHttpStop(unsigned char* data, unsigned int dataSize);
   DataSize_t                                                    readRequest(HttpReq_t* httpReq, char* buffer, DataSize_t bufferSize, DataSize_t maxLenToRead);
   int                                                           sendResponse(HttpReq_t* httpReq, CommHttpPackageTAG& package);
   int                                                           sendResponseBuff(HttpReq_t* httpReq, char* buffer, DataSize_t bufferSize);
   int                                                           sendResponseFileData(HttpReq_t* httpReq, char* buffer, DataSize_t bufferSize);
-  virtual int                                                   cbCommHttpDefaultUriHandler(CommHttpUriRequestTAG* uriReqInfo);
   virtual int                                                   cbCommHttpRequestHandler(HttpReq_t* httpReq);
-
-private:
+  int                                                           cbCommHttpDefaultUriHandler(CommHttpUriRequestTAG* uriReqInfo);
+protected:
   static HttpRet_t                                              cbCommHttpRequestHandlerNavigator(HttpReq_t* httpReq);
   static int                                                    cbCommHttpRequestDefaultUriHandlerNavigator(void* arg, CommHttpUriRequestTAG* uriReqInfo);
 protected:

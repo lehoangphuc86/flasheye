@@ -52,15 +52,19 @@ public:
   virtual ~CommMBCJsonDataProcessor(void);
 public:
   bool                                                          isValid(void) override;
+  MbcDataSize_t                                                 encodedHeaderSize(void) override;
+  MbcDataSize_t                                                 encodedBodyStartPoint(bool isHeadless) override;
   int                                                           setConfig(CommMbcProcessorConfigTAG& processorConfig) override;
   MbcDataSize_t                                                 getMaxEncodedSize(MbcMessageId_t messageId) override;
   MbcDataSize_t                                                 getMaxDecodedSize(MbcMessageId_t messageId) override;
   MbcDataSize_t                                                 getMaxProceededSize(MbcMessageId_t messageId) override;
+  int                                                           encodeHeader(CommMBCHeaderTAG& inMbcHeader, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;
   int                                                           encodeRawData(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;
   int                                                           encodeStart1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;
   int                                                           encodeResult1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;
   int                                                           encodeSystemSetting(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;
 
+  int                                                           decodeHeader(unsigned char* inputBuffer, MbcDataSize_t inputSize, CommMBCHeaderTAG& mbcHeader) override;
   int                                                           decodeRawData(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;
   int                                                           decodeStart1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;
   int                                                           decodeResult1(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize) override;

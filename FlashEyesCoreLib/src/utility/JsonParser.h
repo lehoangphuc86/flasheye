@@ -18,6 +18,19 @@
 /////////////////////////////////////////////////
 // MARCO
 
+/*-`%Q` print quoted escaped string.Expect NUL - terminated `char * `
+  - `%.*Q` print quoted escaped string.Expect `int, char* `
+  - `%s` print string as is.Expect NUL - terminated `char * `
+  - `%.*s` print string as is.Expect `int, char* `
+  - `%g`, print floating point number, precision is set to 6. Expect `double`
+  - `%.*g`, print floating point number with given precision.Expect `int, double`
+  - `%d`, `%u` print signed / unsigned integer.Expect `int`
+  - `%ld`, `%lu` print signed / unsigned long integer.Expect `long`
+  - `%B` print `true` or `false`. Expect `int`
+  - `%V` print quoted base64 - encoded string.Expect `int, char* `
+  - `%H` print quoted hex - encoded string.Expect `int, char* `
+  - `%M` print using custom print function.Expect `int (*)(mjson_print_fn_t, void*, va_list*)`*/
+#define JsonSnprintf(buf, bufLen, format, ...)       mjson_snprintf(buf, bufLen, format, __VA_ARGS__)
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 
@@ -89,19 +102,6 @@ protected:
 
 public:
   static JsTokType                                              mjsonType2JsTokType(int mjsonType);
-  /*-`%Q` print quoted escaped string.Expect NUL - terminated `char * `
-    - `%.*Q` print quoted escaped string.Expect `int, char* `
-    - `%s` print string as is.Expect NUL - terminated `char * `
-    - `%.*s` print string as is.Expect `int, char* `
-    - `%g`, print floating point number, precision is set to 6. Expect `double`
-    - `%.*g`, print floating point number with given precision.Expect `int, double`
-    - `%d`, `%u` print signed / unsigned integer.Expect `int`
-    - `%ld`, `%lu` print signed / unsigned long integer.Expect `long`
-    - `%B` print `true` or `false`. Expect `int`
-    - `%V` print quoted base64 - encoded string.Expect `int, char* `
-    - `%H` print quoted hex - encoded string.Expect `int, char* `
-    - `%M` print using custom print function.Expect `int (*)(mjson_print_fn_t, void*, va_list*)`*/
-  static int                                                    snprintf(char* buf, size_t bufLen, const char* fmt, ...);
 };
 
 template <typename T>

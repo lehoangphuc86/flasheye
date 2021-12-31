@@ -54,6 +54,55 @@ CommHttpClient::~CommHttpClient(void)
   
 }
 
+
+int CommHttpClient::request(CommHttpClientRequestParamsTAG& params, HttpReqId_t& reqId)
+{
+//#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i", 0);
+//#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  int ret = 0;
+  EventCommHttpClientRequestTAG sendRequestData = EventCommHttpClientRequestTAG();
+  do
+  {
+    if (this->isStarted() == false)
+    {
+      break;
+    }
+
+    reqId = this->nextReqId();
+    sendRequestData.param.requestId = reqId;
+    memcpy(&sendRequestData.param.resNoti, &params.notifier, sizeof(CommHttpNotifierTAG));
+    ret = sendRequestData.param.reqData.setData(this->dataManager());
+    if (ret != 0)
+    {
+      break;
+    }
+
+    CommHttpPackageTAG* reqPackage = &sendRequestData.param.reqData;
+    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
+    char* reqBody = reqPackage->body();
+    memcpy(reqHeader, &params.header, sizeof(CommHttpHeaderTAG));
+    memcpy(reqBody, params.body, params.bodyLen);
+    reqPackage->bodyLen(params.bodyLen);
+    // notify
+    ret = this->notify(EventManagerConstant::EventMessageId::CommHttpClientRequest, sizeof(EventCommHttpClientRequestTAG), (unsigned char*)&sendRequestData);
+    if (ret != 0)
+    {
+      break;
+    }
+//#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i", 99);
+//#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+
+  sendRequestData.param.reqData.releaseData();
+//#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i", -99);
+//#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 void CommHttpClient::regEventSize(void)
 {
   this->registerHanldingEventStructSize(sizeof(EventCommHttpClientRequestTAG));
@@ -70,9 +119,6 @@ DataSize_t CommHttpClient::readResponse(CommHttpUriRequestTAG* httpReq, char* bu
   do
   {
     DataSize_t responseLen = esp_http_client_fetch_headers(this->http_Handler);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] redr %i %d %d", 0, bufferLen, responseLen);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (responseLen < 0)
     {
       break;
@@ -96,65 +142,6 @@ DataSize_t CommHttpClient::readResponse(CommHttpUriRequestTAG* httpReq, char* bu
   return 0;
 }
 
-int CommHttpClient::request(CommHttpClientRequestParamsTAG& params, HttpReqId_t& reqId)
-{
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i", 0);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  int ret = 0;
-  EventCommHttpClientRequestTAG sendRequestData = EventCommHttpClientRequestTAG();
-  do
-  {
-    if (this->isStarted() == false)
-    {
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i", -1);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      break;
-    }
-
-    reqId = this->nextReqId();
-    sendRequestData.param.requestId = reqId;
-    memcpy(&sendRequestData.param.resNoti, &params.notifier, sizeof(CommHttpNotifierTAG));
-    ret = sendRequestData.param.reqData.setData(this->dataManager());
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i %i", 3, ret);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if (ret != 0)
-    {
-      break;
-    }
-
-    CommHttpPackageTAG* reqPackage = &sendRequestData.param.reqData;
-    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
-    char* reqBody = reqPackage->body();
-    memcpy(reqHeader, &params.header, sizeof(CommHttpHeaderTAG));
-    memcpy(reqBody, params.body, params.bodyLen);
-    reqPackage->bodyLen(params.bodyLen);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i %i %i", 5, params.bodyLen, reqPackage->bodyLen());
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    // notify
-    ret = this->notify(EventManagerConstant::EventMessageId::CommHttpClientRequest, sizeof(EventCommHttpClientRequestTAG), (unsigned char*)&sendRequestData);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i %i", 6, ret);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if (ret != 0)
-    {
-      break;
-    }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i", 99);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    return 0;
-  } while (0);
-
-  sendRequestData.param.reqData.releaseData();
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] req %i", -99);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  return -1;
-}
 
 int clientSendChunk(HttpClientHandler_t httpClientHandler, char* buff, DataSize_t buffLen, char* tempBuf, DataSize_t tempBuffLen)
 {
@@ -208,9 +195,6 @@ int CommHttpClient::sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataS
       }
 
       sentLen = esp_http_client_write(this->http_Handler, buffer, bufferLen);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] resB %i %i %i", 1, sentLen, bufferLen);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
       if (sentLen != bufferLen)
       {
         break;
@@ -248,17 +232,11 @@ int CommHttpClient::sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataS
       remainingLen -= lenToSend;
     } while (remainingLen > 0);
 
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] resB %i %lu", 5, remainingLen);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (remainingLen > 0)
     {
       break;
     }
     clientSendChunk(this->http_Handler, NULL, 0, tempBuff, COMM_HTTP_DATA_SIZE_LEN);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] resB %i", 99);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
   return -1;
@@ -271,9 +249,6 @@ int CommHttpClient::sendFileData(CommHttpUriRequestTAG* httpReq, char* buffer, D
   int ret = 0;
   do
   {
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] resF %i", 0);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     const char* filePath = buffer;
     FileHandler_t file = FileSystemManager::getInstance().openFile(filePath, "r");
     if (FileSystemManager::getInstance().isValidFileHandler(file) == false)
@@ -324,23 +299,14 @@ int CommHttpClient::sendFileData(CommHttpUriRequestTAG* httpReq, char* buffer, D
     FileSystemManager::getInstance().closeFile(file);
     // Signal HTTP response completion
     clientSendChunk(this->http_Handler, NULL, 0, tempBuff, COMM_HTTP_DATA_SIZE_LEN);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] resF %i %i", 8, error);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if ((remainingLen > 0)
       && (error != 0)
       )
     {
       break;
     }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] resF %i", 99);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] resF %i", -99);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
   return -1;
 }
 
@@ -357,17 +323,11 @@ void CommHttpClient::proc(void)
     this->waitTerminating();
     return;
   }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] proc %i", 1);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
   EventDataItem* eventData = NULL;
   bool isStop = false;
   while (isStop == false) // A Task shall never return or exit.
   {
     eventData = this->event_Manager.wait(1000);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    //CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTsk] proc %i", 2);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (eventData == NULL)
     {
       continue;
@@ -449,12 +409,7 @@ int CommHttpClient::onEventCommHttpStart(unsigned char* data, unsigned int dataS
     httpConfig.event_handler = cbHttpEventHandlerNavigator;
     httpConfig.user_data = this;
     httpConfig.disable_auto_redirect = (!COMM_HTTP_CLIENT_AUTO_DIRECT_DEFAULT);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] eSta %i %i", 0, httpConfig.port);
-    //CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s:%s", httpConfig.host, httpConfig.path);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-
-    
+   
     this->http_Handler = esp_http_client_init(&httpConfig);
     if (this->http_Handler == HTTP_HANDLER_INVALID)
     {
@@ -492,9 +447,6 @@ int CommHttpClient::onEventCommHttpConnectionOpened(unsigned char* data, unsigne
 #ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] eop %i", 0);
 #endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    /*this->is_Started = 1;
-    this->ret_Start = 0;
-    this->mutex_wait_Start.unlock();*/
 
     return 0;
   } while (0);
@@ -522,6 +474,133 @@ int CommHttpClient::onEventCommHttpDataReceived(unsigned char* data, unsigned in
 }
 
 
+int CommHttpClient::onEventCommHttpClientRequest(unsigned char* data, unsigned int dataSize)
+{
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 0);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  HttpRet_t httpRet = HTTP_RET_OK;
+  CommHttpPackageTAG* reqPackage = NULL;
+  CommHttpPackageTAG* resPackage = NULL;
+  int ret = 0;
+  do
+  {
+    if ((dataSize != sizeof(EventCommHttpClientRequestTAG))
+      || (data == NULL))
+    {
+      break;
+    }
+
+    if ((this->isStarted() == false)
+      || (this->http_Handler == NULL)
+      )
+    {
+      break;
+    }
+
+    EventCommHttpClientRequestTAG* eventData = (EventCommHttpClientRequestTAG*)data;
+    CommHttpUriRequestTAG* httpReq = &eventData->param;
+    reqPackage = &httpReq->reqData;
+    resPackage = &httpReq->resData;
+    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
+    CommHttpNotifierTAG* notifier = &httpReq->resNoti;
+    if ((reqHeader->reqMethod >= COMM_HTTP_METHOD_MAX)
+      || (reqHeader->dataType >= COMM_HTTP_DATA_TYPE_MAX)
+      )
+    {
+      break;
+    }
+
+    httpRet = esp_http_client_set_url(this->http_Handler, reqHeader->uri);
+    if (httpRet != HTTP_RET_OK)
+    {
+      break;
+    }
+
+    httpRet = esp_http_client_set_method(this->http_Handler, COMM_HTTP_CLIENT_METHOD_TBL[reqHeader->reqMethod]);
+    if (httpRet != HTTP_RET_OK)
+    {
+      break;
+    }
+
+    httpRet = esp_http_client_set_header(this->http_Handler, COMM_HTTP_HEADER_CONTENT_NAME, COMM_HTTP_DATA_TYPE_STR_TBL[reqHeader->dataType]);
+    if (httpRet != HTTP_RET_OK)
+    {
+      break;
+    }
+
+    // prepare res
+    ret = resPackage->setData(this->dataManager());
+    if (ret != 0)
+    {
+      break;
+    }
+    if (reqHeader->fileData == 0)
+    {
+      ret = this->sendBuff(httpReq, reqPackage->body(), reqPackage->bodyLen());
+    }
+    else
+    {
+      ret = this->sendFileData(httpReq, reqPackage->body(), reqPackage->bodyLen());
+    }
+    if (ret != 0)
+    {
+      break;
+    }
+    // download response
+    CommHttpHeaderTAG* resHeader = (CommHttpHeaderTAG*)resPackage->header();
+    {
+      char* headerKey = COMM_HTTP_HEADER_CONTENT_NAME;
+      char* headerVal = NULL;
+      httpRet = esp_http_client_get_header(this->http_Handler, headerKey, &headerVal);
+      if (httpRet != HTTP_RET_OK)
+      {
+        break;
+      }
+      resHeader->dataType = CommHttpConstant::dataType2Code(headerVal);
+      resHeader->fileData = 0;
+      resHeader->resStatusCode = CommHttpConstant::statusCode2Code(esp_http_client_get_status_code(this->http_Handler));
+      resHeader->uri = reqHeader->uri;
+      resHeader->uriId = reqHeader->uriId;
+    }
+    {
+      char* resBody = resPackage->body();
+      DataSize_t responseSize = this->readResponse(httpReq, resBody, resPackage->bodyMaxLen());
+      resPackage->bodyLen(responseSize);
+    }
+
+    if (notifier->callback == NULL)
+    {
+      reqPackage->releaseData();
+      return 0;
+    }
+    if ((notifier->expiredTime > 0)
+      && (TimerManager::getInstance().now() > notifier->expiredTime)
+      )
+    {
+      break; // went off.
+    }
+    notifier->callback(notifier->agr, httpReq);
+    reqPackage->releaseData();
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 99);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+
+  if (reqPackage != NULL)
+  {
+    reqPackage->releaseData();
+  }
+  if (resPackage != NULL)
+  {
+    resPackage->releaseData();
+  }
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", -99);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
 
 int CommHttpClient::onEventCommHttpConnectionClosed(unsigned char* data, unsigned int dataSize)
 {
@@ -586,169 +665,6 @@ int CommHttpClient::onEventCommHttpStop(unsigned char* data, unsigned int dataSi
   return -1;
 }
 
-int CommHttpClient::onEventCommHttpClientRequest(unsigned char* data, unsigned int dataSize)
-{
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 0);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  HttpRet_t httpRet = HTTP_RET_OK;
-  CommHttpPackageTAG* reqPackage = NULL;
-  CommHttpPackageTAG* resPackage = NULL;
-  int ret = 0;
-  do
-  {
-    if ((dataSize != sizeof(EventCommHttpClientRequestTAG))
-      || (data == NULL))
-    {
-      break;
-    }
-
-    if ((this->isStarted() == false)
-      || (this->http_Handler == NULL)
-      )
-    {
-      break;
-    }
-
-    EventCommHttpClientRequestTAG* eventData = (EventCommHttpClientRequestTAG*)data;
-    CommHttpUriRequestTAG* httpReq = &eventData->param;
-    reqPackage = &httpReq->reqData;
-    resPackage = &httpReq->resData;
-    CommHttpHeaderTAG* reqHeader = (CommHttpHeaderTAG*)reqPackage->header();
-    CommHttpNotifierTAG* notifier = &httpReq->resNoti;
-    if ((reqHeader->reqMethod >= COMM_HTTP_METHOD_MAX)
-      || (reqHeader->dataType >= COMM_HTTP_DATA_TYPE_MAX)
-      )
-    {
-      break;
-    }
-
-    httpRet = esp_http_client_set_url(this->http_Handler, reqHeader->uri);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %i", 6, (int)httpRet);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if (httpRet != HTTP_RET_OK)
-    {
-      break;
-    }
-
-    httpRet = esp_http_client_set_method(this->http_Handler, COMM_HTTP_CLIENT_METHOD_TBL[reqHeader->reqMethod]);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %i", 7, (int)httpRet);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if (httpRet != HTTP_RET_OK)
-    {
-      break;
-    }
-
-    httpRet = esp_http_client_set_header(this->http_Handler, COMM_HTTP_HEADER_CONTENT_NAME, COMM_HTTP_DATA_TYPE_STR_TBL[reqHeader->dataType]);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %i", 8, (int)httpRet);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if (httpRet != HTTP_RET_OK)
-    {
-      break;
-    }
-
-    // prepare res
-    ret = resPackage->setData(this->dataManager());
-    if (ret != 0)
-    {
-      break;
-    }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %i", 11, reqPackage->bodyLen());
-    //CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", reqPackage->body());
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if (reqHeader->fileData == 0)
-    {
-      ret = this->sendBuff(httpReq, reqPackage->body(), reqPackage->bodyLen());
-    }
-    else
-    {
-      ret = this->sendFileData(httpReq, reqPackage->body(), reqPackage->bodyLen());
-    }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %i", 15, ret);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if (ret != 0)
-    {
-      break;
-    }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 16);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    // download response
-    CommHttpHeaderTAG* resHeader = (CommHttpHeaderTAG*)resPackage->header();
-    {
-      char* headerKey = COMM_HTTP_HEADER_CONTENT_NAME;
-      char* headerVal = NULL;
-      httpRet = esp_http_client_get_header(this->http_Handler, headerKey, &headerVal);
-      if (httpRet != HTTP_RET_OK)
-      {
-        break;
-      }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %s", 17, (headerVal== NULL? "null" : headerVal));
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      resHeader->dataType = CommHttpConstant::dataType2Code(headerVal);
-      resHeader->fileData = 0;
-      resHeader->resStatusCode = CommHttpConstant::statusCode2Code(esp_http_client_get_status_code(this->http_Handler));
-      resHeader->uri = reqHeader->uri;
-      resHeader->uriId = reqHeader->uriId;
-    }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 20);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    {
-      char* resBody = resPackage->body();
-      DataSize_t responseSize = this->readResponse(httpReq, resBody, resPackage->bodyMaxLen());
-      resPackage->bodyLen(responseSize);
-    }
-
-    if (notifier->callback == NULL)
-    {
-      reqPackage->releaseData();
-      return 0;
-    }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 21);
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", resPackage->body());
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    if ((notifier->expiredTime > 0)
-      && (TimerManager::getInstance().now() > notifier->expiredTime)
-      )
-    {
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %lu", -21, notifier->expiredTime);
-      CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i %i", -21, TimerManager::getInstance().now());
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      break; // went off.
-    }
-    notifier->callback(notifier->agr, httpReq);
-    reqPackage->releaseData();
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", 99);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    return 0;
-  } while (0);
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", -98);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  if (reqPackage != NULL)
-  {
-    reqPackage->releaseData();
-  }
-  if (resPackage != NULL)
-  {
-    resPackage->releaseData();
-  }
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %i", -99);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-  return -1;
-}
-
 int CommHttpClient::onEventCommHttpFinished(unsigned char* data, unsigned int dataSize)
 {
   do
@@ -774,9 +690,6 @@ int CommHttpClient::cbEventCommHttpHandler(void* eventData)
   do
   {
     HttpClientEvent_t* evt = (HttpClientEvent_t*)eventData;
-#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] eHN %i %i", 0, evt->event_id);
-#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     switch (evt->event_id)
     {
       case HTTP_EVENT_ERROR:
@@ -785,10 +698,7 @@ int CommHttpClient::cbEventCommHttpHandler(void* eventData)
         break;
       case HTTP_EVENT_ON_CONNECTED:
       {
-        /*EventCommHttpConnectionOpenedTAG eventData = EventCommHttpConnectionOpenedTAG();
-        eventData.reserved = 0;
-        this->notify((int)EventManagerConstant::EventMessageId::CommHttpConnectionOpened, sizeof(EventCommHttpConnectionOpenedTAG), (unsigned char*)&eventData);*/
-        break;
+         break;
       }
       case HTTP_EVENT_DISCONNECTED:
       {
