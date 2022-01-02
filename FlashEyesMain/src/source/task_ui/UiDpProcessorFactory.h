@@ -1,0 +1,59 @@
+#include "UiManagerConstant.h"
+
+#if (_CONF_UI_DP_PROCESSOR_FACTORY_ENABLED)
+
+#ifndef _UI_DP_PROCESSOR_FACTORY_H
+#define _UI_DP_PROCESSOR_FACTORY_H
+
+/////////////////////////////////////////////////
+// INCLUDE
+#include "UiDpProcessor.h"
+/////////////////////////////////////////////////
+// PREPROCESSOR
+
+/////////////////////////////////////////////////
+// DEFINE
+
+/////////////////////////////////////////////////
+// MARCO
+
+/////////////////////////////////////////////////
+// GLOBAL VARIABLES
+
+/////////////////////////////////////////////////
+// GLOBAL FUNCTIONS
+
+/////////////////////////////////////////////////
+// DATA TYPE (TYPEDEF)
+
+/////////////////////////////////////////////////
+// DATA TYPE (ENUM)
+
+/////////////////////////////////////////////////
+// DATA TYPE (STRUCT)
+
+/////////////////////////////////////////////////
+// STATIC DATA
+
+/////////////////////////////////////////////////
+// STATIC FUNCTIONS
+
+/////////////////////////////////////////////////
+// EXTERN
+
+/////////////////////////////////////////////////
+// CLASS DEFINITION
+/*UiDpProcessorFactory*/
+class UiDpProcessorFactory
+{
+public:
+  UiDpProcessorFactory(void);
+  // WARNING: if inherite from this class, deconstructor must be virtual
+  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~UiDpProcessorFactory(void);
+public:
+  static UiDpProcessor*                                         generate(byte procType);
+  static void                                                   release(UiDpProcessor*& dpProcessor);
+};
+#endif // _UI_DP_PROCESSOR_FACTORY_H
+
+#endif // _CONF_UI_DP_PROCESSOR_FACTORY_ENABLED

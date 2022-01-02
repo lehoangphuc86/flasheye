@@ -104,6 +104,9 @@ public:
     , CommHttpConnectionClosed
     , CommHttpStop
     , CommHttpFinished
+    // UI 
+    , UiMessage
+    
   };
 
 public:
@@ -158,6 +161,7 @@ public:
     case EventManagerConstant::EventMessageId::CommHttpConnectionClosed:
     case EventManagerConstant::EventMessageId::CommHttpStop:
     case EventManagerConstant::EventMessageId::CommHttpFinished:
+    case EventManagerConstant::EventMessageId::UiMessage:
       return true;
     default:
       return false;

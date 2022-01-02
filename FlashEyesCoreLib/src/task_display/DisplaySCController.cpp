@@ -18,7 +18,7 @@
 HardwareSerial Serial(0);
 HardwareSerial Serial1(1);
 HardwareSerial Serial2(2);
-#endif defined(NO_GLOBAL_INSTANCES) || defined(NO_GLOBAL_SERIAL)
+#endif // defined(NO_GLOBAL_INSTANCES) || defined(NO_GLOBAL_SERIAL)
 
 #else // SYSTEM_ESP_PLATFORM
 

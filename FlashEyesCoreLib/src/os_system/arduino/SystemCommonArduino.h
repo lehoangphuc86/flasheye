@@ -131,6 +131,7 @@ typedef uint16_t                                          HttpReqId_t;
 typedef uint8_t                                           MbcMessageId_t;
 typedef uint16_t                                          MbcDataSize_t;
 typedef uint8_t                                           DbTableId_t;
+typedef uint8_t                                           UIMessageId_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 

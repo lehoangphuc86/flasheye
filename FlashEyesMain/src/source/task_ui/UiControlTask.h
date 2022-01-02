@@ -1,10 +1,12 @@
 #include "UiManagerConstant.h"
-#ifndef _UI_MANAGER_H
-#define _UI_MANAGER_H
-#if (_CONF_UI_MANAGER_ENABLED)
+#ifndef _UI_CONTROL_TASK_H
+#define _UI_CONTROL_TASK_H
+#if (_CONF_UI_CONTROL_TASK_ENABLED)
 /////////////////////////////////////////////////
 // INCLUDE
-#include "UiControlTask.h"
+#include "UiDpProcessorFactory.h"
+#include "task_manager/TaskManager.h"
+#include "data_manager/BufferDataManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -41,31 +43,38 @@
 /////////////////////////////////////////////////
 // CLASS DEFINITION
 
-/*UiManager*/
-class UiManager
+/*UiControlTask*/
+class UiControlTask
+  : public TaskManager
 {
-private:
-  UiManager(void);
-  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~UiManager(void);
-
 public:
-  static UiManager& getInstance(void);
-  UiManager(UiManager const&) = delete;
-  void operator=(UiManager const&) = delete;
-  bool                                                          isRunning(void);
+  UiControlTask(void);
+  virtual ~UiControlTask(void);
   bool                                                          isValid(void);
   DataSize_t                                                    regUIMessageId(UIMessageId_t messageId, DataSize_t maxRawSize = 0);
   DataSize_t                                                    getUIMessageParamSize(UIMessageId_t messageId);
   BufferDataItem*                                               getBuff(void);
   BufferDataManager*                                            dataManager(void);
   void                                                          releaseBuff(BufferDataItem* dataItem);
-  EventManager*                                                 eventManager(void);
+
   int                                                           startTask(UiManagerConfigTAG& uiManagerConfig);
   void                                                          stopTask(void);
-  int                                                           show(UIMessageId_t uiMessageId, DataSize_t dataSize, unsigned char* data);
-protected:
-  UiControlTask                                                 control_Task;
-};
-#endif // _CONF_UI_MANAGER_ENABLED
+  void                                                          cleanUp(void);
 
-#endif // _UI_MANAGER_H
+protected:
+  void                                                          proc(void) override;
+  int                                                           prepare(void);
+  int                                                           onEventUiMessage(unsigned char* data, unsigned int dataSize);
+
+  int                                                           onUiMessRaw(EventUiMessageTAG* eventData);
+  int                                                           onUiMessMessage(EventUiMessageTAG* eventData);
+  int                                                           onUiMessSysState(EventUiMessageTAG* eventData);
+protected:
+  DataSize_t                                                    max_Data_Size;
+  BufferDataManager                                             data_Manager;
+  UiDpProcessor*                                                dp_Processor;
+};
+
+#endif // _UI_CONTROL_TASK_H
+
+#endif // _CONF_UI_CONTROL_TASK_ENABLED

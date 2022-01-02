@@ -118,18 +118,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSystemSocket.cpp">
       <Filter>src\task_comm\task_comm_i2c</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.cpp">
-      <Filter>src\task_display</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceController.cpp">
-      <Filter>src\task_display</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceInfo.cpp">
-      <Filter>src\task_display</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayEngine.cpp">
-      <Filter>src\task_display</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorControlTask.cpp">
       <Filter>src\task_distance_sensor</Filter>
     </ClCompile>
@@ -244,6 +232,24 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_opcode\TaskOpCode.cpp">
       <Filter>src\task_opcode</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayController.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControllerFactory.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayLCDController.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplayLCDCI2CController.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplaySCController.cpp">
+      <Filter>src\task_display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLib.h">
@@ -305,21 +311,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_comm\task_comm_i2c\CommI2CSystemSocket.h">
       <Filter>src\task_comm\task_comm_i2c</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.h">
-      <Filter>src\task_display</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceController.h">
-      <Filter>src\task_display</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayDeviceInfo.h">
-      <Filter>src\task_display</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayEngine.h">
-      <Filter>src\task_display</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayTaskCommon.h">
-      <Filter>src\task_display</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorControlTask.h">
       <Filter>src\task_distance_sensor</Filter>
@@ -479,6 +470,27 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_opcode\TaskOpCodeConstant.h">
       <Filter>src\task_opcode</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayController.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControllerFactory.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayControlTask.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayLCDController.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayTaskConstant.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplayLCDCI2CController.h">
+      <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplaySCController.h">
+      <Filter>src\task_display</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

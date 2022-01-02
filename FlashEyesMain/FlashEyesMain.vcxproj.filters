@@ -65,6 +65,9 @@
     <Filter Include="src\source\settings">
       <UniqueIdentifier>{37028584-23de-41db-8e20-8564a6bf4eb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\task_ui">
+      <UniqueIdentifier>{e84524f6-1b0e-418d-b215-bef22f372e4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -178,6 +181,30 @@
     <ClInclude Include="src\source\settings\SettingItem.h">
       <Filter>src\source\settings</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiDpProcessorFactory.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiControlTask.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiDpProcessor.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiManager.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiManagerConstant.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiDpLcdProcessor.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiDpLcdI2CProcessor.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiDpSCProcessor.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -245,6 +272,27 @@
     </ClCompile>
     <ClCompile Include="src\source\settings\ScannerSettingCollection.cpp">
       <Filter>src\source\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiDpProcessorFactory.cpp">
+      <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiControlTask.cpp">
+      <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiDpProcessor.cpp">
+      <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiManager.cpp">
+      <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiDpLcdProcessor.cpp">
+      <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiDpLcdI2CProcessor.cpp">
+      <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiDpSCProcessor.cpp">
+      <Filter>src\source\task_ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

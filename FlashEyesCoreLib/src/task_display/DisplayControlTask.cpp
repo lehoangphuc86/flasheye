@@ -201,7 +201,6 @@ void DisplayControlTask::proc(void)
     this->event_Manager.release(eventData);
   }
 #ifdef DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG("[HtCTsk] stop %i", 99);
   CONSOLE_LOG_BUF(displayTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpCTsk] proc %i", 99);
 #endif // DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
 }
