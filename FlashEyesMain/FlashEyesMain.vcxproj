@@ -132,6 +132,11 @@
     <ClInclude Include="src\source\file_system\FileSystemManager.h" />
     <ClInclude Include="src\source\file_system\FileSystemManagerConstant.h" />
     <ClInclude Include="src\source\main.h" />
+    <ClInclude Include="src\source\settings\ScannerSettingCollection.h" />
+    <ClInclude Include="src\source\settings\SettingCollection.h" />
+    <ClInclude Include="src\source\settings\SettingItem.h" />
+    <ClInclude Include="src\source\settings\SettingManager.h" />
+    <ClInclude Include="src\source\settings\SettingManagerConstant.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpConstant.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.h" />
@@ -139,6 +144,12 @@
     <ClInclude Include="src\source\task_http\CommHttpClient.h" />
     <ClInclude Include="src\source\task_http\CommHttpConstant.h" />
     <ClInclude Include="src\source\task_http\CommHttpServer.h" />
+    <ClInclude Include="src\source\task_main\MainController.h" />
+    <ClInclude Include="src\source\task_main\MainControllerConstant.h" />
+    <ClInclude Include="src\source\task_main\MainControllerFactory.h" />
+    <ClInclude Include="src\source\task_main\MainNormalController.h" />
+    <ClInclude Include="src\source\task_main\MainResetController.h" />
+    <ClInclude Include="src\source\task_main\MainSettingController .h" />
     <ClInclude Include="src\source\task_net\NetManagerConstant.h" />
     <ClInclude Include="src\source\task_net\wifi\WifiControllerTask.h" />
     <ClInclude Include="src\source\task_net\wifi\WifiManagerConstant.h" />
@@ -154,11 +165,20 @@
     <ClCompile Include="src\source\db\DBManager.cpp" />
     <ClCompile Include="src\source\file_system\FileSystemManager.cpp" />
     <ClCompile Include="src\source\main.cpp" />
+    <ClCompile Include="src\source\settings\ScannerSettingCollection.cpp" />
+    <ClCompile Include="src\source\settings\SettingCollection.cpp" />
+    <ClCompile Include="src\source\settings\SettingItem.cpp" />
+    <ClCompile Include="src\source\settings\SettingManager.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.cpp" />
     <ClCompile Include="src\source\task_http\CommHttp.cpp" />
     <ClCompile Include="src\source\task_http\CommHttpClient.cpp" />
     <ClCompile Include="src\source\task_http\CommHttpServer.cpp" />
+    <ClCompile Include="src\source\task_main\MainController.cpp" />
+    <ClCompile Include="src\source\task_main\MainControllerFactory.cpp" />
+    <ClCompile Include="src\source\task_main\MainNormalController.cpp" />
+    <ClCompile Include="src\source\task_main\MainResetController.cpp" />
+    <ClCompile Include="src\source\task_main\MainSettingController .cpp" />
     <ClCompile Include="src\source\task_net\wifi\WifiControllerTask.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -48,8 +48,11 @@ DBManager& DBManager::getInstance(void)
 
 DBManager::DBManager(void)
   : db_Handler(DB_HANDLER_INVALID)
+  , db_Table_Names(NULL)
+  , db_Locker(NULL)
+  , sql_Query(NULL)
 {
-  memset(this->sql_Query, 0, DB_TBL_ID_MAX * DB_QUERY_LEN_MAX);
+  //memset(this->sql_Query, 0, DB_TBL_ID_MAX * DB_QUERY_LEN_MAX);
 }
 
 DBManager::~DBManager(void)
@@ -81,7 +84,10 @@ int DBManager::initialize(DBManagerConfigTAG& dbConfig)
       return -1; // already initialized
     }
 
-    if (dbConfig.dbPath == NULL)
+    if ( (dbConfig.dbPath == NULL)
+      || (dbConfig.dbTableName == NULL)
+      || (dbConfig.dbTableIdMax <= 0)
+      )
     {
 #ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
       CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %i", "dbini", -22);
@@ -112,6 +118,23 @@ int DBManager::initialize(DBManagerConfigTAG& dbConfig)
       break;
     }
 
+    
+    this->db_Table_Names = dbConfig.dbTableName;
+    this->db_Table_Id_Max = dbConfig.dbTableIdMax;
+    this->db_Locker = new SystemMutex[this->db_Table_Id_Max];
+    this->sql_Query = new char*[this->db_Table_Id_Max];
+    
+    for (int wk_idx = 0; wk_idx < this->db_Table_Id_Max; wk_idx++)
+    {
+      this->sql_Query[wk_idx] = new char[DB_QUERY_LEN_MAX];
+    }
+
+    if ( (this->db_Locker == NULL)
+      || (this->sql_Query == NULL)
+      )
+    {
+      break;
+    }
     return 0;
   } while (0);
 
@@ -129,9 +152,36 @@ void DBManager::finalize(void)
     }
     sqlite3_shutdown();
     this->db_Handler = NULL;
+    this->db_Table_Names = NULL;
+    
+    if (this->db_Locker != NULL)
+    {
+      delete[] this->db_Locker;
+      this->db_Locker = NULL;
+    }
+    
+    if (this->sql_Query != NULL)
+    {
+      for (int wk_idx = 0; wk_idx < this->db_Table_Id_Max; wk_idx++)
+      {
+        if (this->sql_Query[wk_idx] == NULL)
+        {
+          continue;
+        }
+        delete[] this->sql_Query[wk_idx];
+        this->sql_Query[wk_idx] = NULL;
+      }
+    }
+    
+    this->sql_Query = NULL;
+    this->db_Table_Id_Max = 0;
     return;
   } while (0);
   this->db_Handler = NULL;
+  this->db_Table_Names = NULL;
+  this->db_Locker = NULL;
+  this->sql_Query = NULL;
+  this->db_Table_Id_Max = 0;
   return;
 }
 
@@ -272,53 +322,150 @@ int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tm
   return -1;
 }
 
-int DBManager::cbSelectCell(void* data, int argc, char** argv, char** azColName)
+
+int DBManager::selectCellStr(DbTableId_t tableId, const char* colName, const char* keyName, unsigned int id, char* val, DataSize_t valLen)
 {
+  int ret = 0;
   do
   {
-    if (argc <= 0)
+    if (this->isValid() == false)
     {
       break;
     }
-    
-    DbCbArgDataTAG* cusData = (DbCbArgDataTAG*)data;
-    byte dataType = cusData->dataType;
-    void* reqData = cusData->data;
-//#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
-//    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cb %i %i", 1, dataType);
-//    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cb %i %s", argc, argv[0]);
-//#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
-    switch (dataType)
+
+    if (tableId >= this->db_Table_Id_Max)
     {
-      case TypeClass::TChar_t:
-      case TypeClass::TInt8_t:
-      case TypeClass::TUInt8_t:
-      case TypeClass::TString:
-        strcpy((char*)reqData, argv[0]);
-        break;
-      case TypeClass::TFloat_t:
-      case TypeClass::TDouble_t:
-        *((float*)reqData) = atof(argv[0]);
-        break;
-    
-        *((char*)reqData) = argv[0][0];
-        break;
-      case TypeClass::TInt64_t:
-      case TypeClass::TUInt64_t:
-        *((int64_t*)reqData) = atol(argv[0]);
-        break;
-      case TypeClass::TInt16_t:
-      case TypeClass::TUInt16_t:
-        *((int16_t*)reqData) = atoi(argv[0]);
-        break;
-      case TypeClass::TInt32_t:
-      case TypeClass::TUInt32_t:
-      default:
-        *((int32_t*)reqData) = atoi(argv[0]);
-        break;
+      break;
     }
+
+    if ( (val == NULL)
+      || (valLen <=0)
+      )
+    {
+      break;
+    }
+
+    val[valLen - 1] = '\0';
+    DbCbArgStrDataTAG strData = DbCbArgStrDataTAG();
+    strData.valid = false;
+    strData.sVal = val;
+    strData.slen = valLen;
+    {
+      SystemMutexLocker locker(this->db_Locker[tableId]);
+      SYSTEM_PRINT_BUF(this->sql_Query[tableId], DB_QUERY_LEN_MAX, "SELECT %s FROM %s WHERE %s=%u", colName, this->db_Table_Names[tableId], keyName, id);
+//#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+//      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[db] sCS %i %s", 2, this->sql_Query[tableId]);
+//#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      ret = sqlite3_exec(this->db_Handler, this->sql_Query[tableId], DBManager::cbSelectCellStr, (void*)&strData, NULL);
+//#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+//      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db]: sCS %i %i %s", 7, ret, val);
+//#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+    }
+
+    if ((ret != DB_RET_OK)
+      || (strData.valid == false)
+      )
+    {
+#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      /*CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", errorMess);
+      sqlite3_free(errorMess);*/
+#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      break;
+    }
+
     return 0;
   } while (0);
+  return -1;
+}
+
+int DBManager::updateCellStr(DbTableId_t tableId, const char* colName, const char* keyName, unsigned int id, char* newVal, DataSize_t newValLen)
+{
+  int ret = 0;
+  do
+  {
+    if (this->isValid() == false)
+    {
+      break;
+    }
+
+    if (tableId >= this->db_Table_Id_Max)
+    {
+      break;
+    }
+
+    {
+      SystemMutexLocker locker(this->db_Locker[tableId]);
+      SYSTEM_PRINT_BUF(this->sql_Query[tableId], DB_QUERY_LEN_MAX, "UPDATE %s SET %s='%s' WHERE %s=%u", this->db_Table_Names[tableId], colName, newVal, keyName, id);
+#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[db] uCS %i %s", 2, this->sql_Query[tableId]);
+#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      ret = sqlite3_exec(this->db_Handler, sql_Query[tableId], NULL, NULL, NULL);
+#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db]: uCS %i %i", 7, ret);
+#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+    }
+
+    if (ret != DB_RET_OK)
+    {
+      break;
+    }
+
+    return 0;
+  } while (0);
+  return -1;
+}
+
+
+int DBManager::cbSelectCellNum(void* data, int argc, char** argv, char** azColName)
+{
+  do
+  {
+    if ( (argc <= 0)
+      || (data == NULL)
+      )
+    {
+      break;
+    }
+
+    DbCbArgNumDataTAG* numData = (DbCbArgNumDataTAG*)data;
+    numData->valid = true;
+    *(numData->dVal) = atof(argv[0]);
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cbn %i %f", 1, *(numData->dVal));
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+
+    return 0;
+  } while (0);
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cbn %i", -99);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+int DBManager::cbSelectCellStr(void* data, int argc, char** argv, char** azColName)
+{
+  do
+  {
+    if ((argc <= 0)
+      || (data == NULL)
+      || (argv == NULL)
+      || (argv[0] == NULL)
+      )
+    {
+      break;
+    }
+
+    DbCbArgStrDataTAG* strData = (DbCbArgStrDataTAG*)data;
+    strData->valid = true;
+    strncpy(strData->sVal, argv[0], strData->slen);
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cbs %i %s", 1, strData->sVal);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] cbs %i", -99);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
   return -1;
 }
 #endif // _CONF_FILE_SYSTEM_MANAGER_ENABLED

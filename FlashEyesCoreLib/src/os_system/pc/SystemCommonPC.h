@@ -63,6 +63,24 @@ do {                                                      \
 #define PIN_NUMBER_MAX                                    255
 #define ANALOG_WRITE(channel, value)                      
 #define PIN_MODE(pin, mode)                               
+#define ATTACH_ISR(pin, isrHandler, triggerType)          
+
+// ISR trigger type
+#define ISR_RISING                                        0x01
+#define ISR_FALLING                                       0x02
+#define ISR_CHANGE                                        0x03
+#define ISR_ONLOW                                         0x04
+#define ISR_ONHIGH                                        0x05
+#define ISR_ONLOW_WE                                      0x0C
+#define ISR_ONHIGH_WE                                     0x0D
+
+// GPIO function
+#define GPIO_INPUT                                        0x01
+#define GPIO_OUTPUT                                       0x02
+#define GPIO_PULLUP                                       0x04
+#define GPIO_INPUT_PULLUP                                 0x05
+
+
 #define F_CPU                                             20000000 // CPU speed. dummy
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -91,6 +109,7 @@ typedef uint32_t                                          TimerOVFCount_t;
 typedef uint8_t                                           MessageId_t;
 typedef uint16_t                                          HttpReqId_t;
 typedef uint8_t                                           MbcMessageId_t;
+typedef uint8_t                                           DbTableId_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 

@@ -88,6 +88,22 @@ do {                                                        \
 // system hardware
 #define PIN_NUMBER_MAX                                    NUM_DIGITAL_PINS
 #define PIN_MODE(pin, mode)                               pinMode(pin, mode)
+#define ATTACH_ISR(pin, isrHandler, triggerType)          attachInterrupt(digitalPinToInterrupt(pin), isrHandler, triggerType)
+
+// ISR trigger type
+#define ISR_RISING                                        RISING
+#define ISR_FALLING                                       FALLING
+#define ISR_CHANGE                                        CHANGE
+#define ISR_ONLOW                                         ONLOW
+#define ISR_ONHIGH                                        ONHIGH
+#define ISR_ONLOW_WE                                      ONLOW_WE
+#define ISR_ONHIGH_WE                                     ONHIGH_WE
+
+// GPIO function
+#define GPIO_INPUT                                        INPUT
+#define GPIO_OUTPUT                                       OUTPUT
+#define GPIO_PULLUP                                       PULLUP
+#define GPIO_INPUT_PULLUP                                 INPUT_PULLUP
 
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -119,6 +135,7 @@ typedef uint8_t                                           MessageId_t;
 typedef uint16_t                                          HttpReqId_t;
 typedef uint8_t                                           MbcMessageId_t;
 typedef uint16_t                                          MbcDataSize_t;
+typedef uint8_t                                           DbTableId_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 

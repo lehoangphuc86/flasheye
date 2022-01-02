@@ -12,6 +12,32 @@
 
 /////////////////////////////////////////////////
 // DEFINE
+
+// Common
+#define FEM_DEBUG_SERIAL_BAUDRATE                     56000
+#define FEM_DEBUG_SERIAL_INIT_WAIT                    1000 // ms
+
+// Button settings
+#define FEM_SW_SYS_MODE_TRY_TIME                      5
+#define FEM_SW_SYS_MODE_WAIT_TIME                     1000
+#define FEM_SW_BUTTON_COUNT                           2
+#define FEM_SW_BUTTON_BOUNCE_TIME                     (200) // ms
+
+
+#define FEM_PIN_SCAN_BUTTON                           32
+#define FEM_ISR_TYPE_SCAN_BUTTON                      ISR_FALLING
+#define FEM_GPIO_FUNC_SCAN_BUTTON                     GPIO_INPUT_PULLUP
+#define FEM_OPCODE_SCAN_BUTTON                        0x01
+#define FEM_DESC_SCAN_BUTTON                          "Scan"
+
+#define FEM_PIN_RESET_BUTTON                          33
+#define FEM_ISR_TYPE_RESET_BUTTON                     ISR_FALLING
+#define FEM_GPIO_FUNC_RESET_BUTTON                    GPIO_INPUT_PULLUP
+#define FEM_OPCODE_RESET_BUTTON                       0x02
+#define FEM_DESC_RESET_BUTTON                         "Reset"
+
+
+///
 #define FLASH_EYE_TASK_MEM_MAIN_CONTROLLER            526
 #define FLASH_EYE_TASK_MEM_INPUT_HANDLER              526
 #define FLASH_EYE_TASK_MEM_DISPLAY_CONTROL            526
@@ -65,9 +91,13 @@
 
 // DB
 #define FEM_DB_PATH                                   "/spiffs/db/FEM_DB_01_01.db"
-
 #define FEM_DB_TBL_CONFIG_SCRIPT_PATH                 "/spiffs/db/sc/DB_INIT_TBL_CONFIG.sql"
 
+#define FEM_DB_TBL_CONFIG_ID                          0
+#define FEM_DB_TBL_USER_ID                            1
+#define FEM_DB_TBL_ID_MAX                             2
+
+#define FEM_DB_TBL_ID_INVALID                         FEM_DB_TBL_ID_MAX
 // Wifi
 #define FEM_WIFI_SERVER_TASK_MEM                      2048
 #define FEM_WIFI_SERVER_TASK_PRIORITY                 FEM_TASK_PRIORITY_DEFAULT
@@ -170,7 +200,7 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 
 /////////////////////////////////////////////////
 // DATA TYPE (TYPEDEF)
-
+typedef uint16_t                                      Seq_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 
@@ -190,6 +220,10 @@ typedef struct
 
 /////////////////////////////////////////////////
 // STATIC DATA
+static const char* g_FEM_Db_Tbl_Names[] = {
+                            "TBL_CONFIG",
+                            "TBL_USER"
+};
 
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS

@@ -1,8 +1,8 @@
+#ifndef _SETTING_MANAGER_CONSTANT_H
+#define _SETTING_MANAGER_CONSTANT_H
 
 #include "../../FlashEyesMain.h"
-#ifndef _DB_MANAGER_CONSTANT_H
-#define _DB_MANAGER_CONSTANT_H
-#if (_CONF_DB_MANAGER_CONSTANT_ENABLED)
+#if (_CONF_SETTING_MANAGER_CONSTANT_ENABLED)
 
 /////////////////////////////////////////////////
 // INCLUDE
@@ -12,7 +12,18 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define DB_QUERY_LEN_MAX                          64
+//#define FS_MGR_BASE_PATH_LEN_MAX                  8
+#define FEM_SETTING_ITEM_DB_ID_INVALID              255
+#define FEM_SETTING_ITEM_DB_VAL_COLUMN_NAME         "Value"
+#define FEM_SETTING_ITEM_DB_ID_COLUMN_NAME          "id"
+
+/*****************Scanner********************/
+#define FEM_SET_SCANNER_DB_TABLE_ID                 FEM_DB_TBL_CONFIG_ID
+// scan mode
+#define FEM_SET_SCANNER_DB_SCANMODE_KEY_ID          1 // @@
+// code prefix
+#define FEM_SET_SCANNER_DB_CODE_PREFIX_KEY_ID       2 // @@
+#define FEM_SET_SCANNER_DB_CODE_PREFIX_LEN_MAX      8 // @@
 
 /////////////////////////////////////////////////
 // MARCO
@@ -25,13 +36,10 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
-typedef struct _dbManagerConfigTAG
+typedef struct _settingManagerConfigTAG
 {
-  const char * dbPath;
-  const char** dbTableName;
-  DbTableId_t dbTableIdMax;
   byte reserved : 8;
-} DBManagerConfigTAG;
+} SettingManagerConfigTAG;
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 
@@ -51,6 +59,6 @@ typedef struct _dbManagerConfigTAG
 // CLASS DEFINITION
 
 
-#endif // _CONF_DB_MANAGER_CONSTANT_ENABLED
+#endif // _CONF_SETTING_MANAGER_CONSTANT_ENABLED
 
-#endif // _DB_MANAGER_CONSTANT_H
+#endif // _SETTING_MANAGER_CONSTANT_H

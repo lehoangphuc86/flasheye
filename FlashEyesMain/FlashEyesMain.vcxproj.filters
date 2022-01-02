@@ -62,6 +62,9 @@
     <Filter Include="src\source\task_comm_mbc\task_comm_mbc_http">
       <UniqueIdentifier>{d97159e0-c562-40f7-833c-e59bd01eb5a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\settings">
+      <UniqueIdentifier>{37028584-23de-41db-8e20-8564a6bf4eb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -142,6 +145,39 @@
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.h">
       <Filter>src\source\task_comm_mbc\task_comm_mbc_http</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_main\MainController.h">
+      <Filter>src\source\task_main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_main\MainControllerConstant.h">
+      <Filter>src\source\task_main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_main\MainControllerFactory.h">
+      <Filter>src\source\task_main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_main\MainResetController.h">
+      <Filter>src\source\task_main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_main\MainNormalController.h">
+      <Filter>src\source\task_main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_main\MainSettingController .h">
+      <Filter>src\source\task_main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\settings\SettingManager.h">
+      <Filter>src\source\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\settings\SettingManagerConstant.h">
+      <Filter>src\source\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\settings\ScannerSettingCollection.h">
+      <Filter>src\source\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\settings\SettingCollection.h">
+      <Filter>src\source\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\settings\SettingItem.h">
+      <Filter>src\source\settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -182,6 +218,33 @@
     </ClCompile>
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.cpp">
       <Filter>src\source\task_comm_mbc\task_comm_mbc_http</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_main\MainController.cpp">
+      <Filter>src\source\task_main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_main\MainControllerFactory.cpp">
+      <Filter>src\source\task_main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_main\MainResetController.cpp">
+      <Filter>src\source\task_main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_main\MainNormalController.cpp">
+      <Filter>src\source\task_main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_main\MainSettingController .cpp">
+      <Filter>src\source\task_main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\settings\SettingManager.cpp">
+      <Filter>src\source\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\settings\SettingItem.cpp">
+      <Filter>src\source\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\settings\SettingCollection.cpp">
+      <Filter>src\source\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\settings\ScannerSettingCollection.cpp">
+      <Filter>src\source\settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

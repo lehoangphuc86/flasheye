@@ -1,0 +1,70 @@
+#include "../../FlashEyesMain.h"
+#if (_CONF_MAIN_CONTROLLER_CONSTANT_ENABLED)
+#ifndef _MAIN_CONTROLLER_CONSTANT_H
+#define _MAIN_CONTROLLER_CONSTANT_H
+
+/////////////////////////////////////////////////
+// INCLUDE
+#include "os_system/SystemCommon.h"
+#include "data_manager/BufferDataManager.h"
+/////////////////////////////////////////////////
+// PREPROCESSOR
+
+/////////////////////////////////////////////////
+// DEFINE
+
+/////////////////////////////////////////////////
+// MARCO
+
+/////////////////////////////////////////////////
+// GLOBAL VARIABLES
+
+/////////////////////////////////////////////////
+// GLOBAL FUNCTIONS
+
+/////////////////////////////////////////////////
+// DATA TYPE (TYPEDEF)
+
+/////////////////////////////////////////////////
+// DATA TYPE (ENUM)
+typedef enum _systemMode
+{
+  ResetMode = 0,
+  SettingMode,
+  NormalMode,
+  SystemModeMax
+} SystemMode;
+/////////////////////////////////////////////////
+// DATA TYPE (STRUCT)
+//typedef struct _mainControllerSettingTag
+//{
+//  bool enabled;
+//  byte mode; // MainControllerMode
+//} MainControllerSettingTAG;
+/////////////////////////////////////////////////
+// DATA TYPE (STRUCT)
+// events
+
+/////////////////////////////////////////////////
+// STATIC DATA
+
+/////////////////////////////////////////////////
+// STATIC FUNCTIONS
+
+/////////////////////////////////////////////////
+// EXTERN
+
+/////////////////////////////////////////////////
+// CLASS DEFINITION
+/*MainControllerCOnstant*/
+class MainControllerConstant
+{
+public:
+  MainControllerConstant(void) {};
+  // WARNING: if inherite from this class, deconstructor must be virtual
+  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~MainControllerConstant(void) {};
+};
+
+#endif // _MAIN_CONTROLLER_CONSTANT_H
+
+#endif // _CONF_MAIN_CONTROLLER_CONSTANT_ENABLED

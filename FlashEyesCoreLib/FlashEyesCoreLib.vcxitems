@@ -65,6 +65,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskSystemThread.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadPoolManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_opcode\TaskOpCode.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\esp\TimerDeviceTimerImpl.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\std\TimerControlTaskImpl.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTask.cpp" />
@@ -142,6 +143,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskSystemThread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_manager\TaskThreadPoolManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_opcode\TaskOpcode.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_opcode\TaskOpCodeConstant.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\esp\TimerDeviceTimerImpl.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\std\TimerControlTaskImpl.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\TimerControlTask.h" />

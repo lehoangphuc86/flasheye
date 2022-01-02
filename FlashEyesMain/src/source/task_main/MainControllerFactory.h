@@ -1,8 +1,9 @@
+#include "MainController.h"
 
-#include "../../FlashEyesMain.h"
-#ifndef _DB_MANAGER_CONSTANT_H
-#define _DB_MANAGER_CONSTANT_H
-#if (_CONF_DB_MANAGER_CONSTANT_ENABLED)
+#if (_CONF_MAIN_CONTROLLER_FACTORY_ENABLED)
+
+#ifndef _MAIN_CONTROLLER_FACTORY_H
+#define _MAIN_CONTROLLER_FACTORY_H
 
 /////////////////////////////////////////////////
 // INCLUDE
@@ -12,10 +13,15 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define DB_QUERY_LEN_MAX                          64
 
 /////////////////////////////////////////////////
 // MARCO
+
+/////////////////////////////////////////////////
+// GLOBAL VARIABLES
+
+/////////////////////////////////////////////////
+// GLOBAL FUNCTIONS
 
 /////////////////////////////////////////////////
 // DATA TYPE (TYPEDEF)
@@ -25,18 +31,6 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
-typedef struct _dbManagerConfigTAG
-{
-  const char * dbPath;
-  const char** dbTableName;
-  DbTableId_t dbTableIdMax;
-  byte reserved : 8;
-} DBManagerConfigTAG;
-/////////////////////////////////////////////////
-// GLOBAL VARIABLES
-
-/////////////////////////////////////////////////
-// GLOBAL FUNCTIONS
 
 /////////////////////////////////////////////////
 // STATIC DATA
@@ -49,8 +43,17 @@ typedef struct _dbManagerConfigTAG
 
 /////////////////////////////////////////////////
 // CLASS DEFINITION
+/*MainControllerFactory*/
+class MainControllerFactory
+{
+public:
+  MainControllerFactory(void);
+  // WARNING: if inherite from this class, deconstructor must be virtual
+  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~MainControllerFactory(void);
+public:
+  static MainController*                                        generate(byte systemMode);
+  static void                                                   release(MainController*& mainController);
+};
+#endif // _MAIN_CONTROLLER_FACTORY_H
 
-
-#endif // _CONF_DB_MANAGER_CONSTANT_ENABLED
-
-#endif // _DB_MANAGER_CONSTANT_H
+#endif // _CONF_MAIN_CONTROLLER_FACTORY_ENABLED
