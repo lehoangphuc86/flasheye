@@ -1,4 +1,4 @@
-#include "DisplayTaskCommon.h"
+#include "DisplayTaskConstant.h"
 
 #if (_CONF_DISPLAY_CONTROL_TASK_ENABLED)
 
@@ -8,15 +8,15 @@
 /////////////////////////////////////////////////
 // INCLUDE
 #include "../task_manager/TaskManager.h"
-#include "DisplayEngine.h"
+#include "DisplayControllerFactory.h"
 
 #if (!_CONF_TASK_MANAGER_ENABLED)
 #error Task manager is required
 #endif // _CONF_TASK_MANAGER_ENABLED
 
-#if (!_CONF_DISPLAY_ENGINE_ENABLED)
-#error Display engine is required
-#endif // _CONF_DISPLAY_ENGINE_ENABLED
+#if (!_CONF_DISPLAY_CONTROLLER_FACTORY_ENABLED)
+#error Display controller factory is required
+#endif // _CONF_DISPLAY_CONTROLLER_FACTORY_ENABLED
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -54,30 +54,28 @@
 // CLASS DEFINITION
 
 /*DisplayControlTask*/
-
 class DisplayControlTask
   : public TaskManager
 {
 public:
-  static DisplayControlTask&                                    getInstance(void);
-  DisplayControlTask(DisplayControlTask const&)                 = delete;
-  void operator=(DisplayControlTask const&)                     = delete;
-  virtual int                                                   setConfig(TaskConfigStruct& taskConfig, DisplayDeviceConfig& deviceConfig);
-  virtual int                                                   prepare(void);
-  virtual int                                                   startProcess(void) override;
-
-protected:
-  virtual void                                                  proc(void) override;
-  virtual void                                                  onEventDisplayStatus(unsigned int dataSize, unsigned char* data);
-  virtual void                                                  onEventDisplayDistance(unsigned int dataSize, unsigned char* data);
-  virtual void                                                  onEventDisplayTime(unsigned int dataSize, unsigned char* data);
-  virtual void                                                  onEventDisplayControl(unsigned int dataSize, unsigned char* data);
-private:
   DisplayControlTask(void);
   virtual ~DisplayControlTask(void);
-
+  bool                                                          isValid(void);
+  virtual int                                                   inititialize(void);
+  virtual int                                                   startTask(DisplayTaskConfigTAG& displayConfig);
+  BufferDataItem*                                               getBuff(void);
+  BufferDataManager*                                            dataManager(void);
+  void                                                          releaseBuff(BufferDataItem* dataItem);
+  virtual void                                                  stopTask(void);
+  virtual void                                                  cleanUp(void);
 protected:
-  DisplayEngine                                                 display_Engine;
+  virtual void                                                  proc(void) override;
+  virtual void                                                  regEventSize(void);
+  virtual void                                                  onEventHandler(EventDataItem* eventItem);
+  virtual int                                                   prepare(void);
+protected:
+  DisplayController*                                            dp_Controller;
+  BufferDataManager                                             data_Manager;
 };
 
 #endif // _DISPLAY_CONTROL_TASK_H

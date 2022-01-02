@@ -1,6 +1,6 @@
 
-#include "DBManager.h"
-#if (_CONF_DB_MANAGER_ENABLED)
+#include "UIManager.h"
+#if (_CONF_UI_MANAGER_ENABLED)
 /////////////////////////////////////////////////
 // INCLUDE
 #include "..\file_system\FileSystemManager.h"
@@ -468,4 +468,4 @@ int DBManager::cbSelectCellStr(void* data, int argc, char** argv, char** azColNa
 #endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
   return -1;
 }
-#endif // _CONF_DB_MANAGER_ENABLED
+#endif // _CONF_UI_MANAGER_ENABLED

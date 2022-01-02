@@ -175,6 +175,9 @@ int main(void)
     //@@
     // 
     
+    // @@@
+    // load setting from db, if it required SettingMode, no need to get systemode
+    
     //######################SW menu: start##########################
     {
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "SysMode getting");

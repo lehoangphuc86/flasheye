@@ -4,7 +4,7 @@
 #if (_CONF_DISPLAY_CONTROL_TASK_ENABLED)
 /////////////////////////////////////////////////
 // PREPROCESSOR
-
+#define DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -25,7 +25,9 @@
 
 /////////////////////////////////////////////////
 // STATIC DATA
-
+#ifdef DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
+char displayTaskLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 
@@ -36,186 +38,187 @@
 // CLASS IMPLEMENTAION
 
 /* DisplayControlTask*/
-
-DisplayControlTask& DisplayControlTask::getInstance(void)
-{
-  static DisplayControlTask instance;
-  return instance;
-}
-
 DisplayControlTask::DisplayControlTask(void)
   : TaskManager()
+  , dp_Controller(NULL)
 {
 
 }
 DisplayControlTask::~DisplayControlTask(void)
 {
-
+  this->cleanUp();
 }
 
-int DisplayControlTask::setConfig(TaskConfigStruct& taskConfig, DisplayDeviceConfig& deviceConfig)
+bool DisplayControlTask::isValid(void)
+{
+  return (this->dp_Controller == NULL ? false : true);
+}
+
+int DisplayControlTask::inititialize(void)
 {
   do
   {
-    int result = this->display_Engine.setConfig(deviceConfig);
+    return 0;
+  } while (0);
+  this->cleanUp();
+  return -1;
+}
+
+int DisplayControlTask::startTask(DisplayTaskConfigTAG& displayConfig)
+{
+
+  do
+  {
+    int result = 0;
+    if (this->isTaskRunning() != false)
+    {
+      return 0; // already running
+    }
+
+    this->stopTask();
+
+    result = this->data_Manager.prepare(displayConfig.bufferConfig);
     if (result != 0)
     {
       break;
     }
 
-    this->registerHanldingEventStructSize(sizeof(EventDisplayStatusTAG));
-    this->registerHanldingEventStructSize(sizeof(EventDisplayTimeTAG));
-    this->registerHanldingEventStructSize(sizeof(EventDisplayControlTAG));
-    this->registerHanldingEventStructSize(sizeof(EventDisplayDistanceTAG));
+    this->dp_Controller = DisplayControllerFactory::generate(displayConfig.deviceConfig.deviceType);
+    if (this->dp_Controller == NULL)
+    {
+      break;
+    }
 
-    return TaskManager::setConfig(taskConfig);
+    result = this->dp_Controller->start(displayConfig.deviceConfig);
+    if (result != 0)
+    {
+      break;
+    }
+
+    // Set up tasks
+    {
+      // self
+      this->registerHanldingEventStructSize(sizeof(EventPrepareCompletedTAG));
+      this->regEventSize();
+      result = TaskManager::setConfig(displayConfig.taskManagerConfig);
+      if (result != 0)
+      {
+        break;
+      }
+
+      result = TaskManager::prepare();
+      if (result != 0)
+      {
+        break;
+      }
+    }
+
+    {
+      result = TaskManager::startProcess(displayConfig.taskThreadConfig, true);
+      if (result != 0)
+      {
+        break;
+      }
+    }
+
+    return result;
   } while (0);
+
+  this->stopTask();
   return -1;
 }
 
-int DisplayControlTask::prepare(void)
+
+BufferDataItem* DisplayControlTask::getBuff(void)
 {
-  do
-  {
-    int result = this->display_Engine.prepare();
-    if (result != 0)
-    {
-      CONSOLE_LOG("%s", "[DisplayControlTask] [prepare] display_Engine failed.");
-      break;
-    }
-    return TaskManager::prepare();
-  } while (0);
-  return -1;
+  return (BufferDataItem*)this->data_Manager.get();
 }
 
-int DisplayControlTask::startProcess(void)
+BufferDataManager* DisplayControlTask::dataManager(void)
+{
+  return &this->data_Manager;
+}
+
+void DisplayControlTask::releaseBuff(BufferDataItem* dataItem)
+{
+  if (dataItem != NULL)
+  {
+    this->data_Manager.release(dataItem);
+  }
+}
+
+void DisplayControlTask::stopTask(void)
 {
   do
   {
-    int result = this->display_Engine.start();
-    if (result != 0)
-    {
-      CONSOLE_LOG("%s", "[DisplayControlTask] [start] display_Engine failed.");
-      break;
-    }
-    return TaskManager::startProcess();
+    TaskManager::stopProcess();
+    DisplayControllerFactory::release(this->dp_Controller);
+    this->data_Manager.releaseAll();
+    return;
   } while (0);
-  return -1;
+  return;
+}
+
+void DisplayControlTask::cleanUp(void)
+{
+  this->stopTask();
 }
 
 void DisplayControlTask::proc(void)
 {
-  CONSOLE_LOG("%s", "[DisplayControlTask] [proc] start");
-  this->isTaskRunning(true);
-  while (this->isTaskRunning() != false) // A Task shall never return or exit.
+#ifdef DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(displayTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpCTsk] proc %i", 0);
+#endif // DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
+  int prepareRet = this->prepare();
+  this->reportPrepareResult(prepareRet);
+  if (prepareRet != 0)
   {
-    EventDataItem* eventData = this->event_Manager.wait(TASK_MANAGER_EVENT_WAIT_TIME_DEFAULT);
+    this->waitTerminating();
+    return;
+  }
+  EventDataItem* eventData = NULL;
+  bool isStop = false;
+  while (isStop == false) // A Task shall never return or exit.
+  {
+    eventData = this->event_Manager.wait(TASK_MANAGER_EVENT_WAIT_TIME_DEFAULT);
     if (eventData == NULL)
     {
-      CONSOLE_LOG("%s", "[DisplayControlTask] Received NULL event");
       continue;
     }
-    CONSOLE_LOG("%s %i", "[DisplayControlTask] eventId=", eventData->messageId());
+
     switch (eventData->messageId())
     {
-    case (int)EventManagerConstant::EventMessageId::DisplayStatus:
-      this->onEventDisplayStatus(eventData->dataLength(), eventData->bufferAddress());
-      break;
-    case (int)EventManagerConstant::EventMessageId::DisplayDistance:
-      CONSOLE_LOG("%s", "[dis] wait recv trigger");
-      this->onEventDisplayDistance(eventData->dataLength(), eventData->bufferAddress());
-      break;
-    case (int)EventManagerConstant::EventMessageId::DisplayTime:
-      this->onEventDisplayTime(eventData->dataLength(), eventData->bufferAddress());
-      break;
-    case (int)EventManagerConstant::EventMessageId::DisplayControl:
-      this->onEventDisplayControl(eventData->dataLength(), eventData->bufferAddress());
-      break;
-    case (int)EventManagerConstant::EventMessageId::TerminateProcess:
-      this->isTaskRunning(false);
-      break;
-    default:
-      CONSOLE_LOG("%s %i", "[DisplayControlTask] Received invalid id=", eventData->messageId());
-      break;
+      case (int)EventManagerConstant::EventMessageId::TerminateProcess:
+      {
+        this->isTaskRunning(false);
+        isStop = true;
+        break;
+      }
+      default:
+        this->onEventHandler(eventData);
+        break;
     }
     this->event_Manager.release(eventData);
   }
-
-  CONSOLE_LOG("%s", "[DisplayControlTask] stopping");
+#ifdef DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG("[HtCTsk] stop %i", 99);
+  CONSOLE_LOG_BUF(displayTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpCTsk] proc %i", 99);
+#endif // DISPLAY_TASK_CONSOLE_DEBUG_ENABLE
 }
 
-
-void DisplayControlTask::onEventDisplayStatus(unsigned int dataSize, unsigned char* data)
+void DisplayControlTask::regEventSize(void)
 {
-  do
-  {
-    if ((dataSize != sizeof(EventDisplayStatusTAG))
-      || (data == NULL))
-    {
-      break;
-    }
-
-    EventDisplayStatusTAG* eventData = (EventDisplayStatusTAG*)data;
-    this->display_Engine.displayStatus(eventData);
-    return;
-  } while (0);
-
-  CONSOLE_LOG("%s", "[MainControllerTask] [onEventDisplayMessage] Failed to proceed ");
+  // placeholder for inherited classes
 }
 
-void DisplayControlTask::onEventDisplayDistance(unsigned int dataSize, unsigned char* data)
+void DisplayControlTask::onEventHandler(EventDataItem* eventItem)
 {
-  do
-  {
-    if ((dataSize != sizeof(EventDisplayDistanceTAG))
-      || (data == NULL))
-    {
-      break;
-    }
-    CONSOLE_LOG("%s", "[dis] recv trigger");
-    EventDisplayDistanceTAG* eventData = (EventDisplayDistanceTAG*)data;
-    this->display_Engine.displayDistance(eventData);
-    return;
-  } while (0);
-
-  CONSOLE_LOG("%s", "[MainControllerTask] [onEventDisplayDistance] Failed to proceed ");
+  // placeholder for inherited classes
 }
 
-
-void DisplayControlTask::onEventDisplayTime(unsigned int dataSize, unsigned char* data)
+int DisplayControlTask::prepare(void)
 {
-  do
-  {
-    if ((dataSize != sizeof(EventDisplayTimeTAG))
-      || (data == NULL))
-    {
-      break;
-    }
-
-    EventDisplayTimeTAG* eventData = (EventDisplayTimeTAG*)data;
-    this->display_Engine.displayTime(eventData);
-    return;
-  } while (0);
-
-  CONSOLE_LOG("%s", "[MainControllerTask] [onEventDisplayMessage] Failed to proceed ");
-}
-
-void DisplayControlTask::onEventDisplayControl(unsigned int dataSize, unsigned char* data)
-{
-  do
-  {
-    if ((dataSize != sizeof(EventDisplayControlTAG))
-      || (data == NULL))
-    {
-      break;
-    }
-
-    EventDisplayControlTAG* eventData = (EventDisplayControlTAG*)data;
-    this->display_Engine.controlDisplay(eventData);
-    return;
-  } while (0);
-
-  CONSOLE_LOG("%s", "[MainControllerTask] [onEventDisplayMessage] Failed to proceed ");
+  return 0; //do nothing
 }
 
 #endif // _CONF_DISPLAY_CONTROL_TASK_ENABLED
