@@ -55,11 +55,6 @@ do {                                                        \
   SYSTEM_CONSOLE_HANDLER.write("\r\n");                     \
 } while(0)                                  
 
-#define SYSTEM_PRINT_BUF(buf, bufLen, format, ...)          \
-do {                                                        \
-  snprintf(buf, bufLen, format, __VA_ARGS__);               \
-} while(0)                                  
-
 #define SYSTEM_CONSOLE_ISR(buf, bufLen, format, ...)        SYSTEM_CONSOLE_BUF(buf, bufLen, format, __VA_ARGS__)
 
 #else // _CONF_SYSTEM_CONSOLE_LOG_ENABLED

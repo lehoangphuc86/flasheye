@@ -53,6 +53,7 @@
 #define CONSOLE_LOG(format, ...)                            SYSTEM_CONSOLE(format, __VA_ARGS__)
 #define CONSOLE_LOG_BUF(buf, bufLen, format, ...)           SYSTEM_CONSOLE_BUF(buf, bufLen, format, __VA_ARGS__)
 #define CONSOLE_LOG_ISR(buf, bufLen, format, ...)           SYSTEM_CONSOLE_ISR(buf, bufLen, format, __VA_ARGS__)
+#define SYSTEM_PRINT_BUF(buf, bufLen, format, ...)          snprintf(buf, bufLen, format, __VA_ARGS__)
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 
