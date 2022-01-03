@@ -52,9 +52,9 @@ public:
   UiDpLcdI2CProcessor(void);
   virtual ~UiDpLcdI2CProcessor(void);
   int                                                           start(UiDpProcessorConfigTAG& deviceConfig) override;
-  void                                                          uiMessRaw(UiMessRawTAG* param) override;
-  void                                                          uiMessMessage(UiMessMessageTAG* param) override;
-  void                                                          uiMessSysState(UiMessSysStateTAG* param) override;
+  int                                                           uiMessRaw(UiMessRawTAG* param) override;
+  int                                                           uiMessMessage(UiMessMessageTAG* param) override;
+  int                                                           uiMessSysState(UiMessSysStateTAG* param) override;
 };
 
 #endif // _UI_DP_LCD_I2C_PROCESSOR_H

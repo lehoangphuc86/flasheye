@@ -4,7 +4,7 @@
 #if (_CONF_UI_DP_SC_PROCESSOR_ENABLED)
 /////////////////////////////////////////////////
 // PREPROCESSOR
-
+//#define UI_DP_SC_PROCESSOR_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -26,7 +26,9 @@
 
 /////////////////////////////////////////////////
 // STATIC DATA
-
+#ifdef UI_DP_SC_PROCESSOR_CONSOLE_DEBUG_ENABLE
+char uiDpSCProcessorLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // UI_DP_SC_PROCESSOR_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 
@@ -51,37 +53,51 @@ UiDpSCProcessor::~UiDpSCProcessor(void)
 
 int UiDpSCProcessor::start(UiDpProcessorConfigTAG& deviceConfig)
 {
+  int ret = 0;
   do
   {
+    deviceConfig.deviceConfig.deviceType = DisplayDeviceTypeUN::DisplaySerialConsoleDevice;
+    ret =  UiDpProcessor::start(deviceConfig);
+
     if (this->tmp_Buff == NULL)
     {
       this->tmp_Buff = new char[UI_DP_SC_PROCESSOR_TMP_BUFF_LEN];
     }
 
-    deviceConfig.deviceConfig.deviceType = DisplayDeviceTypeUN::DisplaySerialConsoleDevice;
-    return UiDpProcessor::start(deviceConfig);
+#ifdef UI_DP_SC_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(uiDpSCProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[UI] st %i %i", 0, ret);
+    this->dp_Controller->println("abc");
+    CONSOLE_LOG_BUF(uiDpSCProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[UI] st %i", 99);
+#endif // UI_DP_SC_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+    return 0;
   } while (0);
   return -1;
-  
 }
 
 
-void UiDpSCProcessor::uiMessRaw(UiMessRawTAG* param)
+int UiDpSCProcessor::uiMessRaw(UiMessRawTAG* param)
 {
   SYSTEM_PRINT_BUF(this->tmp_Buff, UI_DP_SC_PROCESSOR_TMP_BUFF_LEN, "[UI] raw:%s", param->data);
   this->dp_Controller->println(this->tmp_Buff);
+  return 0;
 }
 
-void UiDpSCProcessor::uiMessMessage(UiMessMessageTAG* param)
+int UiDpSCProcessor::uiMessMessage(UiMessMessageTAG* param)
 {
   SYSTEM_PRINT_BUF(this->tmp_Buff, UI_DP_SC_PROCESSOR_TMP_BUFF_LEN, "[UI] mess:%s", param->mess);
   this->dp_Controller->println(this->tmp_Buff);
+  return 0;
 }
 
-void UiDpSCProcessor::uiMessSysState(UiMessSysStateTAG* param)
+int UiDpSCProcessor::uiMessSysState(UiMessSysStateTAG* param)
 {
   SYSTEM_PRINT_BUF(this->tmp_Buff, UI_DP_SC_PROCESSOR_TMP_BUFF_LEN, "[UI] state:%u", param->state);
   this->dp_Controller->println(this->tmp_Buff);
+  return 0;
 }
 
 void UiDpSCProcessor::stop(void)
@@ -91,6 +107,7 @@ void UiDpSCProcessor::stop(void)
   {
     delete[] this->tmp_Buff;
   }
+  this->tmp_Buff = NULL;
 }
 
 

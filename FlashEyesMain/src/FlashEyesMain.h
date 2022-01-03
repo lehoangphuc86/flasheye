@@ -7,6 +7,7 @@
 #include "FlashEyesMainConfig.h"
 #include "source/task_http/CommHttpConstant.h"
 #include "timer_manager/TimerManagerConstant.h"
+#include "source/task_ui/UiManagerConstant.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -16,6 +17,8 @@
 // Common
 #define FEM_DEBUG_SERIAL_BAUDRATE                     56000
 #define FEM_DEBUG_SERIAL_INIT_WAIT                    1000 // ms
+// task
+#define FEM_TASK_PRIORITY_DEFAULT                     3
 
 // Button settings
 #define FEM_SW_SYS_MODE_TRY_TIME                      5
@@ -58,20 +61,33 @@
 #define FLASH_EYE_INPUT_SETTER_BUTTON_1               5
 
 
-// Display
-#define FLASH_EYE_DISPLAY_LCD_COLUMN_NO               16
-#define FLASH_EYE_DISPLAY_LCD_ROW_NO                  2
-#define FLASH_EYE_DISPLAY_LCD_PIN_V0                  10 //DISPLAY_DEVICE_PIN_INVALID // pwm
-#define FLASH_EYE_DISPLAY_LCD_PIN_RS                  23
-#define FLASH_EYE_DISPLAY_LCD_PIN_RW                  25
-#define FLASH_EYE_DISPLAY_LCD_PIN_E                   27
-#define FLASH_EYE_DISPLAY_LCD_PIN_D4                  29
-#define FLASH_EYE_DISPLAY_LCD_PIN_D5                  31
-#define FLASH_EYE_DISPLAY_LCD_PIN_D6                  33
-#define FLASH_EYE_DISPLAY_LCD_PIN_D7                  35
-#define FLASH_EYE_DISPLAY_LCD_PIN_A                   9   // pwm
-#define FLASH_EYE_DISPLAY_LCD_INIT_BACKLIGHT          250
-#define FLASH_EYE_DISPLAY_LCD_INIT_BRIGHTNESS         0
+// ui manager
+#define FEM_UI_CONTROL_TYPE                           UIControlTypeUN::UIControlSerialConsoleDevice
+#define FEM_UI_DM_BUFF_SIZE                           0
+#define FEM_UI_DM_BUFF_COUNT                          5
+#define FEM_UI_DM_USE_POOL                            false
+
+#define FEM_UI_EM_EVENT_NUM                           5
+#define FEM_UI_EM_USE_POOL                            false
+
+#define FEM_UI_TM_USE_POOL                            false
+#define FEM_UI_TM_MEM                                 2096
+#define FEM_UI_TM_PRIORITY                            FEM_TASK_PRIORITY_DEFAULT
+
+#define FEM_UI_DEV_DEVICE_TYPE                        DisplayDeviceTypeUN::DisplaySerialConsoleDevice
+#define FEM_UI_DEV_DEVICE_COL                         42
+#define FEM_UI_DEV_DEVICE_ROW                         18
+#define FEM_UI_DEV_DEVICE_ID                          0
+
+#define FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX             2
+#define FEM_UI_DEV_DEVICE_SC_BAUDRATE                 9600
+#define FEM_UI_DEV_DEVICE_SC_BIT_PER_BYTE             8
+#define FEM_UI_DEV_DEVICE_SC_PARITY_TYPE              DISPLAY_DEVICE_SC_PARITY_NONE
+#define FEM_UI_DEV_DEVICE_SC_STOP_BIT                 1
+#define FEM_UI_DEV_DEVICE_SC_TIMEOUT                  500
+#define FEM_UI_DEV_DEVICE_SC_PIN_TX                   DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT
+#define FEM_UI_DEV_DEVICE_SC_PIN_RX                   DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT
+
 
 // Distance sensor
 #define FLASH_EYE_DISTANCE_SENSOR_PIN_TRIGGER         47
@@ -79,9 +95,6 @@
 
 
 // Comm
-// task
-#define FEM_TASK_PRIORITY_DEFAULT                     3
-
 
 // file system
 #define FEM_FS_FORMAT                                 1

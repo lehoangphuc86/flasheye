@@ -141,6 +141,8 @@ int UiControlTask::startTask(UiManagerConfigTAG& uiManagerConfig)
 
     this->stopTask();
 
+    uiManagerConfig.bufferConfig.dataItemConfig.bufferSize = 
+      SYSTEM_MAX(uiManagerConfig.bufferConfig.dataItemConfig.bufferSize, this->max_Data_Size);
     result = this->data_Manager.prepare(uiManagerConfig.bufferConfig);
     if (result != 0)
     {
@@ -281,6 +283,9 @@ int UiControlTask::onEventUiMessage(unsigned char* data, unsigned int dataSize)
 
     EventUiMessageTAG* eventData = (EventUiMessageTAG*)data;
     buffItem = eventData->buffItem;
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] um %i %i", 1, eventData->uiMessId);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
     switch (eventData->uiMessId)
     {
       case (byte)UIConstant::UIMessageId::UiMessRaw:
@@ -325,6 +330,7 @@ int UiControlTask::onEventUiMessage(unsigned char* data, unsigned int dataSize)
 
 int UiControlTask::onUiMessRaw(EventUiMessageTAG* eventData)
 {
+  int ret = 0;
   do
   {
     // play sound
@@ -337,8 +343,11 @@ int UiControlTask::onUiMessRaw(EventUiMessageTAG* eventData)
     }
 
     UiMessRawTAG* param = (UiMessRawTAG*)eventData->buffItem->bufferAddress();
-    this->dp_Processor->uiMessRaw(param);
-
+    ret = this->dp_Processor->uiMessRaw(param);
+    if (ret != 0)
+    {
+      break;
+    }
     return 0;
   } while (0);
   return -1;
@@ -346,6 +355,7 @@ int UiControlTask::onUiMessRaw(EventUiMessageTAG* eventData)
 
 int UiControlTask::onUiMessMessage(EventUiMessageTAG* eventData)
 {
+  int ret = 0;
   do
   {
     // play sound
@@ -358,8 +368,11 @@ int UiControlTask::onUiMessMessage(EventUiMessageTAG* eventData)
     }
 
     UiMessMessageTAG* param = (UiMessMessageTAG*)eventData->buffItem->bufferAddress();
-    this->dp_Processor->uiMessMessage(param);
-
+    ret = this->dp_Processor->uiMessMessage(param);
+    if (ret != 0)
+    {
+      break;
+    }
     return 0;
   } while (0);
   return -1;
@@ -367,6 +380,10 @@ int UiControlTask::onUiMessMessage(EventUiMessageTAG* eventData)
 
 int UiControlTask::onUiMessSysState(EventUiMessageTAG* eventData)
 {
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i", 0);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  int ret = 0;
   do
   {
     // play sound
@@ -379,10 +396,22 @@ int UiControlTask::onUiMessSysState(EventUiMessageTAG* eventData)
     }
 
     UiMessSysStateTAG* param = (UiMessSysStateTAG*)eventData->buffItem->bufferAddress();
-    this->dp_Processor->uiMessSysState(param);
-
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i %i", 1, param->state);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+    ret = this->dp_Processor->uiMessSysState(param);
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i %i", 99, ret);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
     return 0;
   } while (0);
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i", -99);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
   return -1;
 }
 #endif // _CONF_UI_CONTROL_TASK_ENABLED

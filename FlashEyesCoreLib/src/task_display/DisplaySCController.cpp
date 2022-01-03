@@ -49,8 +49,7 @@ HardwareSerial Serial2(2);
 
 #endif // SYSTEM_ESP_PLATFORM
 
-#define DP_SC_SYS_BUFFER_LEN              32
-#define DP_SC_TIME_OUT_SLICE              10 // ms
+//#define DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -71,7 +70,9 @@ HardwareSerial Serial2(2);
 
 /////////////////////////////////////////////////
 // STATIC DATA
-
+#ifdef DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
+char dpSCControllerLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 
@@ -289,6 +290,9 @@ int DisplaySCController::setSocketConfig(DisplaySCDeviceConfigTAG& socketConfig)
 #elif defined (SYSTEM_ESP_PLATFORM)
     int8_t pinTx = (socketConfig.pin_TX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT : socketConfig.pin_TX);
     int8_t pinRx = (socketConfig.pin_RX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT : socketConfig.pin_RX);
+#ifdef DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(dpSCControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpsc] set %i", 1);
+#endif // DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
     this->lcd_Controller->begin(
       socketConfig.baudrate
       , configSet
@@ -479,9 +483,14 @@ size_t DisplaySCController::println(const String& s)
   return this->lcd_Controller->println(s);
 }
 
-size_t DisplaySCController::println(const char param[])
+size_t DisplaySCController::println(char* param)
 {
   return this->lcd_Controller->println(param);
+}
+
+size_t DisplaySCController::println(const char param[])
+{
+  return this->lcd_Controller->write(param);
 }
 
 size_t DisplaySCController::println(char param)

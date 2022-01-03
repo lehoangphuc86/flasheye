@@ -55,19 +55,22 @@ int UiDpLcdProcessor::start(UiDpProcessorConfigTAG& deviceConfig)
 }
 
 
-void UiDpLcdProcessor::uiMessRaw(UiMessRawTAG* param)
+int UiDpLcdProcessor::uiMessRaw(UiMessRawTAG* param)
 {
   //@@
+  return 0;
 }
 
-void UiDpLcdProcessor::uiMessMessage(UiMessMessageTAG* param)
+int UiDpLcdProcessor::uiMessMessage(UiMessMessageTAG* param)
 {
   //@@
+  return 0;
 }
 
-void UiDpLcdProcessor::uiMessSysState(UiMessSysStateTAG* param)
+int UiDpLcdProcessor::uiMessSysState(UiMessSysStateTAG* param)
 {
   //@@
+  return 0;
 }
 
 #endif // _CONF_UI_DP_LCD_PROCESSOR_ENABLED

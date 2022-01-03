@@ -55,19 +55,22 @@ int UiDpLcdI2CProcessor::start(UiDpProcessorConfigTAG& deviceConfig)
 }
 
 
-void UiDpLcdI2CProcessor::uiMessRaw(UiMessRawTAG* param)
+int UiDpLcdI2CProcessor::uiMessRaw(UiMessRawTAG* param)
 {
   //@@
+  return 0;
 }
 
-void UiDpLcdI2CProcessor::uiMessMessage(UiMessMessageTAG* param)
+int UiDpLcdI2CProcessor::uiMessMessage(UiMessMessageTAG* param)
 {
   //@@
+  return 0;
 }
 
-void UiDpLcdI2CProcessor::uiMessSysState(UiMessSysStateTAG* param)
+int UiDpLcdI2CProcessor::uiMessSysState(UiMessSysStateTAG* param)
 {
   //@@
+  return 0;
 }
 
 #endif // _CONF_UI_DP_LCD_I2C_PROCESSOR_ENABLED

@@ -93,6 +93,7 @@ public:
   virtual size_t                                                println(const __FlashStringHelper* param1) = 0;
   virtual size_t                                                println(const String& s) = 0;
   virtual size_t                                                println(const char param[]) = 0;
+  virtual size_t                                                println(char* param) = 0;
   virtual size_t                                                println(char param) = 0;
   virtual size_t                                                println(unsigned char param1, int param2 = DEC) = 0;
   virtual size_t                                                println(int param1, int param2 = DEC) = 0;

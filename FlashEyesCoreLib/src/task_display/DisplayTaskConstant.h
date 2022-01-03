@@ -90,7 +90,7 @@ typedef struct _displaySCDeviceConfigTag
   byte instanceIndex;
   uint32_t baudrate;
   byte bitPerByte;  // 5-8
-  byte parityType; // SerialParityType
+  byte parityType; // DISPLAY_DEVICE_SC_PARITY_NONE / DISPLAY_DEVICE_SC_PARITY_ODD / DISPLAY_DEVICE_SC_PARITY_EVEN
   byte stopBitNum; // 1-2
   uint16_t timeout; // ms. set 0 to use default
   byte pin_TX;

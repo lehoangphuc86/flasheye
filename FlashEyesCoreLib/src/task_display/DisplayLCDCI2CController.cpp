@@ -304,6 +304,11 @@ size_t DisplayLCDI2CController::println(const String& s)
   return this->lcd_Controller->println(s);
 }
 
+size_t DisplayLCDI2CController::println(char* param)
+{
+  return this->lcd_Controller->println(param);
+}
+
 size_t DisplayLCDI2CController::println(const char param[])
 {
   return this->lcd_Controller->println(param);

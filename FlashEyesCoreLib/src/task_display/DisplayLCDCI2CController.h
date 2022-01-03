@@ -95,6 +95,7 @@ public:
   size_t                                                        println(const __FlashStringHelper* param1) override;
   size_t                                                        println(const String& s) override;
   size_t                                                        println(const char param[]) override;
+  size_t                                                        println(char* param) override;
   size_t                                                        println(char param) override;
   size_t                                                        println(unsigned char param1, int param2 = DEC) override;
   size_t                                                        println(int param1, int param2 = DEC) override;

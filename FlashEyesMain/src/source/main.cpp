@@ -9,6 +9,7 @@
 #include "db/DBManager.h"
 #include "timer_manager/TimerManager.h"
 #include "settings/SettingManager.h"
+#include "task_ui/UiManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONSOLE_DEBUG_ENABLE
@@ -172,8 +173,59 @@ int main(void)
     }
     
     //######################UI: start##########################
-    //@@
-    // 
+    if (UiManager::getInstance().isValid() == false)
+    {
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "UI starting");
+      UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessRaw);
+      UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessMessage);
+      UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessSysState);
+
+      UiManagerConfigTAG uiConfig = UiManagerConfigTAG();
+      uiConfig.dpProcType = FEM_UI_CONTROL_TYPE;
+      uiConfig.bufferConfig.dataItemConfig.bufferSize = FEM_UI_DM_BUFF_SIZE;
+      uiConfig.bufferConfig.preparedDataNumber = FEM_UI_DM_BUFF_COUNT;
+      uiConfig.bufferConfig.usePool = FEM_UI_DM_USE_POOL;
+
+      uiConfig.taskManagerConfig.eventItemNumber = FEM_UI_EM_EVENT_NUM;
+      uiConfig.taskManagerConfig.eventUsePool = FEM_UI_EM_USE_POOL;
+
+      uiConfig.taskThreadConfig.enabled = true;
+      uiConfig.taskThreadConfig.useThreadPool = FEM_UI_TM_USE_POOL;
+      uiConfig.taskThreadConfig.usStackDepth = FEM_UI_TM_MEM;
+      uiConfig.taskThreadConfig.uxPriority = FEM_UI_TM_PRIORITY;
+
+      uiConfig.dpProcConfig.deviceConfig.deviceType = FEM_UI_DEV_DEVICE_TYPE;
+      uiConfig.dpProcConfig.deviceConfig.columnNo = FEM_UI_DEV_DEVICE_COL;
+      uiConfig.dpProcConfig.deviceConfig.rowNo = FEM_UI_DEV_DEVICE_ROW;
+      uiConfig.dpProcConfig.deviceConfig.id = FEM_UI_DEV_DEVICE_ID;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.instanceIndex = FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.baudrate = FEM_UI_DEV_DEVICE_SC_BAUDRATE;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.bitPerByte = FEM_UI_DEV_DEVICE_SC_BIT_PER_BYTE;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.parityType = FEM_UI_DEV_DEVICE_SC_PARITY_TYPE;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.stopBitNum = FEM_UI_DEV_DEVICE_SC_STOP_BIT;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.timeout = FEM_UI_DEV_DEVICE_SC_TIMEOUT;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.pin_RX = FEM_UI_DEV_DEVICE_SC_PIN_TX;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.pin_TX = FEM_UI_DEV_DEVICE_SC_PIN_RX;
+
+      ret = UiManager::getInstance().startTask(uiConfig);
+      if (ret != 0)
+      {
+        CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "UI starting failed");
+        break;
+      }
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "UI running");
+
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 1);
+      UiMessSysStateTAG sysState = UiMessSysStateTAG();
+      sysState.state = 101;
+      ret = UiManager::getInstance().show(UIConstant::UIMessageId::UiMessSysState, sizeof(UiMessSysStateTAG), (unsigned char*)&sysState);
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i %i", 2, ret);
+      if (ret != 0)
+      {
+        break;
+      }
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 99);
+    }
     
     // @@@
     // load setting from db, if it required SettingMode, no need to get systemode

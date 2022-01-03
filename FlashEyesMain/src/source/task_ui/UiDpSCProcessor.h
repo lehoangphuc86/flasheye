@@ -53,9 +53,9 @@ public:
   virtual ~UiDpSCProcessor(void);
   int                                                           start(UiDpProcessorConfigTAG& deviceConfig) override;
   void                                                          stop(void) override;
-  void                                                          uiMessRaw(UiMessRawTAG* param) override;
-  void                                                          uiMessMessage(UiMessMessageTAG* param) override;
-  void                                                          uiMessSysState(UiMessSysStateTAG* param) override;
+  int                                                           uiMessRaw(UiMessRawTAG* param) override;
+  int                                                           uiMessMessage(UiMessMessageTAG* param) override;
+  int                                                           uiMessSysState(UiMessSysStateTAG* param) override;
 
 protected:
   char*                                                         tmp_Buff;

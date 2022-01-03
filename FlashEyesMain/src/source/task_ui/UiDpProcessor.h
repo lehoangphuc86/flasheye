@@ -54,9 +54,9 @@ public:
   byte                                                          procType(void);
   virtual int                                                   start(UiDpProcessorConfigTAG& deviceConfig);
   virtual void                                                  stop(void);
-  virtual void                                                  uiMessRaw(UiMessRawTAG* param) = 0;
-  virtual void                                                  uiMessMessage(UiMessMessageTAG* param) = 0;
-  virtual void                                                  uiMessSysState(UiMessSysStateTAG* param) = 0;
+  virtual int                                                   uiMessRaw(UiMessRawTAG* param) = 0;
+  virtual int                                                   uiMessMessage(UiMessMessageTAG* param) = 0;
+  virtual int                                                   uiMessSysState(UiMessSysStateTAG* param) = 0;
 
 protected:
   byte                                                          proc_Type;
