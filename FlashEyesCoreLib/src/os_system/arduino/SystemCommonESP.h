@@ -27,12 +27,18 @@
 // MARCO
 // SYSTEM_CONSOLE()
 
-#define SYSTEM_YEILD_FROM_ISR(woken)                     \
-do {                                                     \
-    if (woken!= false)                                   \
-    {                                                    \
-      portYIELD_FROM_ISR();                              \
-    }                                                    \
+#define SYSTEM_CONSOLE_ISR(buf, bufLen, format, ...)      \
+do {                                                      \
+    esp_rom_printf(format, __VA_ARGS__);                  \
+    esp_rom_printf("%s", "\n");                           \
+} while (0)
+
+#define SYSTEM_YEILD_FROM_ISR(woken)                      \
+do {                                                      \
+    if (woken!= false)                                    \
+    {                                                     \
+      portYIELD_FROM_ISR();                               \
+    }                                                     \
 } while (0)
 
 
@@ -49,6 +55,7 @@ do {                                                      \
 
 #define ANALOG_WRITE(channel, value)                      ANALOG_WRITE_GENERIC(channel, value , 255)
 #define SYSTEM_IRAM_ATTR                                  IRAM_ATTR
+#define SYSTEM_TIME_BASE_FREQ                             ((80)*(1000000))
 
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES

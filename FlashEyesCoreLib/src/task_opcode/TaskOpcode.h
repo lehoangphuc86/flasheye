@@ -1,6 +1,6 @@
 #include "TaskOpCodeConstant.h"
 
-#ifdef _CONF_TASK_OPCODE_ENABLED
+#if (_CONF_TASK_OPCODE_ENABLED)
 
 #ifndef _TASK_OPCODE_TASK_H
 #define _TASK_OPCODE_TASK_H

@@ -299,4 +299,10 @@ void TimerControlTask::Impl::cbTimerHandlerNavigator(union sigval signalValue)
   } while (0);
   return;
 }
+#else // (_CONF_TIMER_CONTROL_TASK_ENABLED) && defined(SYSTEM_LINUX_PLATFORM)
+// to make compilier happy
+class TimerControlTaskImplLinux
+{
+  volatile char reserved;
+};
 #endif // (_CONF_TIMER_CONTROL_TASK_ENABLED) && defined(SYSTEM_LINUX_PLATFORM)

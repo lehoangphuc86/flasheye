@@ -27,6 +27,13 @@
 /////////////////////////////////////////////////
 // MARCO
 
+#define SYSTEM_CONSOLE_ISR(buf, bufLen, format, ...)        \
+do {                                                        \
+  snprintf(buf, bufLen, format, __VA_ARGS__);               \
+  SYSTEM_CONSOLE_HANDLER.write(buf);                        \
+  SYSTEM_CONSOLE_HANDLER.write("\r\n");                     \
+} while(0)                                  
+
 #if (_CONF_FREE_RTOS_ENABLED)
 #define SYSTEM_YEILD_FROM_ISR(woken)                      \
 do {                                                      \
@@ -44,6 +51,7 @@ do {                                                      \
 //ARDUINO_ARCH_AVR
 #define ANALOG_WRITE(channel, value)                      analogWrite(channel, value)
 #define SYSTEM_IRAM_ATTR                                  //nothing
+#define SYSTEM_TIME_BASE_FREQ                             F_CPU
 
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES

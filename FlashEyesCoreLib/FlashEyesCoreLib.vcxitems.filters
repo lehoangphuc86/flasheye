@@ -52,9 +52,6 @@
     <Filter Include="src\timer_manager\std">
       <UniqueIdentifier>{17be6969-ff96-4005-9841-a2b825ab31a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\timer_manager\avr">
-      <UniqueIdentifier>{ae484064-e52c-45cd-b5f6-37ec64d63b06}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\timer_manager\esp">
       <UniqueIdentifier>{044b2171-7db4-40f4-a4be-5884365cd352}</UniqueIdentifier>
     </Filter>
@@ -72,6 +69,18 @@
     </Filter>
     <Filter Include="src\task_opcode">
       <UniqueIdentifier>{f1f4f391-42b4-4a42-af90-95bedc34f132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_led">
+      <UniqueIdentifier>{af2c7ad2-a081-46f6-ab03-56334e539c12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager\win">
+      <UniqueIdentifier>{18b191e3-3323-4f32-a942-f10abb02c8f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager\avr">
+      <UniqueIdentifier>{3472a052-f1cd-4ef7-a5df-ec018cabb4c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\timer_manager\linux">
+      <UniqueIdentifier>{fcf43d5f-9c00-4a71-a894-0d399ac948d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +258,27 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_display\DisplaySCController.cpp">
       <Filter>src\task_display</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_led\LedController.cpp">
+      <Filter>src\task_led</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceInfo.cpp">
+      <Filter>src\task_led</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceManager.cpp">
+      <Filter>src\task_led</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_led\LedManager.cpp">
+      <Filter>src\task_led</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\avr\TimerDeviceTimerImpl.cpp">
+      <Filter>src\timer_manager\avr</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\linux\TimerControlTaskImpl.cpp">
+      <Filter>src\timer_manager\linux</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\win\TimerDeviceTimerImpl.cpp">
+      <Filter>src\timer_manager\win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +521,30 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_display\DisplaySCController.h">
       <Filter>src\task_display</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedController.h">
+      <Filter>src\task_led</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedTaskConstant.h">
+      <Filter>src\task_led</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceInfo.h">
+      <Filter>src\task_led</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceManager.h">
+      <Filter>src\task_led</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedManager.h">
+      <Filter>src\task_led</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\avr\TimerDeviceTimerImpl.h">
+      <Filter>src\timer_manager\avr</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\linux\TimerControlTaskImpl.h">
+      <Filter>src\timer_manager\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\win\TimerDeviceTimerImpl.h">
+      <Filter>src\timer_manager\win</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

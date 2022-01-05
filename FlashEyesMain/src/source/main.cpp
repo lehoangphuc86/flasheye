@@ -10,6 +10,7 @@
 #include "timer_manager/TimerManager.h"
 #include "settings/SettingManager.h"
 #include "task_ui/UiManager.h"
+#include "task_led/LedManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONSOLE_DEBUG_ENABLE
@@ -75,7 +76,6 @@ int main(void)
 #endif // _CONF_SYSTEM_CONSOLE_LOG_ENABLED
 
     CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Initializing...");
-    
     //######################Timer manager: start##########################
     if (TimerManager::getInstance().isValid() == false)
     {
@@ -95,7 +95,7 @@ int main(void)
         timerConfig.hwTimerGrpId = FEM_TM_HW_GROUP_ID;
         timerConfig.hwTimerIndex = FEM_TM_HW_INDEX_ID;
         timerConfig.hwTimerDevider = FEM_TM_HW_DEVIDER;
-        timerConfig.hwClockMHz = F_CPU / 1000000;
+        timerConfig.hwClockMHz = SYSTEM_TIME_BASE_FREQ / 1000000;
         ret = TimerManager::getInstance().initialize(timerConfig);
         if (ret != 0)
         {
@@ -171,7 +171,45 @@ int main(void)
       SettingManager::getInstance().scanner().load();
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i %s", 3, SettingManager::getInstance().scanner().codePrefix());
     }
-    
+    //######################LED: start##########################
+    if (LedManager::getInstance().isValid() == false)
+    {
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Led starting");
+      LedDeviceConfigTAG ledDeviceConfig[FEM_LED_DEVICE_COUNT];
+      ledDeviceConfig[0].channelId = FEM_LED_DEVICE_0_CHANNEL_ID;
+      ledDeviceConfig[0].pin = FEM_LED_DEVICE_0_PIN;
+      ledDeviceConfig[0].defaultIntensity = FEM_LED_DEVICE_0_DEFAULT_INTENSITY;
+      ledDeviceConfig[0].isPWM = FEM_LED_DEVICE_0_IS_PWM;
+      ledDeviceConfig[1].channelId = FEM_LED_DEVICE_1_CHANNEL_ID;
+      ledDeviceConfig[1].pin = FEM_LED_DEVICE_1_PIN;
+      ledDeviceConfig[1].defaultIntensity = FEM_LED_DEVICE_1_DEFAULT_INTENSITY;
+      ledDeviceConfig[1].isPWM = FEM_LED_DEVICE_1_IS_PWM;
+      ledDeviceConfig[2].channelId = FEM_LED_DEVICE_2_CHANNEL_ID;
+      ledDeviceConfig[2].pin = FEM_LED_DEVICE_2_PIN;
+      ledDeviceConfig[2].defaultIntensity = FEM_LED_DEVICE_2_DEFAULT_INTENSITY;
+      ledDeviceConfig[2].isPWM = FEM_LED_DEVICE_2_IS_PWM;
+
+      LedManagerConfigTAG ledMgrConfig = LedManagerConfigTAG();
+      ledMgrConfig.controllerConfig.reserved = 0;
+      ledMgrConfig.deviceCount = FEM_LED_DEVICE_COUNT;
+      ledMgrConfig.deviceConfig = ledDeviceConfig;
+
+      ret = LedManager::getInstance().start(ledMgrConfig);
+      LedDeviceManager::getInstance().dump();
+      if (ret != 0)
+      {
+        CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Led start failed");
+        break;
+      }
+      LedManager::getInstance().turnOffAll();
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 7);
+      LedDeviceManager::getInstance().dump();
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 8);
+      SYSTEM_SLEEP(1000);
+      LedManager::getInstance().turnOn(FEM_LED_RED, 200, 500);
+      LedDeviceManager::getInstance().dump();
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Led running");
+    }
     //######################UI: start##########################
     if (UiManager::getInstance().isValid() == false)
     {
@@ -214,17 +252,6 @@ int main(void)
         break;
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "UI running");
-
-      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 1);
-      UiMessSysStateTAG sysState = UiMessSysStateTAG();
-      sysState.state = 101;
-      ret = UiManager::getInstance().show(UIConstant::UIMessageId::UiMessSysState, sizeof(UiMessSysStateTAG), (unsigned char*)&sysState);
-      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i %i", 2, ret);
-      if (ret != 0)
-      {
-        break;
-      }
-      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 99);
     }
     
     // @@@

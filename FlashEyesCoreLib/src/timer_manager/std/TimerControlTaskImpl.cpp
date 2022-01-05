@@ -2,6 +2,8 @@
 #if (_CONF_TIMER_CONTROL_TASK_ENABLED) && !defined(SYSTEM_LINUX_PLATFORM)
 /////////////////////////////////////////////////
 // INCLUDE
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+#include "esp_log.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -27,7 +29,8 @@
 /////////////////////////////////////////////////
 // STATIC DATA
 #ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-char timeCtrlTaskLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#define TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN  16
+char timeCtrlTaskLogBuf[TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN];
 #endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
@@ -79,7 +82,7 @@ int TimerControlTask::Impl::start(TimerControlTaskConfigTAG& config)
       
       result = this->device_Timer.inititialize(hwTimerConfig);
 #ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(timeCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[timAd] staT %i", 0);
+      //CONSOLE_LOG_BUF(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] staT %i", 0);
 #endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
       if (result != 0)
       {
@@ -88,7 +91,7 @@ int TimerControlTask::Impl::start(TimerControlTaskConfigTAG& config)
       
       result = this->device_Timer.start();
 #ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(timeCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[timAd] staT %i", 1);
+     // CONSOLE_LOG_BUF(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] staT %i", 1);
 #endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
       if (result != 0)
       {
@@ -124,9 +127,6 @@ TimerId_t TimerControlTask::Impl::startTimer(TimerConfigTAG& timerConfig)
       timerConfig.timerId = this->nextTimerId();
     }
 
-    
-    //timerConfig.expiredPoint = this->device_Timer.now() + timerConfig.interval;//@@@
-    
     TimerId_t wk_idx = 0;
     for (wk_idx = 0; wk_idx < TIMER_MANAGER_TIMER_COUNT_MAX; wk_idx++)
     {
@@ -144,16 +144,15 @@ TimerId_t TimerControlTask::Impl::startTimer(TimerConfigTAG& timerConfig)
     this->timer_List[wk_idx].oneShot = timerConfig.oneShot;
     this->timer_List[wk_idx].reserved = timerConfig.reserved;
     this->timer_List[wk_idx].interval = timerConfig.interval;
-    this->timer_List[wk_idx].expiredPoint = 0;//@@@this->device_Timer.now() + timerConfig.interval;
+    this->timer_List[wk_idx].expiredPoint = 0;
     this->timer_List[wk_idx].handler = timerConfig.handler;
     this->timer_List[wk_idx].extraArgument = timerConfig.extraArgument;
     this->timer_List[wk_idx].timerId = timerConfig.timerId;
     this->timer_List[wk_idx].enabled = 1;
-    //this->device_Timer.setAlarmValue(TIMER_DEVICE_TIMER_HANDLE_TIME_MIN); // make it expired
-    this->device_Timer.notifyChange(); // make it expired @@@@
+    this->device_Timer.notifyChange(); // make it expired
 
 #ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-    //CONSOLE_LOG("[timAd] staT %i %i", 9, wk_idx);
+    CONSOLE_LOG_BUF(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] staT %i %i", 9, wk_idx);
 #endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
     return timerConfig.timerId;
   } while (0);
@@ -257,7 +256,6 @@ TimePoint_t TimerControlTask::Impl::nowFromISR(void)
 }
 
 // optimized
-#if (1) //for adruino
 void TimerControlTask::Impl::cbTimerHandler(TimePoint_t& nextInterval, bool* woken)
 {
   //SystemCriticalLockerFromISR locker(this->operation_Key);
@@ -267,7 +265,9 @@ void TimerControlTask::Impl::cbTimerHandler(TimePoint_t& nextInterval, bool* wok
   TimePoint_t leftTime = 0;
   TimePoint_t napTime = TIMER_CONTROL_TASK_IDLE_SNAP_TIME;
   TimePoint_t procTime = 0;
-  
+#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] cbtH %d", 0);
+#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
   {
     leftTime = 0;
     napTime = TIMER_CONTROL_TASK_IDLE_SNAP_TIME;
@@ -285,13 +285,22 @@ void TimerControlTask::Impl::cbTimerHandler(TimePoint_t& nextInterval, bool* wok
       {
         timerInfo->expiredPoint = currentPoint + timerInfo->interval;
       }
-
+      
       if (timerInfo->expiredPoint > currentPoint)
       {
+#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] cbtH %d  %ld", 1, (long)timerInfo->expiredPoint);
+        CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] cbtH %d %ld", 2, (long)(currentPoint >> 32));
+        CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] cbtH %d %ld", 3, (long)currentPoint);
+        //CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[t] %u", 0);
+#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
         timerInfo++;
         continue;
       }
 
+#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[t] %u", 10);
+#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
       timerInfo->handler(timerInfo->timerId, timerInfo->extraArgument, woken);
 
       if (timerInfo->oneShot != false)
@@ -303,6 +312,9 @@ void TimerControlTask::Impl::cbTimerHandler(TimePoint_t& nextInterval, bool* wok
 
       // re-activate
       timerInfo->expiredPoint += timerInfo->interval;
+#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] cbtH %d %ld", 13, (long)timerInfo->expiredPoint);
+#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
       timerInfo++;
     }
 
@@ -318,10 +330,6 @@ void TimerControlTask::Impl::cbTimerHandler(TimePoint_t& nextInterval, bool* wok
       if (timerInfo->expiredPoint <= (currentPoint + this->device_Timer.hwDelay()))
       {
         napTime = 1;
-#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-        //CONSOLE_LOG("[timT1] %lu %lu %u", timerInfo->expiredPoint, currentPoint, this->device_Timer.hwDelay());
-#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-
         break;
       }
 
@@ -337,120 +345,15 @@ void TimerControlTask::Impl::cbTimerHandler(TimePoint_t& nextInterval, bool* wok
     if (napTime > 1)
     {
       procTime = (this->device_Timer.nowFromISR() - currentPoint);
-#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      //if (napTime < procTime)
-      //{
-      //  //CONSOLE_LOG("[timT2] %lu %lu", napTime, procTime);
-      //}
-#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
       napTime = (napTime > procTime ? napTime - procTime : 1);
 
     }
   }
-
+#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_ISR(timeCtrlTaskLogBuf, TIMER_CONTROL_TASK_CONSOLE_OUT_BUF_LEN, "[tAd] cbtH %d %ld", 98, (long)napTime);
+#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
   nextInterval = napTime;
 }
-#else
-void TimerControlTask::Impl::cbTimerHandler(TimePoint_t& nextInterval, bool* woken)
-{
-  //SystemCriticalLockerFromISR locker(this->operation_Key);
-  TimePoint_t currentPoint = this->device_Timer.nowFromISR();
-  TimerInfoTAG* timerInfo = this->timer_List;
-  TimerInfoTAG* lastTimerInfo = &this->timer_List[TIMER_MANAGER_TIMER_COUNT_MAX];
-  TimePoint_t leftTime = 0;
-  TimePoint_t napTime = TIMER_CONTROL_TASK_IDLE_SNAP_TIME;
-  TimePoint_t procTime = 0;
-
-  {
-    leftTime = 0;
-    napTime = TIMER_CONTROL_TASK_IDLE_SNAP_TIME;
-    procTime = 0;
-
-    while (timerInfo < lastTimerInfo)
-    {
-      if (timerInfo->enabled == 0) //not activated 
-      {
-        timerInfo++;
-        continue;
-      }
-
-      if (timerInfo->expiredPoint == 0)
-      {
-        timerInfo->expiredPoint = currentPoint + timerInfo->interval;
-      }
-
-      if (timerInfo->expiredPoint > currentPoint)
-      {
-        timerInfo++;
-        continue;
-      }
-
-#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      //CONSOLE_LOG("[timT0] %lu %lu %lu", timerInfo->expiredPoint, currentPoint, timerInfo->interval);
-#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      timerInfo->handler(timerInfo->timerId, timerInfo->extraArgument, woken);
-
-      if (timerInfo->oneShot != false)
-      {
-        timerInfo->enabled = false; // no repeat required
-        timerInfo++;
-        continue;
-      }
-
-#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      //CONSOLE_LOG("[timT0] %lu %lu %lu", timerInfo->expiredPoint, currentPoint, timerInfo->interval);
-#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      // re-activate
-      timerInfo->expiredPoint += timerInfo->interval;
-      timerInfo++;
-    }
-
-    timerInfo = this->timer_List;
-    while (timerInfo < lastTimerInfo)
-    {
-      if (timerInfo->enabled == 0) //not activated 
-      {
-        timerInfo++;
-        continue;
-      }
-
-      if (timerInfo->expiredPoint <= (currentPoint + this->device_Timer.hwDelay()))
-      {
-        napTime = 1;
-#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-        //CONSOLE_LOG("[timT1] %lu %lu %u", timerInfo->expiredPoint, currentPoint, this->device_Timer.hwDelay());
-#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-
-        break;
-      }
-
-      leftTime = timerInfo->expiredPoint - currentPoint;
-      // get the least nap time
-      if (leftTime < napTime)
-      {
-        napTime = leftTime;
-      }
-      timerInfo++;
-    }
-
-    if (napTime > 1)
-    {
-      procTime = (this->device_Timer.nowFromISR() - currentPoint);
-#ifdef TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      if (napTime < procTime)
-      {
-        //CONSOLE_LOG("[timT2] %lu %lu", napTime, procTime);
-      }
-#endif // TIMER_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-      napTime = (napTime > procTime ? napTime - procTime : 1);
-
-    }
-  }
-
-  nextInterval = napTime;
-}
-
-#endif // 
 void TimerControlTask::Impl::cbTimerHandlerNavigator(void* arg, TimePoint_t& nextInterval, bool* woken)
 {
   ((TimerControlTask::Impl*)arg)->cbTimerHandler(nextInterval, woken);

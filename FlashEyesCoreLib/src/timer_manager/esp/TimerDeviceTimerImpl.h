@@ -6,6 +6,7 @@
 #ifndef _TIMER_DEVICE_TIMER_IMPL_ESP_H
 #define _TIMER_DEVICE_TIMER_IMPL_ESP_H
 #include "driver/timer.h"
+#include "os_system/SystemCriticalSession.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 //#define TIMER_DEVICE_TIMER_CONSOLE_DEBUG_ENABLE
@@ -66,8 +67,8 @@ public:
   int                                                           setAlarmValue(TimerCount_t interval);
   void                                                          notifyChange(void);
   TimerCount_t                                                  nowInTick(void);
-  int                                                           setAlarmValueByTick(TimerCount_t intervalInTick);
-
+  int                                                           setAlarmValueByTick(TimerCount_t intervalInTick, bool updateInterval = true);
+  TimePoint_t                                                   lastTimePoint(void);
   ////////////////////Function to call from inside ISR///////////////////////
 public:
   TimerCount_t                                                  nowFromISR(void);
@@ -91,6 +92,8 @@ protected:
   TimerCount_t                                                  hw_Timer_Interval_Tick;
   TimerDeviceTimerCbOnExpired                                   cb_Timer_Fired;
   void*                                                         cb_Args;
+  TimePoint_t                                                   last_Time_Point;
+  SystemCriticalSession                                         critical_Key;
 };
 
 #endif // _TIMER_DEVICE_TIMER_IMPL_ESP_H

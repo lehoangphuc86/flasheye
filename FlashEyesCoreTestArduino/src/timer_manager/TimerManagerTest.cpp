@@ -202,7 +202,7 @@ void TimerManagerTest::cbTimerFired(TimerId_t timerId, void* extraArg, bool* wok
   do
   {
     int index = timerId - 1;// reinterpret_cast<intptr_t>(extraArg);
-
+    CONSOLE_LOG_ISR(logBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[t-] %u", 0);
     if (countT[index] == 0)
     {
       startPointT[index] = TimerManager::getInstance().nowFromISR();// TIMER_MANAGER_CURRENT_TIMEPOINT();

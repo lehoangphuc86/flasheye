@@ -55,7 +55,7 @@ do {                                                        \
   SYSTEM_CONSOLE_HANDLER.write("\r\n");                     \
 } while(0)                                  
 
-#define SYSTEM_CONSOLE_ISR(buf, bufLen, format, ...)        SYSTEM_CONSOLE_BUF(buf, bufLen, format, __VA_ARGS__)
+//#define SYSTEM_CONSOLE_ISR(buf, bufLen, format, ...)        SYSTEM_CONSOLE_BUF(buf, bufLen, format, __VA_ARGS__)
 
 #else // _CONF_SYSTEM_CONSOLE_LOG_ENABLED
 #define SYSTEM_CONSOLE(format, ...)
@@ -100,6 +100,13 @@ do {                                                        \
 #define GPIO_PULLUP                                       PULLUP
 #define GPIO_INPUT_PULLUP                                 INPUT_PULLUP
 
+// Pin write
+#define SYSTEM_PIN_DIGITAL_WRITE(pin, val)                digitalWrite(pin, val)
+#define SYSTEM_PIN_ANALOG_WRITE(pin, val)                 ANALOG_WRITE(pin, val)
+
+// Digital state
+#define SYSTEM_PIN_HIGH                                   HIGH
+#define SYSTEM_PIN_LOW                                    LOW
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 

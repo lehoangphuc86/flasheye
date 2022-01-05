@@ -1052,5 +1052,10 @@ void TimerDeviceTimer::Impl::cbHwTimerCompareMatchedNavigator(void* arg, bool* w
   } while (0);
   return;
 }
-
+#else // (_CONF_TIMER_CONTROL_TASK_ENABLED) && defined(SYSTEM_PC_BASED)
+// to make compilier happy
+class TimerControlTaskImplAvr
+{
+  volatile char reserved;
+};
 #endif // (_CONF_TIMER_CONTROL_TASK_ENABLED) && defined(SYSTEM_PC_BASED)

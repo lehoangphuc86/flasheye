@@ -1,5 +1,5 @@
 #include "TaskOpcode.h"
-#ifdef _CONF_TASK_OPCODE_ENABLED
+#if (_CONF_TASK_OPCODE_ENABLED)
 /////////////////////////////////////////////////
 // INCLUDE
 #include "timer_manager/TimerManager.h"

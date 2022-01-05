@@ -12,7 +12,7 @@
 #define TIMER_DEVICE_TIMER_ESP_OCR_PROC_DELAY         50 //us
 #define TIMER_DEVICE_TIMER_ESP_OCR_HW_DELAY           (TIMER_DEVICE_TIMER_ESP_OCR_MIN + TIMER_DEVICE_TIMER_ESP_OCR_PROC_DELAY)
 
-#define TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
+//#define TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // MARCO
 
@@ -49,6 +49,7 @@ TimerDeviceTimer::Impl::Impl(void)
   , hw_Timer_Interval_Tick(0)
   , cb_Timer_Fired(NULL)
   , cb_Args(NULL)
+  , last_Time_Point(0)
 {
 
 }
@@ -85,6 +86,11 @@ int TimerDeviceTimer::Impl::inititialize(TimerDeviceTimerConfigTAG& config)
     timer_group_t timerGrpId = (timer_group_t)config.hwGroupId;
     timer_idx_t timerIdx = (timer_idx_t)config.hwTimerId;
     double timerTickPerUnit = (config.hwClockMHz * 1.0 * SYSTEM_CONST_MHZ_2_HZ) / (TIMER_DEVICE_TIMER_SECOND_2_UNIT * config.hwDevider);
+
+#ifdef TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(timeDeviceEspLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tDE] 0 %f", timerTickPerUnit);
+#endif // TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
+
 
     timer_config_t hwConfig = timer_config_t();
     hwConfig.alarm_en = timer_alarm_t::TIMER_ALARM_EN;
@@ -232,31 +238,18 @@ int TimerDeviceTimer::Impl::setAlarmValue(TimerCount_t interval)
 
 void TimerDeviceTimer::Impl::notifyChange(void)
 {
-  do
-  {
-    if (this->isValid() == false)
-    {
-      break;
-    }
-
-    esp_err_t retE = timer_set_alarm_value(this->hw_Group_Id, this->hw_Timer_Id, 10);
-    if (retE != ESP_OK)
-    {
-      break;
-    }
-    return;
-  } while (0);
-  return;
+  this->setAlarmValueByTick(TIMER_DEVICE_TIMER_ESP_OCR_MIN, false);
 }
 
 TimerCount_t TimerDeviceTimer::Impl::nowInTick(void)
 {
   TimerCount_t nowVal = 0;
   timer_get_counter_value(this->hw_Group_Id, this->hw_Timer_Id, &nowVal);
-  return nowVal;
+  //return this->last_Time_Point + nowVal;
+  return this->lastTimePoint() + nowVal;
 }
 
-int TimerDeviceTimer::Impl::setAlarmValueByTick(TimerCount_t intervalInTick)
+int TimerDeviceTimer::Impl::setAlarmValueByTick(TimerCount_t intervalInTick, bool updateInterval)
 {
   do
   {
@@ -269,9 +262,16 @@ int TimerDeviceTimer::Impl::setAlarmValueByTick(TimerCount_t intervalInTick)
     {
       intervalInTick = this->hw_Timer_Interval_Tick;
     }
-
+    intervalInTick = SYSTEM_MAX(intervalInTick, TIMER_DEVICE_TIMER_ESP_OCR_MIN * this->hw_Tick_Per_Unit);
     esp_err_t retE = timer_set_alarm_value(this->hw_Group_Id, this->hw_Timer_Id, intervalInTick);
-    this->hw_Timer_Interval_Tick = intervalInTick;
+    if (updateInterval != false)
+    {
+      this->hw_Timer_Interval_Tick = intervalInTick;
+    }
+#ifdef TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_ISR(timeDeviceEspLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tDE] sa1 %ld", (long)intervalInTick);
+    CONSOLE_LOG_ISR(timeDeviceEspLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tDE] sa2 %ld", (long)this->hw_Timer_Interval_Tick);
+#endif // TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
     if (retE != ESP_OK)
     {
       break;
@@ -279,6 +279,12 @@ int TimerDeviceTimer::Impl::setAlarmValueByTick(TimerCount_t intervalInTick)
     return 0;
   } while (0);
   return -1;
+}
+
+TimePoint_t TimerDeviceTimer::Impl::lastTimePoint(void)
+{
+  SystemCriticalLocker locker(this->critical_Key);
+  return this->last_Time_Point;
 }
 
 TimerCount_t TimerDeviceTimer::Impl::nowFromISR(void)
@@ -320,11 +326,17 @@ void TimerDeviceTimer::Impl::cbHwTimerCompareMatched(bool* woken)
 {
   do
   {
-
     if (this->cb_Timer_Fired == NULL)
     {
       break;
     }
+//#ifdef TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_ISR(timeDeviceEspLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tDE] m1 %ld", (long)this->last_Time_Point);
+//#endif // TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
+    TimePoint_t curAlarmValue = 0;
+    timer_get_alarm_value(this->hw_Group_Id, this->hw_Timer_Id, &curAlarmValue);
+    this->last_Time_Point += curAlarmValue;
+   
     TimePoint_t nextInterval = 0;
     this->cb_Timer_Fired(this->cb_Args, nextInterval, woken);
     if (nextInterval != 0)
@@ -332,6 +344,11 @@ void TimerDeviceTimer::Impl::cbHwTimerCompareMatched(bool* woken)
       nextInterval = nextInterval * 1.0 * this->hw_Tick_Per_Unit; // in tick
     }
     // set hw timer next alarm timepoint
+
+#ifdef TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_ISR(timeDeviceEspLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tDE] m2 %ld", (long)nextInterval);
+    CONSOLE_LOG_ISR(timeDeviceEspLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tDE] m3 %ld", (long)this->last_Time_Point);
+#endif // TIMER_DEVICE_TIMER_ESP_CONSOLE_DEBUG_ENABLE
     this->setAlarmValueByTickFromISR(nextInterval);
     return;
   } while (0);

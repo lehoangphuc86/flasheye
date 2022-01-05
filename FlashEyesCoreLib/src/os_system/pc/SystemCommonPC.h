@@ -80,8 +80,13 @@ do {                                                      \
 #define GPIO_PULLUP                                       0x04
 #define GPIO_INPUT_PULLUP                                 0x05
 
+// Pin write
+#define SYSTEM_PIN_DIGITAL_WRITE(pin, val)                
+#define SYSTEM_PIN_ANALOG_WRITE(pin, val)                 
+
 
 #define F_CPU                                             20000000 // CPU speed. dummy
+#define SYSTEM_TIME_BASE_FREQ                             F_CPU
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 

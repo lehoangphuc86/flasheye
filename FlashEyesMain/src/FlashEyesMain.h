@@ -60,6 +60,24 @@
 #define FLASH_EYE_INPUT_SETTER_BUTTON_0               4
 #define FLASH_EYE_INPUT_SETTER_BUTTON_1               5
 
+// led manager
+#define FEM_LED_DEVICE_COUNT                          3
+#define FEM_LED_DEVICE_0_CHANNEL_ID                   0
+#define FEM_LED_DEVICE_0_PIN                          21
+#define FEM_LED_DEVICE_0_DEFAULT_INTENSITY            252
+#define FEM_LED_DEVICE_0_IS_PWM                       false
+#define FEM_LED_DEVICE_1_CHANNEL_ID                   1
+#define FEM_LED_DEVICE_1_PIN                          22
+#define FEM_LED_DEVICE_1_DEFAULT_INTENSITY            253
+#define FEM_LED_DEVICE_1_IS_PWM                       false
+#define FEM_LED_DEVICE_2_CHANNEL_ID                   2
+#define FEM_LED_DEVICE_2_PIN                          23
+#define FEM_LED_DEVICE_2_DEFAULT_INTENSITY            254
+#define FEM_LED_DEVICE_2_IS_PWM                       false
+
+#define FEM_LED_GREEN                                 FEM_LED_DEVICE_0_CHANNEL_ID
+#define FEM_LED_RED                                   FEM_LED_DEVICE_1_CHANNEL_ID
+#define FEM_LED_YELLOW                                FEM_LED_DEVICE_2_CHANNEL_ID
 
 // ui manager
 #define FEM_UI_CONTROL_TYPE                           UIControlTypeUN::UIControlSerialConsoleDevice
