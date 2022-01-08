@@ -2,6 +2,8 @@
 // INCLUDE
 #include "UiControlTask.h"
 #if (_CONF_UI_CONTROL_TASK_ENABLED)
+#include "task_led/LedManager.h"
+#include "task_buzzer/BuzzerManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
@@ -400,6 +402,11 @@ int UiControlTask::onUiMessSysState(EventUiMessageTAG* eventData)
     CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i %i", 1, param->state);
 #endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
     ret = this->dp_Processor->uiMessSysState(param);
+
+    LedManager::getInstance().turnOn(FEM_LED_YELLOW, LED_DEVICE_INTENSITY_LEVEL_MAX, 0);
+    BuzzerManager::getInstance().turnOn(FEM_BUZZER_0, NOTE_A4, 1000);
+    LedManager::getInstance().turnOff(FEM_LED_YELLOW);
+
 #ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i %i", 99, ret);
 #endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE

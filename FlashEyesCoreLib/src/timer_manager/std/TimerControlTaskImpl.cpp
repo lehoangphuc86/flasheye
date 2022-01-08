@@ -2,8 +2,8 @@
 #if (_CONF_TIMER_CONTROL_TASK_ENABLED) && !defined(SYSTEM_LINUX_PLATFORM)
 /////////////////////////////////////////////////
 // INCLUDE
-#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
-#include "esp_log.h"
+//#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
+//#include "esp_log.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 

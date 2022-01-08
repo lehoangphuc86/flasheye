@@ -82,6 +82,24 @@
     <Filter Include="src\timer_manager\linux">
       <UniqueIdentifier>{fcf43d5f-9c00-4a71-a894-0d399ac948d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\libs\lcd">
+      <UniqueIdentifier>{aad5af91-84b7-4cdb-afab-3cf1e202e3a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\lcd\LiquidCrystal">
+      <UniqueIdentifier>{e51435ad-95fd-4ec7-8a28-5663d1f77b90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\lcd\LiquidCrystal_I2C">
+      <UniqueIdentifier>{0dfc34c3-a527-485d-b352-cca6ea3b3800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\lcd\SerialConsole">
+      <UniqueIdentifier>{fde8668f-906f-484d-b5f6-a4ba1bfa924a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\buzzer">
+      <UniqueIdentifier>{8cc4c853-f3dd-4b79-9606-7cc606c89821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\task_buzzer">
+      <UniqueIdentifier>{a2cb78ee-5a99-47f8-b2a6-4a2fb141d3fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
@@ -279,6 +297,27 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\timer_manager\win\TimerDeviceTimerImpl.cpp">
       <Filter>src\timer_manager\win</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\libs\lcd\LiquidCrystal\LiquidCrystal.cpp">
+      <Filter>src\libs\lcd\LiquidCrystal</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\libs\lcd\LiquidCrystal_I2C\LiquidCrystal_I2C.cpp">
+      <Filter>src\libs\lcd\LiquidCrystal_I2C</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerController.cpp">
+      <Filter>src\task_buzzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerDeviceInfo.cpp">
+      <Filter>src\task_buzzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerDeviceManager.cpp">
+      <Filter>src\task_buzzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerManager.cpp">
+      <Filter>src\task_buzzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\libs\buzzer\Buzzer.cpp">
+      <Filter>src\libs\buzzer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -545,6 +584,33 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\timer_manager\win\TimerDeviceTimerImpl.h">
       <Filter>src\timer_manager\win</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\lcd\LiquidCrystal\LiquidCrystal.h">
+      <Filter>src\libs\lcd\LiquidCrystal</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\lcd\LiquidCrystal_I2C\LiquidCrystal_I2C.h">
+      <Filter>src\libs\lcd\LiquidCrystal_I2C</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerController.h">
+      <Filter>src\task_buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerDeviceInfo.h">
+      <Filter>src\task_buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerDeviceManager.h">
+      <Filter>src\task_buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerManager.h">
+      <Filter>src\task_buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_buzzer\BuzzerTaskConstant.h">
+      <Filter>src\task_buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\buzzer\Buzzer.h">
+      <Filter>src\libs\buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\buzzer\BuzzerNotes.h">
+      <Filter>src\libs\buzzer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

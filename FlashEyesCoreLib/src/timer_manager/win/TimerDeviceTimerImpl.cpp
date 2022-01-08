@@ -334,7 +334,7 @@ int TimerDeviceTimer::Impl::setAlarmValueFromISR(TimerCount_t interval)
 {
   return this->setAlarmValue(interval);
 }
-#else (_CONF_TIMER_CONTROL_TASK_ENABLED) && defined(SYSTEM_PC_BASED)
+#else //(_CONF_TIMER_CONTROL_TASK_ENABLED) && defined(SYSTEM_PC_BASED)
 // to make compilier happy
 class TimerControlTaskImplWin
 {

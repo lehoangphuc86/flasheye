@@ -10,6 +10,7 @@
 #include "timer_manager/TimerManager.h"
 #include "settings/SettingManager.h"
 #include "task_ui/UiManager.h"
+#include "task_buzzer/BuzzerManager.h"
 #include "task_led/LedManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
@@ -64,7 +65,6 @@ int main(void)
   byte systemMode = SystemMode::NormalMode;
   do
   {
-
 #ifdef _CONF_SYSTEM_CONSOLE_LOG_ENABLED
     // initialize debug serial communication 
     SYSTEM_CONSOLE_HANDLER.begin(FEM_DEBUG_SERIAL_BAUDRATE);
@@ -171,6 +171,29 @@ int main(void)
       SettingManager::getInstance().scanner().load();
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i %s", 3, SettingManager::getInstance().scanner().codePrefix());
     }
+    //######################BUZZER: start##########################
+    if (BuzzerManager::getInstance().isValid() == false)
+    {
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Buzzer starting");
+      BuzzerDeviceConfigTAG buzzerDeviceConfig[FEM_BUZZER_DEVICE_COUNT];
+      buzzerDeviceConfig[0].deviceId = FEM_BUZZER_DEVICE_0_DEV_ID;
+      buzzerDeviceConfig[0].pin = FEM_BUZZER_DEVICE_0_PIN;
+      buzzerDeviceConfig[0].hwChannelId = FEM_BUZZER_DEVICE_0_HW_CHANNEL;
+      
+      BuzzerManagerConfigTAG buzzerMgrConfig = BuzzerManagerConfigTAG();
+      buzzerMgrConfig.controllerConfig.reserved = 0;
+      buzzerMgrConfig.deviceCount = FEM_BUZZER_DEVICE_COUNT;
+      buzzerMgrConfig.deviceConfig = buzzerDeviceConfig;
+
+      ret = BuzzerManager::getInstance().start(buzzerMgrConfig);
+      BuzzerDeviceManager::getInstance().dump();
+      if (ret != 0)
+      {
+        CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Buzzer start failed");
+        break;
+      }
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Buzzer running");
+    }
     //######################LED: start##########################
     if (LedManager::getInstance().isValid() == false)
     {
@@ -195,19 +218,11 @@ int main(void)
       ledMgrConfig.deviceConfig = ledDeviceConfig;
 
       ret = LedManager::getInstance().start(ledMgrConfig);
-      LedDeviceManager::getInstance().dump();
       if (ret != 0)
       {
         CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Led start failed");
         break;
       }
-      LedManager::getInstance().turnOffAll();
-      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 7);
-      LedDeviceManager::getInstance().dump();
-      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i", 8);
-      SYSTEM_SLEEP(1000);
-      LedManager::getInstance().turnOn(FEM_LED_RED, 200, 500);
-      LedDeviceManager::getInstance().dump();
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Led running");
     }
     //######################UI: start##########################
@@ -252,6 +267,12 @@ int main(void)
         break;
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "UI running");
+      //@@
+      UiMessSysStateTAG sysStateTag = UiMessSysStateTAG();
+      sysStateTag.state = 99;
+
+      UiManager::getInstance().show(UIConstant::UIMessageId::UiMessSysState, sizeof(sysStateTag), (unsigned char*)&sysStateTag);
+      // @@
     }
     
     // @@@

@@ -60,6 +60,14 @@
 #define FLASH_EYE_INPUT_SETTER_BUTTON_0               4
 #define FLASH_EYE_INPUT_SETTER_BUTTON_1               5
 
+// buzzer manager
+#define FEM_BUZZER_DEVICE_COUNT                       1
+#define FEM_BUZZER_DEVICE_0_DEV_ID                    0
+#define FEM_BUZZER_DEVICE_0_PIN                       15
+#define FEM_BUZZER_DEVICE_0_HW_CHANNEL                0
+
+#define FEM_BUZZER_0                                  FEM_BUZZER_DEVICE_0_DEV_ID
+
 // led manager
 #define FEM_LED_DEVICE_COUNT                          3
 #define FEM_LED_DEVICE_0_CHANNEL_ID                   0
