@@ -68,6 +68,15 @@
     <Filter Include="src\source\task_ui">
       <UniqueIdentifier>{e84524f6-1b0e-418d-b215-bef22f372e4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\task_scanning">
+      <UniqueIdentifier>{6735bf29-9cf1-4fec-876c-666b1bd0275b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\scanner">
+      <UniqueIdentifier>{d045424c-4f8a-4b98-892d-074e10f3d208}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libs\scanner\EV">
+      <UniqueIdentifier>{21296c7d-25a7-4a6c-bdef-676b43853171}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -205,6 +214,24 @@
     <ClInclude Include="src\source\task_ui\UiDpSCProcessor.h">
       <Filter>src\source\task_ui</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_scanner\ScanningController.h">
+      <Filter>src\source\task_scanning</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_scanner\ScanningControllerFactory.h">
+      <Filter>src\source\task_scanning</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_scanner\ScanningControlTask.h">
+      <Filter>src\source\task_scanning</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_scanner\ScanningEVController.h">
+      <Filter>src\source\task_scanning</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_scanner\ScanningTaskConstant.h">
+      <Filter>src\source\task_scanning</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libs\scanner\EV\EV_ER080.h">
+      <Filter>src\libs\scanner\EV</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -293,6 +320,18 @@
     </ClCompile>
     <ClCompile Include="src\source\task_ui\UiDpSCProcessor.cpp">
       <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_scanner\ScanningController.cpp">
+      <Filter>src\source\task_scanning</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_scanner\ScanningControllerFactory.cpp">
+      <Filter>src\source\task_scanning</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_scanner\ScanningControlTask.cpp">
+      <Filter>src\source\task_scanning</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_scanner\ScanningEVController.cpp">
+      <Filter>src\source\task_scanning</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

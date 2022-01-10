@@ -84,7 +84,7 @@ int SettingManager::initialize(SettingManagerConfigTAG& settingConfig)
     // @@
 
     SettingCollectionConfigTAG collectionConfig = SettingCollectionConfigTAG();
-    collectionConfig.dbTableId = FEM_SET_SCANNER_DB_TABLE_ID;
+    collectionConfig.dbTableId = FEM_SET_DB_TBL_ID_SCANNER;
 #ifdef SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(settingManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[sm] ini %i", 3);
 #endif // SETTING_MANAGER_CONSOLE_DEBUG_ENABLE

@@ -11,6 +11,7 @@
 #if (!_CONF_TASK_MANAGER_ENABLED)
 #error Task manager is required
 #endif // !_CONF_TASK_MANAGER_ENABLED
+
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -28,30 +29,7 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (TYPEDEF)
-typedef struct _mainResetControllerConfigTag
-{
-  byte reserved;
-} MainResetControllerConfigTAG;
 
-typedef struct _mainSettingControllerConfigTag
-{
-  byte reserved;
-} MainSettingControllerConfigTAG;
-
-typedef struct _mainNormalControllerConfigTag
-{
-  byte reserved;
-} MainNormalControllerConfigTAG;
-
-typedef struct _mainControllerConfigTag
-{
-  union 
-  {
-    MainResetControllerConfigTAG resetConfig;
-    MainSettingControllerConfigTAG settingConfig;
-    MainNormalControllerConfigTAG normalConfig;
-  } config;
-} MainControllerConfigTAG;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 
@@ -76,32 +54,31 @@ class MainController
 public:
   MainController(byte systemMode);
   virtual ~MainController(void);
+  bool                                                          isBusy(void);
   virtual bool                                                  isValid(void);
   byte                                                          systemMode(void);
-  bool                                                          isBusy(void);
-  void                                                          isBusy(bool flag);
   BufferDataItem*                                               getCommData(void);
   BufferDataManager*                                            dataManager(void);
   void                                                          releaseCommData(BufferDataItem* dataItem);
-
-  virtual int                                                   setConfig(MainControllerConfigTAG& controllerConfig) = 0;
-  virtual int                                                   start(void);
+  virtual int                                                   start(MainControllerConfigTAG& controllerConfig);
   virtual void                                                  stop(void);
-  virtual void                                                  cleanUp(void);
-
 protected:
+  void                                                          isBusy(bool flag);
+  Seq_t                                                         curSeqId(void);
   Seq_t                                                         nextSeqId(void);
   virtual void                                                  regEventSize(void) = 0;
+  virtual void                                                  proc(void) override;
   virtual int                                                   prepare(void);
-
+  virtual void                                                  clear(void);
+  virtual int                                                   onEventHandling(EventDataItem* eventData) = 0;
 protected:
   byte                                                          system_Mode;
-  MainControllerConfigTAG                                       controller_Config;
   BufferDataManager                                             data_Manager;
   byte                                                          is_Busy;
   Seq_t                                                         sequence_Id;
   SystemCriticalSession                                         is_Busy_Key;
   SystemMutex                                                   mutex_Operating;
+  
 };
 
 #endif // _MAIN_CONTROLLER_H

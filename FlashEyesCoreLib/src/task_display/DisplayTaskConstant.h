@@ -30,10 +30,41 @@
 #define DISPLAY_DEVICE_COLUMN_MIN               1
 
 // Serial console
-#define DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT       -1
-#define DISPLAY_DEVICE_SC_PARITY_NONE           0
-#define DISPLAY_DEVICE_SC_PARITY_ODD            1
-#define DISPLAY_DEVICE_SC_PARITY_EVEN           2
+#define DISPLAY_DEVICE_PIN_LIB_DEFAULT          -1
+//#########################Setting enum###############
+//-------------------comm----------------------
+// Comm: Baudrate
+#define DISPLAY_SET_COMM_BAUD_1200              0
+#define DISPLAY_SET_COMM_BAUD_2400              1
+#define DISPLAY_SET_COMM_BAUD_4800              2
+#define DISPLAY_SET_COMM_BAUD_9600              3
+#define DISPLAY_SET_COMM_BAUD_14400             4
+#define DISPLAY_SET_COMM_BAUD_19200             5
+#define DISPLAY_SET_COMM_BAUD_38400             6
+#define DISPLAY_SET_COMM_BAUD_57600             7
+#define DISPLAY_SET_COMM_BAUD_115200            8
+#define DISPLAY_SET_COMM_BAUD_MAX               9
+// Comm: parity
+#define DISPLAY_SET_COMM_PARITY_NONE            0
+#define DISPLAY_SET_COMM_PARITY_ODD             1
+#define DISPLAY_SET_COMM_PARITY_EVEN            2
+#define DISPLAY_SET_COMM_PARITY_MAX             3
+// Comm: stopbit
+#define DISPLAY_SET_COMM_STOPBIT_1              0
+#define DISPLAY_SET_COMM_STOPBIT_2              1
+#define DISPLAY_SET_COMM_STOPBIT_MAX            2
+// Comm: databit
+#define DISPLAY_SET_COMM_DATABIT_8              0
+#define DISPLAY_SET_COMM_DATABIT_7              1
+#define DISPLAY_SET_COMM_DATABIT_6              2
+#define DISPLAY_SET_COMM_DATABIT_5              3
+#define DISPLAY_SET_COMM_DATABIT_MAX            4
+// Comm: control follow
+#define DISPLAY_SET_COMM_FLOW_CTRL_NONE         0
+#define DISPLAY_SET_COMM_FLOW_CTRL_RTS_NO       1
+#define DISPLAY_SET_COMM_FLOW_CTRL_CTS_NO       2
+#define DISPLAY_SET_COMM_FLOW_CTRL_CTS          3
+#define DISPLAY_SET_COMM_FLOW_CTRL_MAX          4
 
 //#define DISPLAY_MESSAGE_LEN                     10
 /////////////////////////////////////////////////

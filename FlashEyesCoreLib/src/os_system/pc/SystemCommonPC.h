@@ -87,6 +87,12 @@ do {                                                      \
 
 #define F_CPU                                             20000000 // CPU speed. dummy
 #define SYSTEM_TIME_BASE_FREQ                             F_CPU
+
+// bit set
+#define SYSTEM_BITREAD(value, bit)                        (((value) >> (bit)) & 0x01)
+#define SYSTEM_BITSET(value, bit)                         ((value) |= (1UL << (bit)))
+#define SYSTEM_BITCLEAR(value, bit)                       ((value) &= ~(1UL << (bit)))
+#define SYSTEM_BITWRITE(value, bit, bitvalue)             ((bitvalue) ? SYSTEM_BITSET(value, bit) : SYSTEM_BITCLEAR(value, bit))
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 

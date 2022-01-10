@@ -64,28 +64,6 @@ bool MainResetController::isValid(void)
   return false;
 }
 
-int MainResetController::setConfig(MainControllerConfigTAG& controllerConfig)
-{
-  //@@
-  return 0;
-}
-
-int MainResetController::start(void)
-{
-  //@@
-  return 0;
-}
-
-void MainResetController::stop(void)
-{
-  //@@
-}
-
-void MainResetController::cleanUp(void)
-{
-  //@@
-}
-
 void MainResetController::regEventSize(void)
 {
   //@@
@@ -98,4 +76,13 @@ int MainResetController::prepare(void)
   return 0;
 }
 
+void MainResetController::clear(void)
+{
+
+}
+
+int MainResetController::onEventHandling(EventDataItem* eventData)
+{
+  return 0;
+}
 #endif // _CONF_MAIN_RESET_CONTROLLER_ENABLED

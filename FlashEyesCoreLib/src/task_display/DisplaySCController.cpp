@@ -204,23 +204,24 @@ int DisplaySCController::setSocketConfig(DisplaySCDeviceConfigTAG& socketConfig)
     }
 
     uint32_t configSet = SERIAL_8N1;
+    uint32_t baudrate = 0;
     switch (socketConfig.parityType)
     {
-      case (byte)DISPLAY_DEVICE_SC_PARITY_NONE:
+      case (byte)DISPLAY_SET_COMM_PARITY_NONE:
       {
         switch (socketConfig.bitPerByte)
         {
-        case 5:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_5N1 : SERIAL_5N2);
+        case DISPLAY_SET_COMM_DATABIT_5:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_5N1 : SERIAL_5N2);
           break;
-        case 6:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_6N1 : SERIAL_6N2);
+        case DISPLAY_SET_COMM_DATABIT_6:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_6N1 : SERIAL_6N2);
           break;
-        case 7:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_7N1 : SERIAL_7N2);
+        case DISPLAY_SET_COMM_DATABIT_7:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_7N1 : SERIAL_7N2);
           break;
-        case 8:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_8N1 : SERIAL_8N2);
+        case DISPLAY_SET_COMM_DATABIT_8:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_8N1 : SERIAL_8N2);
           break;
         default:
           error = true;
@@ -228,21 +229,21 @@ int DisplaySCController::setSocketConfig(DisplaySCDeviceConfigTAG& socketConfig)
         }
         break;
       }
-      case (byte)DISPLAY_DEVICE_SC_PARITY_EVEN:
+      case (byte)DISPLAY_SET_COMM_PARITY_EVEN:
       {
         switch (socketConfig.bitPerByte)
         {
-        case 5:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_5E1 : SERIAL_5E2);
+        case DISPLAY_SET_COMM_DATABIT_5:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_5E1 : SERIAL_5E2);
           break;
-        case 6:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_6E1 : SERIAL_6E2);
+        case DISPLAY_SET_COMM_DATABIT_6:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_6E1 : SERIAL_6E2);
           break;
-        case 7:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_7E1 : SERIAL_7E2);
+        case DISPLAY_SET_COMM_DATABIT_7:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_7E1 : SERIAL_7E2);
           break;
-        case 8:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_8E1 : SERIAL_8E2);
+        case DISPLAY_SET_COMM_DATABIT_8:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_8E1 : SERIAL_8E2);
           break;
         default:
           error = true;
@@ -250,21 +251,21 @@ int DisplaySCController::setSocketConfig(DisplaySCDeviceConfigTAG& socketConfig)
         }
         break;
       }
-      case (byte)DISPLAY_DEVICE_SC_PARITY_ODD:
+      case (byte)DISPLAY_SET_COMM_PARITY_ODD:
       {
         switch (socketConfig.bitPerByte)
         {
-        case 5:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_5O1 : SERIAL_5O2);
+        case DISPLAY_SET_COMM_DATABIT_5:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_5O1 : SERIAL_5O2);
           break;
-        case 6:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_6O1 : SERIAL_6O2);
+        case DISPLAY_SET_COMM_DATABIT_6:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_6O1 : SERIAL_6O2);
           break;
-        case 7:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_7O1 : SERIAL_7O2);
+        case DISPLAY_SET_COMM_DATABIT_7:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_7O1 : SERIAL_7O2);
           break;
-        case 8:
-          configSet = (socketConfig.stopBitNum == 1 ? SERIAL_8O1 : SERIAL_8O2);
+        case DISPLAY_SET_COMM_DATABIT_8:
+          configSet = (socketConfig.stopBitNum == DISPLAY_SET_COMM_STOPBIT_1 ? SERIAL_8O1 : SERIAL_8O2);
           break;
         default:
           error = true;
@@ -277,6 +278,40 @@ int DisplaySCController::setSocketConfig(DisplaySCDeviceConfigTAG& socketConfig)
         break;
     }
 
+    switch (socketConfig.baudrate)
+    {
+    case DISPLAY_SET_COMM_BAUD_1200:
+      baudrate = 1200;
+      break;
+    case DISPLAY_SET_COMM_BAUD_2400:
+      baudrate = 2400;
+      break;
+    case DISPLAY_SET_COMM_BAUD_4800:
+      baudrate = 4800;
+      break;
+    case DISPLAY_SET_COMM_BAUD_9600:
+      baudrate = 9600;
+      break;
+    case DISPLAY_SET_COMM_BAUD_14400:
+      baudrate = 14400;
+      break;
+    case DISPLAY_SET_COMM_BAUD_19200:
+      baudrate = 19200;
+      break;
+    case DISPLAY_SET_COMM_BAUD_38400:
+      baudrate = 38400;
+      break;
+    case DISPLAY_SET_COMM_BAUD_57600:
+      baudrate = 57600;
+      break;
+    case DISPLAY_SET_COMM_BAUD_115200:
+      baudrate = 115200;
+      break;
+    default:
+      error = true;
+      break;
+    }
+
     if (error != false)
     {
       break;
@@ -284,17 +319,17 @@ int DisplaySCController::setSocketConfig(DisplaySCDeviceConfigTAG& socketConfig)
 
 #ifdef SYSTEM_AVR_PLATFORM
     this->lcd_Controller->begin(
-      socketConfig.baudrate
+      baudrate
       , configSet
     );
 #elif defined (SYSTEM_ESP_PLATFORM)
-    int8_t pinTx = (socketConfig.pin_TX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT : socketConfig.pin_TX);
-    int8_t pinRx = (socketConfig.pin_RX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT : socketConfig.pin_RX);
+    int8_t pinTx = (socketConfig.pin_TX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_PIN_LIB_DEFAULT : socketConfig.pin_TX);
+    int8_t pinRx = (socketConfig.pin_RX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_PIN_LIB_DEFAULT : socketConfig.pin_RX);
 #ifdef DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(dpSCControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpsc] set %i", 1);
 #endif // DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
     this->lcd_Controller->begin(
-      socketConfig.baudrate
+      baudrate
       , configSet
       , pinRx
       , pinTx

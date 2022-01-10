@@ -8,7 +8,7 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define SETTING_ITEM_CONSOLE_DEBUG_ENABLE
+//#define SETTING_ITEM_CONSOLE_DEBUG_ENABLE
 
 /////////////////////////////////////////////////
 // MARCO
@@ -42,6 +42,7 @@ char settingItemLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 SettingItem::SettingItem(void)
   : db_Key_Id(FEM_SETTING_ITEM_DB_ID_INVALID)
   , db_Table_Id(FEM_DB_TBL_ID_INVALID)
+  , local_Setting_Id(FEM_SETTING_ITEM_LOCAL_SETTING_ID_INVALID)
 {
 
 }
@@ -57,6 +58,7 @@ int SettingItem::initialize(SettingItemConfigTAG& settingConfig)
   {
     this->db_Key_Id = settingConfig.dbKeyId;
     this->db_Table_Id = settingConfig.dbTableId;
+    this->local_Setting_Id = settingConfig.localSettingId;
     return 0;
   } while (0);
   this->clear();

@@ -36,14 +36,43 @@ typedef enum _systemMode
 } SystemMode;
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
-//typedef struct _mainControllerSettingTag
-//{
-//  bool enabled;
-//  byte mode; // MainControllerMode
-//} MainControllerSettingTAG;
+
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
 // events
+typedef struct _mainResetControllerConfigTag
+{
+  byte reserved;
+} MainResetControllerConfigTAG;
+
+typedef struct _mainSettingControllerConfigTag
+{
+  byte reserved;
+} MainSettingControllerConfigTAG;
+
+typedef struct _mainNormalControllerConfigTag
+{
+  byte reserved;
+} MainNormalControllerConfigTAG;
+
+typedef struct _mainControllerConfigTag
+{
+  BufferDataManagerConfigTAG bufferConfig;
+  TaskManagerConfigTAG taskManagerConfig;
+  TaskThreadConfigTAG taskThreadConfig;
+  union
+  {
+    MainResetControllerConfigTAG resetConfig;
+    MainSettingControllerConfigTAG settingConfig;
+    MainNormalControllerConfigTAG normalConfig;
+  } config;
+} MainControllerConfigTAG;
+
+// events
+typedef struct _eventTriggerStartScanningTag
+{
+  byte source;
+} EventTriggerStartScanningTAG;
 
 /////////////////////////////////////////////////
 // STATIC DATA

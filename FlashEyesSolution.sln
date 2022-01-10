@@ -17,8 +17,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FlashEyesCoreTestArduino", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeRTOS-10.4.4-2", "C:\Users\My Laptop\Documents\Arduino\libraries\FreeRTOS\FreeRTOS-10.4.4-2.vcxitems", "{8E0140D6-CCBC-4FEE-99E6-4CA76D3F34A8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestScanner", "TestScanner\TestScanner.vcxproj", "{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		FlashEyesCoreLib\FlashEyesCoreLib.vcxitems*{206ceeac-ba2d-4cab-a513-620f9da7e03c}*SharedItemsImports = 4
 		C:\Users\My Laptop\Documents\Arduino\libraries\FreeRTOS\FreeRTOS-10.4.4-2.vcxitems*{8e0140d6-ccbc-4fee-99e6-4ca76d3f34a8}*SharedItemsImports = 9
 		FlashEyesCoreLib\FlashEyesCoreLib.vcxitems*{be5d6c72-3f9a-4ae2-a72a-675d4b4b891e}*SharedItemsImports = 9
 		FlashEyesCoreLib\FlashEyesCoreLib.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
@@ -101,6 +104,16 @@ Global
 		{E0742E51-5934-4CA8-A085-76F3E545E0CC}.Release|x64.ActiveCfg = Release|Win32
 		{E0742E51-5934-4CA8-A085-76F3E545E0CC}.Release|x86.ActiveCfg = Release|Win32
 		{E0742E51-5934-4CA8-A085-76F3E545E0CC}.Release|x86.Build.0 = Release|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Debug|ARM.ActiveCfg = Debug|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Debug|x64.ActiveCfg = Debug|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Debug|x86.ActiveCfg = Debug|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Debug|x86.Build.0 = Debug|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Release|ARM.ActiveCfg = Release|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Release|ARM64.ActiveCfg = Release|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Release|x64.ActiveCfg = Release|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Release|x86.ActiveCfg = Release|Win32
+		{206CEEAC-BA2D-4CAB-A513-620F9DA7E03C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

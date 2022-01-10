@@ -51,15 +51,12 @@ public:
   MainResetController(void);
   virtual ~MainResetController(void);
 public:
-  bool                                                          isValid(void) override;  
-  int                                                           setConfig(MainControllerConfigTAG& controllerConfig) override;
-  int                                                           start(void) override;
-  void                                                          stop(void) override;
-  void                                                          cleanUp(void) override;
-
+  bool                                                          isValid(void) override;
 protected:
   void                                                          regEventSize(void) override;
   int                                                           prepare(void) override;
+  void                                                          clear(void) override;
+  int                                                           onEventHandling(EventDataItem* eventData) override;
 
 protected:
   //JsonParser                                                    js_Parser;

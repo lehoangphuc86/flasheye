@@ -8,7 +8,7 @@
 #include "os_system/SystemMutex.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
-#define DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+//#define DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 #define DB_MANAGER_LINE_TERMINATOR_DEFAULT       '\n'

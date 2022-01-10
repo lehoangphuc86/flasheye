@@ -4,10 +4,10 @@
 #if (_CONF_MAIN_CONTROLLER_ENABLED)
 /////////////////////////////////////////////////
 // PREPROCESSOR
+#define MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
 
 /////////////////////////////////////////////////
 // DEFINE
-
 
 /////////////////////////////////////////////////
 // MARCO
@@ -26,7 +26,9 @@
 
 /////////////////////////////////////////////////
 // STATIC DATA
-
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+char mainCtrlLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 
@@ -40,10 +42,9 @@
 MainController::MainController(byte systemMode)
   : system_Mode(systemMode)
   , is_Busy(false)
-  , sequence_Id(0)
+  , sequence_Id(FEM_SCAN_SEQ_ID_INVALID)
 {
-  
-  memset(&this->controller_Config, 0, sizeof(MainControllerConfigTAG));
+
 }
 
 MainController::~MainController(void)
@@ -67,12 +68,6 @@ bool MainController::isBusy(void)
   return this->is_Busy;
 }
 
-void MainController::isBusy(bool flag)
-{
-  SystemCriticalLocker locker(this->is_Busy_Key);
-  this->is_Busy = flag;
-}
-
 BufferDataItem* MainController::getCommData(void)
 {
   return (BufferDataItem*)this->data_Manager.get();
@@ -91,17 +86,73 @@ void MainController::releaseCommData(BufferDataItem* dataItem)
   }
 }
 
-
-int MainController::setConfig(MainControllerConfigTAG& controllerConfig)
+int MainController::start(MainControllerConfigTAG& controllerConfig)
 {
-  //@@
-  return 0;
-}
+  int ret = 0;
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sta %i", 0);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  do
+  {
+    
+    if (this->isTaskRunning() != false)
+    {
+      return 0; // already running
+    }
 
-int MainController::start(void)
-{
-  //@@
-  return 0;
+    this->stop();
+
+    // data manager
+    ret = this->data_Manager.prepare(controllerConfig.bufferConfig);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sta %i %i", 3, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // Set up tasks
+    // self
+    this->registerHanldingEventStructSize(sizeof(EventPrepareCompletedTAG));
+    this->regEventSize();
+    ret = TaskManager::setConfig(controllerConfig.taskManagerConfig);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sta %i %i", 5, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    ret = TaskManager::prepare();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sta %i %i", 6, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+    
+    ret = TaskManager::startProcess(controllerConfig.taskThreadConfig, true);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sta %i %i", 7, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sta %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    return ret;
+  } while (0);
+
+  this->stop();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sta %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
 }
 
 void MainController::stop(void)
@@ -115,9 +166,15 @@ void MainController::stop(void)
   return;
 }
 
-void MainController::cleanUp(void)
+void MainController::isBusy(bool flag)
 {
-  this->stop();
+  SystemCriticalLocker locker(this->is_Busy_Key);
+  this->is_Busy = flag;
+}
+
+Seq_t MainController::curSeqId(void)
+{
+  return this->sequence_Id;
 }
 
 Seq_t MainController::nextSeqId(void)
@@ -130,17 +187,63 @@ Seq_t MainController::nextSeqId(void)
   return this->sequence_Id;
 }
 
+void MainController::proc(void)
+{
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] proc %i", 0);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  int prepareRet = this->prepare();
+  this->reportPrepareResult(prepareRet);
+  if (prepareRet != 0)
+  {
+    this->waitTerminating();
+    this->clear();
+    return;
+  }
+  EventDataItem* eventData = NULL;
+  bool isStop = false;
+  while (isStop == false) // A Task shall never return or exit.
+  {
+    eventData = this->event_Manager.wait(1000);//@@ TASK_MANAGER_EVENT_WAIT_TIME_DEFAULT);
+    if (eventData == NULL)
+    {
+      this->onEventHandling(eventData);
+      continue;
+    }
+
+    switch (eventData->messageId())
+    {
+    case (int)EventManagerConstant::EventMessageId::TerminateProcess:
+    {
+      this->isTaskRunning(false);
+      isStop = true;
+      break;
+    }
+    default:
+      this->onEventHandling(eventData);
+      break;
+    }
+    this->event_Manager.release(eventData);
+  }
+
+  this->clear();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] proc %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+}
+
+// prepare/start sub tasks
 int MainController::prepare(void)
 {
-  //@@
+  
   return 0;
 }
 
-
-
-
-
-
+// stop sub tasks
+void MainController::clear(void)
+{
+  
+}
 
 //
 //#include "main.h"

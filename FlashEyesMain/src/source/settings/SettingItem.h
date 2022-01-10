@@ -8,7 +8,7 @@
 #include "../db/DBManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
-#define SETTING_ITEM_2_CONSOLE_DEBUG_ENABLE
+//#define SETTING_ITEM_2_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -47,6 +47,7 @@ typedef struct _settingItemConfigTag
   byte dbKeyId;
   DbTableId_t dbTableId;
   DataSize_t sMaxLen;
+  byte localSettingId;
   //SettingItemValueTAG initData;
 } SettingItemConfigTAG;
 /////////////////////////////////////////////////
@@ -74,6 +75,7 @@ public:
 protected:
   byte                                                          db_Key_Id;
   DbTableId_t                                                   db_Table_Id;
+  byte                                                          local_Setting_Id; // used for local
   //SystemCriticalSession                                         cri_Key;
   //SystemMutex                                                   mutex_Key;
 };

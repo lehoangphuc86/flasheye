@@ -106,7 +106,17 @@ public:
     , CommHttpFinished
     // UI 
     , UiMessage
-    
+    // Trigger
+    , TriggerStartScanning
+    // Scanning
+    , ScanningGetReady
+    , ScanningStart
+    , ScanningStop
+    , ScanningCompleted
+    , ScanningResult
+    , ScanningDeviceSetting
+    , ScanningDeviceSettingCompleted
+    , ScanningDeviceSignal
   };
 
 public:
@@ -162,6 +172,15 @@ public:
     case EventManagerConstant::EventMessageId::CommHttpStop:
     case EventManagerConstant::EventMessageId::CommHttpFinished:
     case EventManagerConstant::EventMessageId::UiMessage:
+    case EventManagerConstant::EventMessageId::TriggerStartScanning:
+    case EventManagerConstant::EventMessageId::ScanningGetReady:
+    case EventManagerConstant::EventMessageId::ScanningStart:
+    case EventManagerConstant::EventMessageId::ScanningStop:
+    case EventManagerConstant::EventMessageId::ScanningCompleted:
+    case EventManagerConstant::EventMessageId::ScanningResult:
+    case EventManagerConstant::EventMessageId::ScanningDeviceSetting:
+    case EventManagerConstant::EventMessageId::ScanningDeviceSettingCompleted:
+    case EventManagerConstant::EventMessageId::ScanningDeviceSignal:
       return true;
     default:
       return false;

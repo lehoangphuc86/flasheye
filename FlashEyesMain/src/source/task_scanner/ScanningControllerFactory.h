@@ -1,0 +1,59 @@
+#include "ScanningTaskConstant.h"
+
+#if (_CONF_SCANNING_CONTROLLER_FACTORY_ENABLED)
+
+#ifndef _SCANNING_CONTROLLER_FACTORY_H
+#define _SCANNING_CONTROLLER_FACTORY_H
+
+/////////////////////////////////////////////////
+// INCLUDE
+#include "ScanningController.h"
+/////////////////////////////////////////////////
+// PREPROCESSOR
+
+/////////////////////////////////////////////////
+// DEFINE
+
+/////////////////////////////////////////////////
+// MARCO
+
+/////////////////////////////////////////////////
+// GLOBAL VARIABLES
+
+/////////////////////////////////////////////////
+// GLOBAL FUNCTIONS
+
+/////////////////////////////////////////////////
+// DATA TYPE (TYPEDEF)
+
+/////////////////////////////////////////////////
+// DATA TYPE (ENUM)
+
+/////////////////////////////////////////////////
+// DATA TYPE (STRUCT)
+
+/////////////////////////////////////////////////
+// STATIC DATA
+
+/////////////////////////////////////////////////
+// STATIC FUNCTIONS
+
+/////////////////////////////////////////////////
+// EXTERN
+
+/////////////////////////////////////////////////
+// CLASS DEFINITION
+/*ScanningControllerFactory*/
+class ScanningControllerFactory
+{
+public:
+  ScanningControllerFactory(void);
+  // WARNING: if inherite from this class, deconstructor must be virtual
+  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~ScanningControllerFactory(void);
+public:
+  static ScanningController*                                    generate(byte deviceType);
+  static void                                                   release(ScanningController*& controller);
+};
+#endif // _SCANNING_CONTROLLER_FACTORY_H
+
+#endif // ScanningEVSerialConfigTAG

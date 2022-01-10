@@ -9,7 +9,7 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define DB_MANAGER_CONSOLE_DEBUG_ENABLE
+//#define DB_MANAGER_CONSOLE_DEBUG_ENABLE
 #ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
 char dbMgrLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 #endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE

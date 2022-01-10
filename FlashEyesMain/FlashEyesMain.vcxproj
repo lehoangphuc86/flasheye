@@ -124,6 +124,7 @@
     <ClInclude Include="src\drivers\esp32\net\wifi\wifi.h" />
     <ClInclude Include="src\FlashEyesMain.h" />
     <ClInclude Include="src\FlashEyesMainConfig.h" />
+    <ClInclude Include="src\libs\scanner\EV\EV_ER080.h" />
     <ClInclude Include="src\libs\sqlite3\config_ext.h" />
     <ClInclude Include="src\libs\sqlite3\shox96_0_2.h" />
     <ClInclude Include="src\libs\sqlite3\sqlite3.h" />
@@ -153,6 +154,11 @@
     <ClInclude Include="src\source\task_net\NetManagerConstant.h" />
     <ClInclude Include="src\source\task_net\wifi\WifiControllerTask.h" />
     <ClInclude Include="src\source\task_net\wifi\WifiManagerConstant.h" />
+    <ClInclude Include="src\source\task_scanner\ScanningController.h" />
+    <ClInclude Include="src\source\task_scanner\ScanningControllerFactory.h" />
+    <ClInclude Include="src\source\task_scanner\ScanningControlTask.h" />
+    <ClInclude Include="src\source\task_scanner\ScanningEVController.h" />
+    <ClInclude Include="src\source\task_scanner\ScanningTaskConstant.h" />
     <ClInclude Include="src\source\task_ui\UiDpLcdI2CProcessor.h" />
     <ClInclude Include="src\source\task_ui\UiDpLcdProcessor.h" />
     <ClInclude Include="src\source\task_ui\UiDpProcessorFactory.h" />
@@ -188,6 +194,10 @@
     <ClCompile Include="src\source\task_main\MainResetController.cpp" />
     <ClCompile Include="src\source\task_main\MainSettingController .cpp" />
     <ClCompile Include="src\source\task_net\wifi\WifiControllerTask.cpp" />
+    <ClCompile Include="src\source\task_scanner\ScanningController.cpp" />
+    <ClCompile Include="src\source\task_scanner\ScanningControllerFactory.cpp" />
+    <ClCompile Include="src\source\task_scanner\ScanningControlTask.cpp" />
+    <ClCompile Include="src\source\task_scanner\ScanningEVController.cpp" />
     <ClCompile Include="src\source\task_ui\UiDpLcdI2CProcessor.cpp" />
     <ClCompile Include="src\source\task_ui\UiDpLcdProcessor.cpp" />
     <ClCompile Include="src\source\task_ui\UiDpProcessorFactory.cpp" />

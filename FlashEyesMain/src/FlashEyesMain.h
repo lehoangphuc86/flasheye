@@ -21,7 +21,7 @@
 #define FEM_TASK_PRIORITY_DEFAULT                     3
 
 // Button settings
-#define FEM_SW_SYS_MODE_TRY_TIME                      5
+#define FEM_SW_SYS_MODE_TRY_TIME                      1
 #define FEM_SW_SYS_MODE_WAIT_TIME                     1000
 #define FEM_SW_BUTTON_COUNT                           2
 #define FEM_SW_BUTTON_BOUNCE_TIME                     (200) // ms
@@ -106,13 +106,13 @@
 #define FEM_UI_DEV_DEVICE_ID                          0
 
 #define FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX             2
-#define FEM_UI_DEV_DEVICE_SC_BAUDRATE                 9600
-#define FEM_UI_DEV_DEVICE_SC_BIT_PER_BYTE             8
-#define FEM_UI_DEV_DEVICE_SC_PARITY_TYPE              DISPLAY_DEVICE_SC_PARITY_NONE
-#define FEM_UI_DEV_DEVICE_SC_STOP_BIT                 1
+#define FEM_UI_DEV_DEVICE_SC_BAUDRATE                 DISPLAY_SET_COMM_BAUD_9600
+#define FEM_UI_DEV_DEVICE_SC_BIT_PER_BYTE             DISPLAY_SET_COMM_DATABIT_8
+#define FEM_UI_DEV_DEVICE_SC_PARITY_TYPE              DISPLAY_SET_COMM_PARITY_NONE
+#define FEM_UI_DEV_DEVICE_SC_STOP_BIT                 DISPLAY_SET_COMM_STOPBIT_1
 #define FEM_UI_DEV_DEVICE_SC_TIMEOUT                  500
-#define FEM_UI_DEV_DEVICE_SC_PIN_TX                   DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT
-#define FEM_UI_DEV_DEVICE_SC_PIN_RX                   DISPLAY_DEVICE_SC_PIN_LIB_DEFAULT
+#define FEM_UI_DEV_DEVICE_SC_PIN_TX                   DISPLAY_DEVICE_PIN_LIB_DEFAULT
+#define FEM_UI_DEV_DEVICE_SC_PIN_RX                   DISPLAY_DEVICE_PIN_LIB_DEFAULT
 
 
 // Distance sensor
@@ -130,11 +130,12 @@
 
 // DB
 #define FEM_DB_PATH                                   "/spiffs/db/FEM_DB_01_01.db"
-#define FEM_DB_TBL_CONFIG_SCRIPT_PATH                 "/spiffs/db/sc/DB_INIT_TBL_CONFIG.sql"
+#define FEM_DB_TBL_CONFIG_SCRIPT_PATH                 "/spiffs/db/sc/DB_INIT_TBL_CF_SCAN.sql"
 
-#define FEM_DB_TBL_CONFIG_ID                          0
-#define FEM_DB_TBL_USER_ID                            1
-#define FEM_DB_TBL_ID_MAX                             2
+#define FEM_DB_TBL_ID_CONFIG                          0
+#define FEM_DB_TBL_ID_SCANNER_SETTING                 1
+#define FEM_DB_TBL_ID_USER                            2
+#define FEM_DB_TBL_ID_MAX                             3
 
 #define FEM_DB_TBL_ID_INVALID                         FEM_DB_TBL_ID_MAX
 // Wifi
@@ -228,6 +229,49 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 #define FEM_TM_HW_GROUP_ID                            TIMER_DEVICE_TIMER_HW_GROUP_ID_DEFAULT
 #define FEM_TM_HW_INDEX_ID                            TIMER_DEVICE_TIMER_HW_INDEX_ID_DEFAULT
 #define FEM_TM_HW_DEVIDER                             8
+
+
+// scanning task
+#define FEM_SCAN_SEQ_ID_INVALID                       0
+#define FEM_SCAN_EM_EVENT_NUM                         5
+#define FEM_SCAN_EM_USE_POOL                          false
+
+#define FEM_SCAN_TM_USE_POOL                          false
+#define FEM_SCAN_TM_MEM                               2096
+#define FEM_SCAN_TM_PRIORITY                          FEM_TASK_PRIORITY_DEFAULT
+
+#define FEM_SCAN_DEV_DEVICE_TYPE                      ScanningDeviceTypeUN::ScanningEVDevice
+#define FEM_SCAN_DEV_DEVICE_DATA_TIMEOUT              100 // ms
+#define FEM_SCAN_DEV_DEVICE_ID                        0
+#define FEM_SCAN_DEV_PIN_LED                          5
+#define FEM_SCAN_DEV_PIN_BUZZER                       18
+#define FEM_SCAN_DEV_PIN_SENSOR                       19
+
+#define FEM_SCAN_DEV_DEVICE_SC_INSTANCE_IDX           2
+#define FEM_SCAN_DEV_DEVICE_SC_BAUDRATE               SCANNING_SET_COMM_BAUD_9600
+#define FEM_SCAN_DEV_DEVICE_SC_BIT_PER_BYTE           SCANNING_SET_COMM_DATABIT_8
+#define FEM_SCAN_DEV_DEVICE_SC_PARITY_TYPE            SCANNING_SET_COMM_PARITY_NONE
+#define FEM_SCAN_DEV_DEVICE_SC_STOP_BIT               SCANNING_SET_COMM_STOPBIT_1
+#define FEM_SCAN_DEV_DEVICE_SC_TIMEOUT                500
+#define FEM_SCAN_DEV_DEVICE_SC_PIN_TX                 SCANNING_DEVICE_PIN_LIB_DEFAULT
+#define FEM_SCAN_DEV_DEVICE_SC_PIN_RX                 SCANNING_DEVICE_PIN_LIB_DEFAULT
+
+#define FEM_SCAN_OP_TIMEOUT                           10000 // ms
+#define FEM_SCAN_OP_MAX_SCAN_COUNT                    2
+// main 
+#define FEM_MAIN_DM_BUFF_SIZE                         200
+#define FEM_MAIN_DM_BUFF_COUNT                        5
+#define FEM_MAIN_DM_USE_POOL                          false
+
+#define FEM_MAIN_EM_EVENT_NUM                         10
+#define FEM_MAIN_EM_USE_POOL                          false
+
+#define FEM_MAIN_TM_USE_POOL                          false
+#define FEM_MAIN_TM_MEM                               2096
+#define FEM_MAIN_TM_PRIORITY                          FEM_TASK_PRIORITY_DEFAULT
+
+
+
 /////////////////////////////////////////////////
 // MARCO
 
@@ -260,7 +304,8 @@ typedef struct
 /////////////////////////////////////////////////
 // STATIC DATA
 static const char* g_FEM_Db_Tbl_Names[] = {
-                            "TBL_CONFIG",
+                            "TBL_CF_SYS",
+                            "TBL_CF_SCAN",
                             "TBL_USER"
 };
 

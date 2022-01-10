@@ -64,27 +64,6 @@ bool MainSettingController::isValid(void)
   return false;
 }
 
-int MainSettingController::setConfig(MainControllerConfigTAG& controllerConfig)
-{
-  //@@
-  return 0;
-}
-
-int MainSettingController::start(void)
-{
-  //@@
-  return 0;
-}
-
-void MainSettingController::stop(void)
-{
-  //@@
-}
-
-void MainSettingController::cleanUp(void)
-{
-  //@@
-}
 
 void MainSettingController::regEventSize(void)
 {
@@ -95,6 +74,16 @@ void MainSettingController::regEventSize(void)
 int MainSettingController::prepare(void)
 {
   //@@
+  return 0;
+}
+
+void MainSettingController::clear(void)
+{
+
+}
+
+int MainSettingController::onEventHandling(EventDataItem* eventData)
+{
   return 0;
 }
 

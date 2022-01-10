@@ -45,7 +45,8 @@
 /* TaskManager*/
 TaskId_t TaskManager::next_Task_Id = 0;
 TaskManager::TaskManager(void)
-  : thread_Handler(NULL)
+  : task_State(0)
+  , thread_Handler(NULL)
   , task_Id(0)
   , max_Handling_Event_Size(sizeof(uint8_t))
   //, thread_Pool_Id(TASK_THREAD_POOL_ID_INVALID)

@@ -107,6 +107,12 @@ do {                                                        \
 // Digital state
 #define SYSTEM_PIN_HIGH                                   HIGH
 #define SYSTEM_PIN_LOW                                    LOW
+
+// bit set
+#define SYSTEM_BITREAD(value, bit)                        bitRead(value, bit)
+#define SYSTEM_BITSET(value, bit)                         bitSet(value, bit)
+#define SYSTEM_BITCLEAR(value, bit)                       bitClear(value, bit)
+#define SYSTEM_BITWRITE(value, bit, bitvalue)             bitWrite(value, bit, bitvalue)
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 

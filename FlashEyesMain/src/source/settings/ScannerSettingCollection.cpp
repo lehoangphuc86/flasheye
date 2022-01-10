@@ -66,7 +66,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
       break;
     }
 
-    ret = SettingCollection::initItemList(2);
+    ret = SettingCollection::initItemList(15);
 #ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i %i", 2, ret);
 #endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
@@ -75,44 +75,147 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
       break;
     }
 
-    this->item_List[0] = &this->scan_Mode;
-    this->item_List[1] = &this->code_Prefix;
+    this->item_List[0] = &this->comm_Baudrate;
+    this->item_List[1] = &this->comm_Parity;
+    this->item_List[2] = &this->comm_Stopbit;
+    this->item_List[3] = &this->comm_Databit;
+    this->item_List[4] = &this->comm_FlowCtrl;
+    this->item_List[5] = &this->character_Format;
+    this->item_List[6] = &this->read_State;
+    this->item_List[7] = &this->auto_Scan;
+    this->item_List[8] = &this->cont_Scan;
+    this->item_List[9] = &this->security_Level;
+    this->item_List[10] = &this->enable_Prefix;
+    this->item_List[11] = &this->custom_Prefix;
+    this->item_List[12] = &this->custom_Suffix;
+    this->item_List[13] = &this->custom_Code_Format;
+    this->item_List[14] = &this->mess_Terminator;
 
     SettingItemConfigTAG itemConfig = SettingItemConfigTAG();
     itemConfig.dbTableId = this->db_Table_Id;
 
-    // scan mode
+    // comm_Baudrate
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_BAUDRATE;
+    ret = this->comm_Baudrate.initialize(itemConfig);
+    if (ret != 0)
     {
-#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i", 5);
-#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      itemConfig.dbKeyId = FEM_SET_SCANNER_DB_SCANMODE_KEY_ID;
-      ret = this->scan_Mode.initialize(itemConfig);
-#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i %i", 6, ret);
-#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      if (ret != 0)
-      {
-        break;
-      }
+      break;
     }
-    
-    // code prefix
+
+    // comm_Parity
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_PARITY;
+    ret = this->comm_Parity.initialize(itemConfig);
+    if (ret != 0)
     {
-      itemConfig.dbKeyId = FEM_SET_SCANNER_DB_CODE_PREFIX_KEY_ID;
-      itemConfig.sMaxLen = FEM_SET_SCANNER_DB_CODE_PREFIX_LEN_MAX;
-#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i", 8);
-#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      ret = this->code_Prefix.initialize(itemConfig);
-#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i %i", 9, ret);
-#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-      if (ret != 0)
-      {
-        break;
-      }
+      break;
     }
+
+    // comm_Stopbit
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_STOPBIT;
+    ret = this->comm_Stopbit.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // comm_Databit
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_DATABIT;
+    ret = this->comm_Databit.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // comm_FlowCtrl
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_FLOW_CTRL;
+    ret = this->comm_FlowCtrl.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // character_Format
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CHARACTER;
+    ret = this->character_Format.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // read_State
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_READ_STATE;
+    ret = this->read_State.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // auto_Scan
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_AUTO_SCAN;
+    ret = this->auto_Scan.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // cont_Scan
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CONT_SCAN;
+    ret = this->cont_Scan.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // security_Level
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_SECURITY_LEVEL;
+    ret = this->security_Level.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // enable_Prefix
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX;
+    ret = this->enable_Prefix.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+    // custom_Code_Format
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_CUS_FORMAT;
+    ret = this->custom_Code_Format.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+    // mess_Terminator
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_MESS_TER;
+    ret = this->mess_Terminator.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+
+    // custom_Prefix
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX_MOD;
+    itemConfig.sMaxLen = FEM_SET_DB_STR_LEN_SCANNER_CODE_PREFIX_MOD;
+    ret = this->custom_Prefix.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // custom_Suffix
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_SUFFIX_MOD;
+    itemConfig.sMaxLen = FEM_SET_DB_STR_LEN_SCANNER_CODE_SUFFIX_MOD;
+    ret = this->custom_Suffix.initialize(itemConfig);
+    if (ret != 0)
+    {
+      break;
+    }
+
+
 #ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i", 99);
 #endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
@@ -128,28 +231,183 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
   return -1;
 }
 
-uint8_t ScannerSettingCollection::scanMode(void)
+uint8_t ScannerSettingCollection::commBaudrate(void)
 {
   SystemMutexLocker locker(this->mutex_Key);
-  return this->scan_Mode.get();
+  return this->comm_Baudrate.get();
 }
 
-void ScannerSettingCollection::scanMode(uint8_t newVal, bool updateDB)
+void ScannerSettingCollection::commBaudrate(uint8_t newVal, bool updateDB)
 {
   SystemMutexLocker locker(this->mutex_Key);
-  this->scan_Mode.set(newVal, updateDB);
+  this->comm_Baudrate.set(newVal, updateDB);
 }
 
-char* ScannerSettingCollection::codePrefix(void)
+uint8_t ScannerSettingCollection::commParity(void)
 {
   SystemMutexLocker locker(this->mutex_Key);
-  return this->code_Prefix.get();
+  return this->comm_Parity.get();
 }
 
-void ScannerSettingCollection::codePrefix(char* newVal, DataSize_t newValLen, bool updateDB)
+void ScannerSettingCollection::commParity(uint8_t newVal, bool updateDB)
 {
   SystemMutexLocker locker(this->mutex_Key);
-  this->code_Prefix.set(newVal, newValLen, updateDB);
+  this->comm_Parity.set(newVal, updateDB);
 }
 
+uint8_t ScannerSettingCollection::commStopbit(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->comm_Stopbit.get();
+}
+
+void ScannerSettingCollection::commStopbit(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->comm_Stopbit.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::commDatabit(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->comm_Databit.get();
+}
+
+void ScannerSettingCollection::commDatabit(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->comm_Databit.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::commFlowCtrl(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->comm_FlowCtrl.get();
+}
+
+void ScannerSettingCollection::commFlowCtrl(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->comm_FlowCtrl.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::characterFormat(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->character_Format.get();
+}
+
+void ScannerSettingCollection::characterFormat(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->character_Format.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::readState(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->read_State.get();
+}
+
+void ScannerSettingCollection::readState(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->read_State.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::autoScan(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->auto_Scan.get();
+}
+
+void ScannerSettingCollection::autoScan(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->auto_Scan.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::contScan(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->cont_Scan.get();
+}
+
+void ScannerSettingCollection::contScan(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->cont_Scan.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::securityLevel(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->security_Level.get();
+}
+
+void ScannerSettingCollection::securityLevel(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->security_Level.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::enablePrefix(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->enable_Prefix.get();
+}
+
+void ScannerSettingCollection::enablePrefix(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->enable_Prefix.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::customCodeFormat(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->custom_Code_Format.get();
+}
+
+void ScannerSettingCollection::customCodeFormat(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->custom_Code_Format.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::messTerminator(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->mess_Terminator.get();
+}
+
+void ScannerSettingCollection::messTerminator(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->mess_Terminator.set(newVal, updateDB);
+}
+
+char* ScannerSettingCollection::customPrefix(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->custom_Prefix.get();
+}
+
+void ScannerSettingCollection::customPrefix(char* newVal, DataSize_t newValLen, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->custom_Prefix.set(newVal, newValLen, updateDB);
+}
+
+char* ScannerSettingCollection::customSuffix(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->custom_Suffix.get();
+}
+
+void ScannerSettingCollection::customSuffix(char* newVal, DataSize_t newValLen, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->custom_Suffix.set(newVal, newValLen, updateDB);
+}
 #endif // _CONF_SCANNER_SETTING_COLLECTION_ENABLED

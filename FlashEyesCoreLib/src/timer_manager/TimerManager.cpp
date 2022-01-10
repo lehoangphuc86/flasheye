@@ -129,7 +129,7 @@ int TimerManager::start(TimerManagerCbOnExpired callback, void* cbArg, unsigned 
 
     TimerInfoTAG config = TimerInfoTAG();
     config.enabled = 1;
-    config.interval = intervalMs;
+    config.interval = intervalMs*TIMER_DEVICE_TIMER_MS_2_UNIT;
     //config.handlingMode = TIMER_MANAGER_HANDLING_MODE_CALLBACK;
     config.oneShot = (oneShot == false ? 0 : 1);
     config.handler = callback;
