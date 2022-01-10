@@ -434,12 +434,20 @@ int ScanningControlTask::onEventScanningDeviceSignal(unsigned char* data, unsign
           ret |= this->notifyParent(EventManagerConstant::EventMessageId::ScanningResult, sizeof(EventScanningResultTAG), (unsigned char*)&scanResult);
         }
 
-        if ( (ret== 0)
-          && ((this->max_Scan_Count <= 0)
-          || (this->cur_Scan_Index < this->max_Scan_Count))
-          )
+        if (ret == 0)
         {
-          ret |= this->sc_Controller->startScan();
+          if ((this->max_Scan_Count > 0)
+            && (this->cur_Scan_Index >= this->max_Scan_Count))
+          {
+            isCompleted = true;
+          }
+          else
+          {
+            ret |= this->sc_Controller->startScan();
+#ifdef SCANNING_TASK_CONSOLE_DEBUG_ENABLE
+            CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] ssig %i %i", 12, ret);
+#endif // SCANNING_TASK_CONSOLE_DEBUG_ENABLE
+          }
         }
         else
         {
@@ -453,6 +461,9 @@ int ScanningControlTask::onEventScanningDeviceSignal(unsigned char* data, unsign
 
         if (isCompleted != false)
         {
+#ifdef SCANNING_TASK_CONSOLE_DEBUG_ENABLE
+          CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] ssig %i", 13);
+#endif // SCANNING_TASK_CONSOLE_DEBUG_ENABLE
           // enough
           EventScanningCompletedTAG scanCompleted = EventScanningCompletedTAG();
           scanCompleted.seqId = this->cur_Scan_SeqId;

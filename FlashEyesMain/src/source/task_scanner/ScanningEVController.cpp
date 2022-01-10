@@ -793,9 +793,9 @@ int ScanningEVController::readCommand(ScanningCmdCode_t& cmdCode, uint16_t timeo
     // set null terminator
     this->comm_Buff[EV_CMD_RES_CODE_LEN + EV_CMD_PREFIX_CHARACTER_NUM + EV_CMD_CODE_LEN] = '\0';
 
-//#ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
-//    CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] r %d %s", 2, this->comm_Buff);
-//#endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
+#ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] r %d %s", 2, this->comm_Buff);
+#endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
 
     // expected buff is "!Axxxx;" or "?Axxxx;"
     // analysic
@@ -1072,9 +1072,9 @@ int ScanningEVController::writeCommand(ScanningCmdCode_t cmdCode, uint16_t timeo
       , EV_CMD_POSTFIX_CHARACTER
       , EV_CMD_CLOSE_STR
     );
-//#ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
-//    CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] w %s", this->cmd_Buff);
-//#endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
+#ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] w %s", this->cmd_Buff);
+#endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if ((cmdLen <= 0)
       || (cmdLen >= EV_SEND_CMD_BUFF_LEN_MAX)
       )

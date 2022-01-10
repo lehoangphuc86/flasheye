@@ -326,7 +326,9 @@ int DisplaySCController::setSocketConfig(DisplaySCDeviceConfigTAG& socketConfig)
     int8_t pinTx = (socketConfig.pin_TX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_PIN_LIB_DEFAULT : socketConfig.pin_TX);
     int8_t pinRx = (socketConfig.pin_RX == DISPLAY_DEVICE_PIN_INVALID ? DISPLAY_DEVICE_PIN_LIB_DEFAULT : socketConfig.pin_RX);
 #ifdef DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(dpSCControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpsc] set %i", 1);
+    CONSOLE_LOG_BUF(dpSCControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpsc] set %d %d %d", 1, socketConfig.pin_TX, socketConfig.pin_RX);
+    CONSOLE_LOG_BUF(dpSCControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpsc] set %d %d", 2, baudrate);
+    CONSOLE_LOG_BUF(dpSCControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[dpsc] set %d %d", 3, configSet);
 #endif // DP_SC_CONTROLLER_CONSOLE_DEBUG_ENABLE
     this->lcd_Controller->begin(
       baudrate

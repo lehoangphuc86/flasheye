@@ -105,14 +105,14 @@
 #define FEM_UI_DEV_DEVICE_ROW                         18
 #define FEM_UI_DEV_DEVICE_ID                          0
 
-#define FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX             2
+#define FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX             1
 #define FEM_UI_DEV_DEVICE_SC_BAUDRATE                 DISPLAY_SET_COMM_BAUD_9600
 #define FEM_UI_DEV_DEVICE_SC_BIT_PER_BYTE             DISPLAY_SET_COMM_DATABIT_8
 #define FEM_UI_DEV_DEVICE_SC_PARITY_TYPE              DISPLAY_SET_COMM_PARITY_NONE
 #define FEM_UI_DEV_DEVICE_SC_STOP_BIT                 DISPLAY_SET_COMM_STOPBIT_1
 #define FEM_UI_DEV_DEVICE_SC_TIMEOUT                  500
-#define FEM_UI_DEV_DEVICE_SC_PIN_TX                   DISPLAY_DEVICE_PIN_LIB_DEFAULT
-#define FEM_UI_DEV_DEVICE_SC_PIN_RX                   DISPLAY_DEVICE_PIN_LIB_DEFAULT
+#define FEM_UI_DEV_DEVICE_SC_PIN_TX                   18
+#define FEM_UI_DEV_DEVICE_SC_PIN_RX                   19
 
 
 // Distance sensor
@@ -244,8 +244,8 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 #define FEM_SCAN_DEV_DEVICE_DATA_TIMEOUT              100 // ms
 #define FEM_SCAN_DEV_DEVICE_ID                        0
 #define FEM_SCAN_DEV_PIN_LED                          5
-#define FEM_SCAN_DEV_PIN_BUZZER                       18
-#define FEM_SCAN_DEV_PIN_SENSOR                       19
+#define FEM_SCAN_DEV_PIN_BUZZER                       18 // no used
+#define FEM_SCAN_DEV_PIN_SENSOR                       19 // no used
 
 #define FEM_SCAN_DEV_DEVICE_SC_INSTANCE_IDX           2
 #define FEM_SCAN_DEV_DEVICE_SC_BAUDRATE               SCANNING_SET_COMM_BAUD_9600
@@ -257,7 +257,7 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 #define FEM_SCAN_DEV_DEVICE_SC_PIN_RX                 SCANNING_DEVICE_PIN_LIB_DEFAULT
 
 #define FEM_SCAN_OP_TIMEOUT                           10000 // ms
-#define FEM_SCAN_OP_MAX_SCAN_COUNT                    2
+#define FEM_SCAN_OP_MAX_SCAN_COUNT                    1
 // main 
 #define FEM_MAIN_DM_BUFF_SIZE                         200
 #define FEM_MAIN_DM_BUFF_COUNT                        5
