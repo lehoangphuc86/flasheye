@@ -42,7 +42,7 @@ char mainNormalControllerLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 /*MainNormalController*/
 
 MainNormalController::MainNormalController(void)
-  : MainController((byte)SystemMode::NormalMode)
+  : MainController(SYS_MODE_NORMAL)
   , timer_Id(TIMER_MANAGER_TIMER_ID_INVALID)
 {
 

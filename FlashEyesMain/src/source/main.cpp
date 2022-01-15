@@ -12,6 +12,7 @@
 #include "task_ui/UiManager.h"
 #include "task_buzzer/BuzzerManager.h"
 #include "task_led/LedManager.h"
+#include "task_switch/SwitchManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONSOLE_DEBUG_ENABLE
@@ -52,8 +53,7 @@ static MainController* mainController = NULL;
 
 /////////////////////////////////////////////////
 // PROTYPES
-static int setupSWMenu(void);
-static byte getSystemMode(void);
+
 /////////////////////////////////////////////////
 // CLASS IMPLEMENTAION
 
@@ -63,7 +63,7 @@ static byte getSystemMode(void);
 int main(void)
 {
   int ret = 0;
-  byte systemMode = SystemMode::NormalMode;
+  SysMode_t systemMode = SYS_MODE_NORMAL;
   do
   {
 #ifdef _CONF_SYSTEM_CONSOLE_LOG_ENABLED
@@ -295,7 +295,23 @@ int main(void)
     {
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "SysMode getting");
       //set menu
-      ret = setupSWMenu();
+      SwitchManagerConfigTAG swConfig = SwitchManagerConfigTAG();
+      SwitchItemTAG swItems[FEM_SW_BUTTON_COUNT];
+      memset(&swItems, 0, FEM_SW_BUTTON_COUNT*sizeof(SwitchItemTAG));
+      swItems[0].pin = FEM_PIN_SCAN_BUTTON;
+      swItems[0].gpioFunc = FEM_GPIO_FUNC_SCAN_BUTTON;
+      swItems[0].triggerType = FEM_ISR_TYPE_SYSMODE_SCAN_BUTTON;
+      swItems[0].opCode = FEM_OPCODE_SCAN_BUTTON;
+      
+      swItems[1].pin = FEM_PIN_RESET_BUTTON;
+      swItems[1].gpioFunc = FEM_GPIO_FUNC_RESET_BUTTON;
+      swItems[1].triggerType = FEM_ISR_TYPE_SYSMODE_RESET_BUTTON;
+      swItems[1].opCode = FEM_OPCODE_RESET_BUTTON;
+      
+      swConfig.switchConfig.bounceTime = FEM_SW_BUTTON_BOUNCE_TIME;
+      swConfig.switchConfig.switchItems = swItems;
+      swConfig.switchConfig.switchItemCount = FEM_SW_BUTTON_COUNT;
+      ret = SwitchManager::getInstance().start(swConfig);//@@ setupSWMenu();
       if (ret != 0)
       {
         CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "SW menu setup failed");
@@ -308,22 +324,24 @@ int main(void)
 #else // MAIN_DEBUG_RESET_MODE
       byte tryTime = FEM_SW_SYS_MODE_TRY_TIME;
       while ( (tryTime >0) 
-        && (systemMode == SystemMode::NormalMode)
+        && (systemMode == SYS_MODE_NORMAL)
         )
       {
         tryTime--;
-        systemMode = getSystemMode();
+        systemMode = SwitchManager::getInstance().getSystemMode();
         //CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set try= %i mode=%i", tryTime, systemMode);
       }
 #endif // MAIN_DEBUG_RESET_MODE
-      if (systemMode >= (byte)SystemMode::SystemModeMax)
+      if (systemMode >= SYS_MODE_INVALID)
       {
         CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "System mode getting failed");
         break;
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set SysMode=%i", systemMode);
+
+      SwitchManager::getInstance().stop();
     }
-    
+
     // generate main controller
     //######################Main controller: start##########################
     {
@@ -366,113 +384,6 @@ int main(void)
 
   CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[m] set %s", "Set up failed");
   return -1;
-}
-
-int setupSWMenu(void)
-{
-  int ret = 0;
-  do
-  {
-    OpCodeMenuItemTAG menuItems[FEM_SW_BUTTON_COUNT];
-    memset(&menuItems, 0, sizeof(menuItems));
-    menuItems[0].pin = FEM_PIN_SCAN_BUTTON;
-    menuItems[0].gpioFunc = FEM_GPIO_FUNC_SCAN_BUTTON;
-    menuItems[0].triggerType = FEM_ISR_TYPE_SCAN_BUTTON;
-    menuItems[0].opCode = FEM_OPCODE_SCAN_BUTTON;
-    memcpy(menuItems[0].description, FEM_DESC_SCAN_BUTTON, strlen(FEM_DESC_SCAN_BUTTON));
-
-    menuItems[1].pin = FEM_PIN_RESET_BUTTON;
-    menuItems[1].gpioFunc = FEM_GPIO_FUNC_RESET_BUTTON;
-    menuItems[1].triggerType = FEM_ISR_TYPE_RESET_BUTTON;
-    menuItems[1].opCode = FEM_OPCODE_RESET_BUTTON;
-    memcpy(menuItems[1].description, FEM_DESC_RESET_BUTTON, strlen(FEM_DESC_RESET_BUTTON));
-
-    OpCodeMenuConfigTAG menuConfig = OpCodeMenuConfigTAG();
-    menuConfig.menuItems = &menuItems[0];
-    menuConfig.menuItemCount = FEM_SW_BUTTON_COUNT;
-    menuConfig.bounceTime = FEM_SW_BUTTON_BOUNCE_TIME;
-
-    ret = OpCodeMenu::getInstance().setConfig(menuConfig);
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] sSW %i %i", 5, ret);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-    if (ret != 0)
-    {
-      break;
-    }
-
-    ret = OpCodeMenu::getInstance().prepare();
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] sSW %i %i", 6, ret);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-    if (ret != 0)
-    {
-      break;
-    }
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] sSW %i", 99);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-    return 0;
-  } while (0);
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] sSW %i", -99);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-  return -1;
-}
-
-byte getSystemMode(void)
-{
-  byte systemMode = SystemMode::SystemModeMax;
-  int ret = 0;
-  int opCodes[FEM_SW_BUTTON_COUNT];
-  int opCodeCount = 0;
-  byte orOpCode = 0;
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] gsm %i", 0);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-  do
-  {
-    SYSTEM_SLEEP(FEM_SW_SYS_MODE_WAIT_TIME); //wait 1 second
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] gsm %i", 1);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-
-    ret = OpCodeMenu::getInstance().select(opCodes, FEM_SW_BUTTON_COUNT, opCodeCount);
-    if (ret != 0)
-    {
-      break;
-    }
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] gsm %i", 2);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-    for (int wk_idx = 0; wk_idx < opCodeCount; wk_idx++)
-    {
-      orOpCode |= opCodes[wk_idx];
-    }
-
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] gsm %i %i", 4, orOpCode);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-
-    switch (orOpCode)
-    {
-      case 0: // nothing pressed
-        return SystemMode::NormalMode;
-      case FEM_OPCODE_SCAN_BUTTON: // scan button pressed only
-        return SystemMode::NormalMode;
-      case FEM_OPCODE_RESET_BUTTON: // reset button pressed only
-        return SystemMode::SettingMode;
-      case (FEM_OPCODE_SCAN_BUTTON | FEM_OPCODE_RESET_BUTTON): // both button pressed
-        return SystemMode::ResetMode;
-      default:
-        return SystemMode::SystemModeMax;
-    }
-
-  } while (0);
-#ifdef MAIN_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] gsm %i", -99);
-#endif // MAIN_CONSOLE_DEBUG_ENABLE
-  return SystemMode::SystemModeMax;
 }
 
 #endif // _FEM_MAIN_CPP

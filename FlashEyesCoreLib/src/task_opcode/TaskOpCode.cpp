@@ -12,7 +12,7 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+//#define TASK_OPCODE_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // MARCO
 
@@ -68,39 +68,15 @@ OpCodeMenu::OpCodeMenu(void)
 
 OpCodeMenu::~OpCodeMenu(void)
 {
-
+  this->clear();
 }
 
-int OpCodeMenu::setConfig(OpCodeMenuConfigTAG& menuConfig)
+int OpCodeMenu::appendItem(OpCodeMenuItemTAG* menuItem, byte* outIndexP)
 {
+  byte outIndex = TASK_OPCODE_MENU_ITEM_INDEX_INVALID;
   do
   {
-    if ( (menuConfig.menuItems == NULL)
-      || (menuConfig.menuItemCount <= 0)
-      )
-    {
-      break;
-    }
-    this->bounce_Time = menuConfig.bounceTime;
-    this->item_Count = 0;//
-    byte itemCount = SYSTEM_MIN(menuConfig.menuItemCount, TASK_OPCODE_MENU_ITEM_COUNT_MAX);
-    for (byte wk_idx = 0; wk_idx < itemCount; wk_idx++)
-    {
-      if (this->appendItem(&menuConfig.menuItems[wk_idx]) != 0)
-      {
-        break;
-      }
-    }
-
-    return 0;
-  } while (0);
-  return -1;
-}
-
-int OpCodeMenu::appendItem(OpCodeMenuItemTAG* menuItem)
-{
-  do
-  {
+    SystemCriticalLocker locker(this->critical_Key);
     if ((menuItem == NULL)
       || (this->item_Count >= TASK_OPCODE_MENU_ITEM_COUNT_MAX)
       )
@@ -108,12 +84,110 @@ int OpCodeMenu::appendItem(OpCodeMenuItemTAG* menuItem)
       break;
     }
 
-    memcpy(&this->item_List[this->item_Count], menuItem, sizeof(OpCodeMenuItemTAG));
-    this->item_List[this->item_Count].isSelected = false;
-    this->item_List[this->item_Count].lastSelected = 0;
+    if (this->findItemByOpCode(menuItem->opCode) != NULL)
+    {
+      break; // already
+    }
 
+#ifdef SYSTEM_ARDUINO_BASED
+    if ((menuItem->pin <= 0)
+      || (menuItem->pin > PIN_NUMBER_MAX)
+      )
+    {
+      break;
+    }
+#endif // SYSTEM_ARDUINO_BASED
+
+    byte wkIdx = 0;
+    for (wkIdx = 0; wkIdx < TASK_OPCODE_MENU_ITEM_COUNT_MAX; wkIdx++)
+    {
+      if (this->item_List[wkIdx].enabled == false)
+      {
+        break;
+      }
+    }
+
+    if (wkIdx >= TASK_OPCODE_MENU_ITEM_COUNT_MAX)
+    {
+      break; // full
+    }
+
+    outIndex = wkIdx;
+#ifdef SYSTEM_ARDUINO_BASED
+    PIN_MODE(menuItem->pin, menuItem->gpioFunc);
+    if (menuItem->notIsr == false)
+    {
+      if (menuItem->cbOnPressed == NULL)
+      {
+        menuItem->cbOnPressed = this->item_Isr[outIndex];
+      }
+      ATTACH_ISR(menuItem->pin, menuItem->cbOnPressed, menuItem->triggerType);
+    }
+#endif // SYSTEM_ARDUINO_BASED
+
+    memcpy(&this->item_List[outIndex], menuItem, sizeof(OpCodeMenuItemTAG));
+    this->item_List[outIndex].isSelected = false;
+    this->item_List[outIndex].lastSelected = 0;
+    this->item_List[outIndex].enabled = true;
     this->item_Count++;
+
+    if (outIndexP != NULL)
+    {
+      *outIndexP = outIndex;
+    }
     return 0;
+  } while (0);
+
+  outIndex = TASK_OPCODE_MENU_ITEM_INDEX_INVALID;
+  if (outIndexP != NULL)
+  {
+    *outIndexP = outIndex;
+  }
+  return -1;
+}
+
+int OpCodeMenu::removeItemByIndex(byte opIndex)
+{
+  do
+  {
+    SystemCriticalLocker locker(this->critical_Key);
+    if ((opIndex < TASK_OPCODE_MENU_ITEM_INDEX_MIN)
+      || (opIndex > TASK_OPCODE_MENU_ITEM_INDEX_MAX)
+      )
+    {
+      break;
+    }
+
+    OpCodeMenuItemTAG* menuItem = &this->item_List[opIndex];
+    if (menuItem->enabled == false)
+    {
+      break;
+    }
+
+    return this->removeItem(menuItem);
+  } while (0);
+  return -1;
+}
+
+int OpCodeMenu::removeItemByOpCode(byte opCode)
+{
+  do
+  {
+    SystemCriticalLocker locker(this->critical_Key);
+    if ((opCode < TASK_OPCODE_MENU_ITEM_OPCODE_MIN)
+      || (opCode > TASK_OPCODE_MENU_ITEM_OPCODE_MAX)
+      )
+    {
+      break;
+    }
+
+    OpCodeMenuItemTAG* menuItem = this->findItemByOpCode(opCode);
+    if (menuItem == NULL)
+    {
+      break;
+    }
+
+    return this->removeItem(menuItem);
   } while (0);
   return -1;
 }
@@ -123,37 +197,127 @@ byte OpCodeMenu::menuItemCount(void)
   return this->item_Count;
 }
 
-int OpCodeMenu::prepare(void)
+
+int OpCodeMenu::prepare(OpCodeMenuConfigTAG& menuConfig)
+{
+  byte wk_idx = 0;
+  do
+  {
+    if (this->item_Count > 0)
+    {
+      return 0; // already
+    }
+    this->clear();
+    if ((menuConfig.menuItems == NULL)
+      || (menuConfig.menuItemCount <= 0)
+      )
+    {
+      break;
+    }
+    this->bounce_Time = menuConfig.bounceTime;
+    this->item_Count = 0;//
+    byte itemCount = SYSTEM_MIN(menuConfig.menuItemCount, TASK_OPCODE_MENU_ITEM_COUNT_MAX);
+    byte* outIndexP = NULL;
+    for (wk_idx = 0; wk_idx < itemCount; wk_idx++)
+    {
+      if (menuConfig.outIndexs != NULL)
+      {
+        outIndexP = menuConfig.outIndexs + wk_idx;
+      }
+
+      if (this->appendItem(&menuConfig.menuItems[wk_idx], outIndexP) != 0)
+      {
+        break;
+      }
+    }
+
+    if (wk_idx < itemCount)
+    {
+      break;
+    }
+    return 0;
+  } while (0);
+  this->clear();
+  return -1;
+}
+
+void OpCodeMenu::clear(void)
 {
   do
   {
-    if (this->item_Count <= 0)
+    this->bounce_Time = 0;
+    OpCodeMenuItemTAG* menuItem = NULL;
+    {
+      SystemCriticalLocker locker(this->critical_Key);
+      for (byte wkIdx = 0; wkIdx < TASK_OPCODE_MENU_ITEM_COUNT_MAX; wkIdx++)
+      {
+        menuItem = &this->item_List[wkIdx];
+        if (menuItem->enabled == false)
+        {
+          continue;
+        }
+        this->removeItem(menuItem);
+      }
+    }
+    //this->item_Count = 0;
+    return;
+  } while (0);
+  return;
+}
+
+int OpCodeMenu::removeItem(OpCodeMenuItemTAG* menuItem)
+{
+  do
+  {
+    if ( (menuItem == NULL)
+      || (menuItem->enabled == false)
+      )
     {
       break;
     }
 
-#ifdef SYSTEM_ARDUINO_BASED
+    if ((menuItem->pin > 0)
+      && (menuItem->pin <= PIN_NUMBER_MAX)
+      )
     {
-      OpCodeMenuItemTAG* menuItem = NULL;
-      for (byte wk_idx = 0; wk_idx < this->item_Count; wk_idx++)
+      PIN_MODE(menuItem->pin, GPIO_OUTPUT);
+      if (menuItem->notIsr == 0)
       {
-        menuItem = &this->item_List[wk_idx];
-        if ( (menuItem->pin <= 0)
-          || (menuItem->pin > PIN_NUMBER_MAX)
-          )
-        {
-          continue;
-        }
-        PIN_MODE(menuItem->pin, menuItem->gpioFunc);
-        //attachInterrupt(digitalPinToInterrupt(menuItem->pin), this->item_Isr[wk_idx], menuItem->triggerType);
-        ATTACH_ISR(menuItem->pin, this->item_Isr[wk_idx], menuItem->triggerType);
+        DETTACH_ISR(menuItem->pin);
       }
     }
-#endif // SYSTEM_ARDUINO_BASED
+    memset(menuItem, 0, sizeof(OpCodeMenuItemTAG));
+    this->item_Count--;
     return 0;
   } while (0);
-
   return -1;
+}
+
+OpCodeMenuItemTAG* OpCodeMenu::findItemByOpCode(byte opCode)
+{
+  do
+  {
+    if ((opCode < TASK_OPCODE_MENU_ITEM_OPCODE_MIN)
+      || (opCode > TASK_OPCODE_MENU_ITEM_OPCODE_MAX)
+      )
+    {
+      break;
+    }
+
+    byte wkIdx = 0;
+    for (wkIdx = 0; wkIdx < TASK_OPCODE_MENU_ITEM_COUNT_MAX; wkIdx++)
+    {
+      if ((this->item_List[wkIdx].enabled != false)
+        && (this->item_List[wkIdx].opCode == opCode)
+        )
+      {
+        return &this->item_List[wkIdx];
+      }
+    }
+
+    return NULL;
+  } while (0);
+  return NULL;
 }
 
 void OpCodeMenu::display(void)
@@ -161,9 +325,13 @@ void OpCodeMenu::display(void)
 #ifdef SYSTEM_ARDUINO_BASED
   OpCodeMenuItemTAG* menuItem = NULL;
   CONSOLE_LOG_BUF(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", "pin/opCode:");
-  for (byte wk_idx = 0; wk_idx < this->item_Count; wk_idx++)
+  for (byte wk_idx = 0; wk_idx < TASK_OPCODE_MENU_ITEM_COUNT_MAX; wk_idx++)
   {
     menuItem = &this->item_List[wk_idx];
+    if (menuItem->enabled == false)
+    {
+      continue;
+    }
     CONSOLE_LOG_BUF(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%i %s", menuItem->pin, menuItem->description);
   }
 #else // SYSTEM_ARDUINO_BASED
@@ -175,6 +343,53 @@ void OpCodeMenu::display(void)
     CONSOLE_LOG_BUF(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%i:%s", menuItem->opCode, menuItem->description);
   }
 #endif // SYSTEM_ARDUINO_BASED
+}
+
+bool OpCodeMenu::isPressedByIndex(byte opIndex)
+{
+  do
+  {
+    SystemCriticalLocker locker(this->critical_Key);
+    if ((opIndex < TASK_OPCODE_MENU_ITEM_INDEX_MIN)
+      || (opIndex > TASK_OPCODE_MENU_ITEM_INDEX_MAX)
+      )
+    {
+      break;
+    }
+
+    OpCodeMenuItemTAG* menuItem = &this->item_List[opIndex];
+    if (menuItem->enabled == false)
+    {
+      break;
+    }
+
+    return this->isPressed(menuItem);
+  } while (0);
+  return false;
+
+}
+
+bool OpCodeMenu::isPressedByOpCode(byte opCode)
+{
+  do
+  {
+    SystemCriticalLocker locker(this->critical_Key);
+    if ((opCode < TASK_OPCODE_MENU_ITEM_OPCODE_MIN)
+      || (opCode > TASK_OPCODE_MENU_ITEM_OPCODE_MAX)
+      )
+    {
+      break;
+    }
+
+    OpCodeMenuItemTAG* menuItem = this->findItemByOpCode(opCode);
+    if (menuItem == NULL)
+    {
+      break;
+    }
+
+    return this->isPressed(menuItem);
+  } while (0);
+  return false;
 }
 
 int OpCodeMenu::select(void)
@@ -198,15 +413,60 @@ int OpCodeMenu::select(int* outOpCodes, int outOpCodeMaxCount, int& outOpCodeCou
 }
 
 #ifdef SYSTEM_ARDUINO_BASED
+
+bool OpCodeMenu::isPressed(OpCodeMenuItemTAG* menuItem)
+{
+  bool isPressed = false;
+  int state = SYSTEM_PIN_LOW;
+  do
+  {
+    if (menuItem == NULL)
+    {
+      break;
+    }
+
+    isPressed = menuItem->isSelected; //via isr
+    if (menuItem->notIsr != false)
+    {
+      state = SYSTEM_PIN_DIGITAL_READ(menuItem->pin);
+      if ((menuItem->triggerType == ISR_ONLOW)
+        && (state == SYSTEM_PIN_LOW)
+        )
+      {
+        isPressed = true;
+      }
+      else if ((menuItem->triggerType == ISR_ONHIGH)
+        && (state == SYSTEM_PIN_HIGH)
+        )
+      {
+        isPressed = true;
+      }
+      else
+      {
+        isPressed = false;
+      }
+    }
+    return isPressed;
+  } while (0);
+  return false;
+}
+
 int OpCodeMenu::getOpCode(void)
 {
   int opCode = -1;
   OpCodeMenuItemTAG* menuItem = NULL;
-  for (byte wk_idx = 0; wk_idx < this->item_Count; wk_idx++)
+  bool isPressed = false;
+  for (byte wk_idx = 0; wk_idx < TASK_OPCODE_MENU_ITEM_COUNT_MAX; wk_idx++)
   {
     menuItem = &this->item_List[wk_idx];
+    if (menuItem->enabled == 0)
+    {
+      continue;
+    }
+    isPressed = this->isPressed(menuItem);
+
     if ( (opCode < 0) 
-      && (menuItem->isSelected != false)
+      && (isPressed != false)
       )
     {
       opCode = menuItem->opCode;
@@ -229,6 +489,23 @@ int OpCodeMenu::getOpCode(void)
   opInt = std::atoi(&opChar);
   return opInt;
 }
+
+bool OpCodeMenu::isPressed(OpCodeMenuItemTAG* menuItem)
+{
+  bool isPressed = false;
+  do
+  {
+    if (menuItem == NULL)
+    {
+      break;
+    }
+
+    isPressed = menuItem->isSelected; //via isr
+    return isPressed;
+  } while (0);
+  return false;
+
+}
 #endif // SYSTEM_ARDUINO_BASED
 
 int OpCodeMenu::getOpCode(int* outOpCodes, int outOpCodeMaxCount, int& outOpCodeCount)
@@ -242,13 +519,10 @@ int OpCodeMenu::getOpCode(int* outOpCodes, int outOpCodeMaxCount, int& outOpCode
     {
       break;
     }
-#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opT] gOP2 %i %i", 1, outOpCodeMaxCount);
-#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
     memset(outOpCodes, TASK_OPCODE_MENU_ITEM_OPCODE_INVALID, outOpCodeMaxCount);
 #ifdef SYSTEM_ARDUINO_BASED
     OpCodeMenuItemTAG* menuItem = NULL;
-    for (byte wk_idx = 0; wk_idx < this->item_Count; wk_idx++)
+    for (byte wk_idx = 0; wk_idx < TASK_OPCODE_MENU_ITEM_COUNT_MAX; wk_idx++)
     {
       if (outOpCodeCount >= outOpCodeMaxCount)
       {
@@ -256,7 +530,12 @@ int OpCodeMenu::getOpCode(int* outOpCodes, int outOpCodeMaxCount, int& outOpCode
       }
 
       menuItem = &this->item_List[wk_idx];
-      if (menuItem->isSelected != false)
+      if (menuItem->enabled == false)
+      {
+        continue;
+      }
+
+      if (this->isPressed(menuItem) != false)
       {
         outOpCodes[outOpCodeCount] = menuItem->opCode;
         outOpCodeCount++;
@@ -286,14 +565,11 @@ void OpCodeMenu::onButtonPressed(byte buttonIndex)
 #ifdef SYSTEM_ARDUINO_BASED
   do
   {
-//#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
-//    CONSOLE_LOG_BUF(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opT] irson %i", buttonIndex);
-//#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
-    if (buttonIndex >= this->item_Count)
+    if (buttonIndex >= TASK_OPCODE_MENU_ITEM_COUNT_MAX)
     {
       break;
     }
-    TimePoint_t nowMs = TimerManager::getInstance().nowFromISR();
+    TimePoint_t nowMs = TimerManager::getInstance().nowMsFromISR();
     OpCodeMenuItemTAG* menuItem = &this->item_List[buttonIndex];
     if ((nowMs - menuItem->lastSelected) < (this->bounce_Time*TIMER_DEVICE_TIMER_MS_2_UNIT))
     { // Debounce
@@ -389,42 +665,56 @@ void OpcodeInputTask::isRunning(bool state)
   }
 }
 
-int OpcodeInputTask::setConfig(
-  OpCodeMenuConfigTAG& menuConfig
-  , CbOnOpCodeRecevied cbOnOpCodeRev
-  , TaskManagerConfigTAG& taskConfig
-  , bool useTask
-)
+int OpcodeInputTask::appendMenuItem(OpCodeMenuItemTAG* menuItem, byte* outIndex)
+{
+  return OpCodeMenu::getInstance().appendItem(menuItem, outIndex);
+}
+
+int OpcodeInputTask::prepare(void)
+{
+  return 0;
+}
+
+
+int OpcodeInputTask::start(OpCodeInputTaskConfigTAG& inputTaskConfig) //TaskThreadConfigTAG& threadConfig)
 {
   do
   {
     int result = 0;
-    if (cbOnOpCodeRev == NULL)
+    if (this->isRunning() != false)
+    {
+      return 0;
+    }
+
+    this->stop();
+
+    if (inputTaskConfig.menuConfig.cbOnOpCodeRev == NULL)
     {
       break;
     }
 #ifdef SYSTEM_PC_BASED
-    useTask = false; // always
+    inputTaskConfig.useTask = false; // always
 #endif // SYSTEM_PC_BASED
 
-    this->cb_OpCode_Rev = cbOnOpCodeRev;
-    result = OpCodeMenu::getInstance().setConfig(menuConfig);
+    this->cb_OpCode_Rev = inputTaskConfig.menuConfig.cbOnOpCodeRev;
+    this->use_Task = inputTaskConfig.useTask;
+    result = OpCodeMenu::getInstance().prepare(inputTaskConfig.menuConfig);
     if (result != 0)
     {
       break;
     }
-    this->use_Task = useTask;
 
-    
     if (this->use_Task == false)
     {
+      this->isRunning(true);
+      this->proc();
       return result;
     }
 
     // Set up tasks
     {
       this->registerHanldingEventStructSize(sizeof(EventButtonPressedParamsTAG));
-      result = TaskManager::setConfig(taskConfig);
+      result = TaskManager::setConfig(inputTaskConfig.taskConfig);
       if (result != 0)
       {
         break;
@@ -436,64 +726,12 @@ int OpcodeInputTask::setConfig(
       }
     }
 
-    return result;
-  } while (0);
-  this->stop();
-  return -1;
-}
-
-int OpcodeInputTask::appendMenuItem(OpCodeMenuItemTAG* menuItem)
-{
-  return OpCodeMenu::getInstance().appendItem(menuItem);
-}
-
-int OpcodeInputTask::prepare(void)
-{
-  do
-  {
-    int result = 0;
-    if (this->cb_OpCode_Rev == NULL)
-    {
-      break;
-    }
-
-    result = OpCodeMenu::getInstance().prepare();
+    result = TaskManager::startProcess(inputTaskConfig.threadConfig, true);
     if (result != 0)
     {
       break;
     }
-    return result;
-  } while (0);
-  return -1;
-}
 
-
-int OpcodeInputTask::start(TaskThreadConfigTAG& threadConfig)
-{
-  do
-  {
-    int result = 0;
-    if (this->isRunning() != false)
-    {
-      return 0;
-    }
-    //this->stop();
-    if (this->cb_OpCode_Rev == NULL)
-    {
-      break;
-    }
-    if (this->use_Task != false)
-    {
-      result = TaskManager::startProcess(threadConfig, true);
-      if (result != 0)
-      {
-        break;
-      }
-      return result;
-    }
-    
-    this->isRunning(true);
-    this->proc();
     return result;
   } while (0);
   this->stop();
@@ -511,6 +749,9 @@ void OpcodeInputTask::stop(void)
   }
 
   this->isRunning(false);
+  this->cb_OpCode_Rev = NULL;
+  this->use_Task = false;
+  OpCodeMenu::getInstance().clear();
 }
 
 void OpcodeInputTask::cleanUp(void)

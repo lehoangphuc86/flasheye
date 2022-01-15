@@ -68,10 +68,12 @@ public:
   ////////////////////Function to call from outside ISR///////////////////////
 public:
   TimePoint_t                                                   now(void);
+  TimePoint_t                                                   nowMs(void);
   void                                                          stop(TimerId_t timerId);
   ////////////////////Function to call from inside ISR///////////////////////
 public:
   TimePoint_t                                                   nowFromISR(void);
+  TimePoint_t                                                   nowMsFromISR(void);
   void                                                          stopFromISR(TimerId_t timerId, bool* woken);
 protected:
   TimerControlTask*                                             control_Task;

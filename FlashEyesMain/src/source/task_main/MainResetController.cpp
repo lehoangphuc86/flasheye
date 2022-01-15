@@ -40,7 +40,7 @@ char mainResetControllerLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 /*MainResetController*/
 
 MainResetController::MainResetController(void)
-  : MainController((byte)SystemMode::ResetMode)
+  : MainController(SYS_MODE_RESET)
 {
 
 }

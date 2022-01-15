@@ -6,6 +6,7 @@
 // INCLUDE
 #if (_CONF_TASK_OPCODE_CONSTANT_ENABLED)
 #include "../os_system/SystemCommon.h"
+#include "../task_manager/TaskManagerConstant.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -19,7 +20,13 @@
 #endif // SYSTEM_ARDUINO_BASED
 #define TASK_OPCODE_MENU_ITEM_COUNT_MAX                   8
 
-#define TASK_OPCODE_MENU_ITEM_OPCODE_INVALID              255
+#define TASK_OPCODE_MENU_ITEM_OPCODE_MIN                  0
+#define TASK_OPCODE_MENU_ITEM_OPCODE_MAX                  254
+#define TASK_OPCODE_MENU_ITEM_OPCODE_INVALID              (TASK_OPCODE_MENU_ITEM_OPCODE_MAX + 1)
+
+#define TASK_OPCODE_MENU_ITEM_INDEX_MIN                   0
+#define TASK_OPCODE_MENU_ITEM_INDEX_MAX                   (TASK_OPCODE_MENU_ITEM_COUNT_MAX -1)
+#define TASK_OPCODE_MENU_ITEM_INDEX_INVALID               (TASK_OPCODE_MENU_ITEM_INDEX_MAX + 1)
 /////////////////////////////////////////////////
 // MARCO
 
@@ -41,13 +48,17 @@ typedef void(*IsrButtonPressed)();
 
 typedef struct _opCodeMenuItemTAG
 {
+  bool enabled      : 1; // internal used
+  bool notIsr       : 1;
+  bool isSelected   : 1;
+  byte reserved     : 5;
   byte opCode;
   byte pin;
   byte gpioFunc; // GPIO_INPUT/ GPIO_OUTPUT/ GPIO_PULLUP/ GPIO_INPUT_PULLUP
   byte triggerType; // ISR_RISING / ISR_FALLING/ ISR_CHANGE/ ISR_ONLOW/ ISR_ONHIGH/ ISR_ONLOW_WE/ ISR_ONHIGH_WE
-  char description[TASK_OPCODE_MENU_ITEM_DESCRIPTION_LEN_MAX];
-  bool isSelected;
-  TimePoint_t lastSelected;
+  IsrButtonPressed cbOnPressed; // if it is null, predefined isr would be assigned
+  char description[TASK_OPCODE_MENU_ITEM_DESCRIPTION_LEN_MAX]; // optional
+  TimePoint_t lastSelected; // internal used
 } OpCodeMenuItemTAG;
 
 typedef struct _buttonPressedParamsTAG
@@ -55,6 +66,24 @@ typedef struct _buttonPressedParamsTAG
   byte opCode;
 } ButtonPressedParamsTAG;
 
+typedef struct _opCodeMenuConfigTag
+{
+  OpCodeMenuItemTAG* menuItems;
+  byte menuItemCount;
+  uint16_t bounceTime;
+  CbOnOpCodeRecevied cbOnOpCodeRev;
+  byte* outIndexs; // if not null, it returns indexs of the menuitems. length must be menuItemCount. 
+} OpCodeMenuConfigTAG;
+
+typedef struct _opCodeInputTaskConfigTag
+{
+  OpCodeMenuConfigTAG menuConfig;
+  bool useTask;
+  TaskThreadConfigTAG threadConfig; // useTask = true
+  TaskManagerConfigTAG taskConfig; // useTask = true
+} OpCodeInputTaskConfigTAG;
+
+// events
 typedef struct _eventButtonPressedParamsTAG
 {
   byte opCode;

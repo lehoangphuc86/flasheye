@@ -84,6 +84,7 @@ do {                                                        \
 #define PIN_NUMBER_MAX                                    NUM_DIGITAL_PINS
 #define PIN_MODE(pin, mode)                               pinMode(pin, mode)
 #define ATTACH_ISR(pin, isrHandler, triggerType)          attachInterrupt(digitalPinToInterrupt(pin), isrHandler, triggerType)
+#define DETTACH_ISR(pin)                                  detachInterrupt(digitalPinToInterrupt(pin))
 
 // ISR trigger type
 #define ISR_RISING                                        RISING
@@ -93,6 +94,7 @@ do {                                                        \
 #define ISR_ONHIGH                                        ONHIGH
 #define ISR_ONLOW_WE                                      ONLOW_WE
 #define ISR_ONHIGH_WE                                     ONHIGH_WE
+#define ISR_INVALID                                       0
 
 // GPIO function
 #define GPIO_INPUT                                        INPUT
@@ -102,6 +104,7 @@ do {                                                        \
 
 // Pin write
 #define SYSTEM_PIN_DIGITAL_WRITE(pin, val)                digitalWrite(pin, val)
+#define SYSTEM_PIN_DIGITAL_READ(pin)                      digitalRead(pin)
 #define SYSTEM_PIN_ANALOG_WRITE(pin, val)                 ANALOG_WRITE(pin, val)
 
 // Digital state

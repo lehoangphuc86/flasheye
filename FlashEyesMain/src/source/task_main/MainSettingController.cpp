@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////
 // INCLUDE
-#include "MainSettingController .h"
+#include "MainSettingController.h"
 #if (_CONF_MAIN_SETTING_CONTROLLER_ENABLED)
 /////////////////////////////////////////////////
 // PREPROCESSOR
@@ -40,7 +40,7 @@ char mainSettingControllerLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 /*MainSettingController*/
 
 MainSettingController::MainSettingController(void)
-  : MainController((byte)SystemMode::SettingMode)
+  : MainController(SYS_MODE_SETTING)
 {
 
 }

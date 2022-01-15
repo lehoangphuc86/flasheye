@@ -30,12 +30,7 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
-typedef struct _opCodeMenuConfigTag
-{
-  OpCodeMenuItemTAG* menuItems;
-  byte menuItemCount;
-  uint16_t bounceTime;
-} OpCodeMenuConfigTAG;
+
 /////////////////////////////////////////////////
 // STATIC DATA
 
@@ -55,14 +50,22 @@ public:
   static OpCodeMenu& getInstance(void);
   OpCodeMenu(OpCodeMenu const&) = delete;
   void operator=(OpCodeMenu const&) = delete;
-  int                                                           setConfig(OpCodeMenuConfigTAG& menuConfig);
-  int                                                           appendItem(OpCodeMenuItemTAG* menuItem);
+  //int                                                           setConfig(OpCodeMenuConfigTAG& menuConfig);
+  int                                                           prepare(OpCodeMenuConfigTAG& menuConfig);
+  void                                                          clear(void);
+  int                                                           appendItem(OpCodeMenuItemTAG* menuItem, byte* outIndexP);
+  int                                                           removeItemByIndex(byte opIndex);
+  int                                                           removeItemByOpCode(byte opCode);
   byte                                                          menuItemCount(void);
-  int                                                           prepare(void);
+  bool                                                          isPressedByIndex(byte opIndex);
+  bool                                                          isPressedByOpCode(byte opCode);
   int                                                           select(void);
   int                                                           select(int* outOpCodes, int outOpCodeMaxCount, int& outOpCodeCount);
 protected:
+  int                                                           removeItem(OpCodeMenuItemTAG* menuItem);
+  OpCodeMenuItemTAG*                                            findItemByOpCode(byte opCode);
   void                                                          display(void);
+  bool                                                          isPressed(OpCodeMenuItemTAG* menuItem);
   int                                                           getOpCode(void);
   int                                                           getOpCode(int* outOpCodes, int outOpCodeMaxCount, int &outOpCodeCount);
 
@@ -83,6 +86,7 @@ protected:
   byte                                                          item_Count;
   OpCodeMenuItemTAG                                             item_List[TASK_OPCODE_MENU_ITEM_COUNT_MAX];
   IsrButtonPressed                                              item_Isr[TASK_OPCODE_MENU_ITEM_COUNT_MAX];
+  SystemCriticalSession                                         critical_Key;
 };
 
 /*OpcodeInputTask*/
@@ -94,14 +98,14 @@ public:
   OpcodeInputTask(OpcodeInputTask const&) = delete;
   void operator=(OpcodeInputTask const&) = delete;
   bool                                                          isRunning(void);
-  int                                                           setConfig(
+  /*int                                                           setConfig(
                                                                   OpCodeMenuConfigTAG& menuConfig
                                                                   , CbOnOpCodeRecevied cbOnOpCodeRev
                                                                   , TaskManagerConfigTAG& taskConfig
                                                                   , bool useTask = true
-  );
-  int                                                           appendMenuItem(OpCodeMenuItemTAG* menuItem);
-  int                                                           start(TaskThreadConfigTAG& threadConfig);
+  );*/
+  int                                                           appendMenuItem(OpCodeMenuItemTAG* menuItem, byte* outIndex);
+  int                                                           start(OpCodeInputTaskConfigTAG& inputTaskConfig);
   void                                                          stop(void);
   void                                                          cleanUp(void);
 protected:

@@ -82,6 +82,7 @@ do {                                                      \
 
 // Pin write
 #define SYSTEM_PIN_DIGITAL_WRITE(pin, val)                
+#define SYSTEM_PIN_DIGITAL_READ(pin)                      
 #define SYSTEM_PIN_ANALOG_WRITE(pin, val)                 
 
 

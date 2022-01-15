@@ -14,31 +14,41 @@
 /////////////////////////////////////////////////
 // DEFINE
 
+// system mode
+#define SYS_MODE_RESET                                0
+#define SYS_MODE_SETTING                              1
+#define SYS_MODE_NORMAL                               2
+#define SYS_MODE_MAX                                  3
+#define SYS_MODE_INVALID                              SYS_MODE_MAX
+
+
 // Common
 #define FEM_DEBUG_SERIAL_BAUDRATE                     56000
 #define FEM_DEBUG_SERIAL_INIT_WAIT                    1000 // ms
 // task
 #define FEM_TASK_PRIORITY_DEFAULT                     3
 
-// Button settings
-#define FEM_SW_SYS_MODE_TRY_TIME                      1
+// SW settings
+#define FEM_SW_SYS_MODE_TRY_TIME                      5
 #define FEM_SW_SYS_MODE_WAIT_TIME                     1000
 #define FEM_SW_BUTTON_COUNT                           2
 #define FEM_SW_BUTTON_BOUNCE_TIME                     (200) // ms
-
+#define FEM_SW_SYS_MODE_RESET_BIT                     (0x01 | 0x02)
+#define FEM_SW_SYS_MODE_SETTING_BIT                   (0x02)
 
 #define FEM_PIN_SCAN_BUTTON                           32
 #define FEM_ISR_TYPE_SCAN_BUTTON                      ISR_FALLING
+#define FEM_ISR_TYPE_SYSMODE_SCAN_BUTTON              ISR_ONLOW
 #define FEM_GPIO_FUNC_SCAN_BUTTON                     GPIO_INPUT_PULLUP
 #define FEM_OPCODE_SCAN_BUTTON                        0x01
 #define FEM_DESC_SCAN_BUTTON                          "Scan"
 
 #define FEM_PIN_RESET_BUTTON                          33
 #define FEM_ISR_TYPE_RESET_BUTTON                     ISR_FALLING
+#define FEM_ISR_TYPE_SYSMODE_RESET_BUTTON             ISR_ONLOW
 #define FEM_GPIO_FUNC_RESET_BUTTON                    GPIO_INPUT_PULLUP
 #define FEM_OPCODE_RESET_BUTTON                       0x02
 #define FEM_DESC_RESET_BUTTON                         "Reset"
-
 
 ///
 #define FLASH_EYE_TASK_MEM_MAIN_CONTROLLER            526
@@ -284,9 +294,16 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 /////////////////////////////////////////////////
 // DATA TYPE (TYPEDEF)
 typedef uint16_t                                      Seq_t;
+typedef uint8_t                                       SysMode_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
-
+//typedef enum _systemMode
+//{
+//  ResetMode = 0,
+//  SettingMode,
+//  NormalMode,
+//  SystemModeMax
+//} SystemMode;
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
 

@@ -159,6 +159,8 @@
     <ClInclude Include="src\source\task_scanner\ScanningControlTask.h" />
     <ClInclude Include="src\source\task_scanner\ScanningEVController.h" />
     <ClInclude Include="src\source\task_scanner\ScanningTaskConstant.h" />
+    <ClInclude Include="src\source\task_switch\SwitchManager.h" />
+    <ClInclude Include="src\source\task_switch\TaskSwitchConstant.h" />
     <ClInclude Include="src\source\task_ui\UiDpLcdI2CProcessor.h" />
     <ClInclude Include="src\source\task_ui\UiDpLcdProcessor.h" />
     <ClInclude Include="src\source\task_ui\UiDpProcessorFactory.h" />
@@ -198,6 +200,7 @@
     <ClCompile Include="src\source\task_scanner\ScanningControllerFactory.cpp" />
     <ClCompile Include="src\source\task_scanner\ScanningControlTask.cpp" />
     <ClCompile Include="src\source\task_scanner\ScanningEVController.cpp" />
+    <ClCompile Include="src\source\task_switch\SwitchManager.cpp" />
     <ClCompile Include="src\source\task_ui\UiDpLcdI2CProcessor.cpp" />
     <ClCompile Include="src\source\task_ui\UiDpLcdProcessor.cpp" />
     <ClCompile Include="src\source\task_ui\UiDpProcessorFactory.cpp" />

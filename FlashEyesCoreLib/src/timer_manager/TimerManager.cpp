@@ -163,62 +163,32 @@ void TimerManager::finalize(void)
 TimePoint_t TimerManager::now(void)
 {
   return this->control_Task->now();
-  /*do
-  {
-    if (this->isRunning() == false)
-    {
-      break;
-    }
+}
 
-    return this->control_Task->now();
-  } while (0);
-  return 0;*/
+TimePoint_t TimerManager::nowMs(void)
+{
+  return this->now() / TIMER_DEVICE_TIMER_MS_2_UNIT;
 }
 
 void TimerManager::stop(TimerId_t timerId)
 {
   return this->control_Task->stopTimer(timerId);
-  /*do
-  {
-    if (this->isRunning() == false)
-    {
-      break;
-    }
-
-    return this->control_Task->stopTimer(timerId);
-  } while (0);
-  return;*/
 }
 
 ////////////////////Function to call from inside ISR///////////////////////
 TimePoint_t TimerManager::nowFromISR(void)
 {
   return this->control_Task->nowFromISR();
-  /*do
-  {
-    if (this->isRunning() == false)
-    {
-      break;
-    }
+}
 
-    return this->control_Task->nowFromISR();
-  } while (0);
-  return 0;*/
+TimePoint_t TimerManager::nowMsFromISR(void)
+{
+  return this->nowFromISR() / TIMER_DEVICE_TIMER_MS_2_UNIT;
 }
 
 void TimerManager::stopFromISR(TimerId_t timerId, bool* woken)
 {
   return this->control_Task->stopTimerFromISR(timerId, woken);
-  /*do
-  {
-    if (this->isRunning() == false)
-    {
-      break;
-    }
-
-    return this->control_Task->stopTimerFromISR(timerId, woken);
-  } while (0);
-  return;*/
 }
 
 #endif // _CONF_TIMER_MANAGER_ENABLED

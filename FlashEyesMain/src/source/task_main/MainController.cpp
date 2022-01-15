@@ -54,7 +54,7 @@ MainController::~MainController(void)
 
 bool MainController::isValid(void)
 {
-  return (this->system_Mode >= SystemMode::SystemModeMax ? false : true);
+  return (this->system_Mode >= SYS_MODE_MAX ? false : true);
 }
 
 byte MainController::systemMode(void)
@@ -190,7 +190,7 @@ Seq_t MainController::nextSeqId(void)
 void MainController::proc(void)
 {
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] proc %i", 0);
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] proc %i %i", 0, this->systemMode());
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
   int prepareRet = this->prepare();
   this->reportPrepareResult(prepareRet);

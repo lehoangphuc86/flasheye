@@ -27,13 +27,7 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
-typedef enum _systemMode
-{
-  ResetMode = 0,
-  SettingMode,
-  NormalMode,
-  SystemModeMax
-} SystemMode;
+
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
 

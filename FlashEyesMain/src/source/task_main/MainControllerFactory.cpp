@@ -4,7 +4,7 @@
 
 #if (_CONF_MAIN_CONTROLLER_FACTORY_ENABLED)
 #include "MainResetController.h"
-#include "MainSettingController .h"
+#include "MainSettingController.h"
 #include "MainNormalController.h"
 
 /////////////////////////////////////////////////
@@ -57,13 +57,13 @@ MainController* MainControllerFactory::generate(byte systemMode)
   {
     switch (systemMode)
     {
-      case SystemMode::ResetMode:
+      case SYS_MODE_RESET:
         mainController = new MainResetController();
         break;
-      case SystemMode::SettingMode:
+      case SYS_MODE_SETTING:
         mainController = new MainSettingController();
         break;
-      case SystemMode::NormalMode:
+      case SYS_MODE_NORMAL:
         mainController = new MainNormalController();
         break;
       default:

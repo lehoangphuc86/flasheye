@@ -77,6 +77,9 @@
     <Filter Include="src\libs\scanner\EV">
       <UniqueIdentifier>{21296c7d-25a7-4a6c-bdef-676b43853171}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\task_switch">
+      <UniqueIdentifier>{271956c0-0d85-432b-83ab-3063a12b2a24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -232,6 +235,12 @@
     <ClInclude Include="src\libs\scanner\EV\EV_ER080.h">
       <Filter>src\libs\scanner\EV</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_switch\SwitchManager.h">
+      <Filter>src\source\task_switch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_switch\TaskSwitchConstant.h">
+      <Filter>src\source\task_switch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -332,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="src\source\task_scanner\ScanningEVController.cpp">
       <Filter>src\source\task_scanning</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_switch\SwitchManager.cpp">
+      <Filter>src\source\task_switch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
