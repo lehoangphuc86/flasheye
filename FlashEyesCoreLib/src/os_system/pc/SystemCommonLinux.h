@@ -22,7 +22,7 @@
 /////////////////////////////////////////////////
 // MARCO
 #define SYSTEM_SLEEP(x)                                   usleep(x*1000)
-
+#define SYSTEM_REBOOT()                                   
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 

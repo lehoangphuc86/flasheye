@@ -7,7 +7,7 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
+//#define SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
 
 /////////////////////////////////////////////////
 // MARCO
@@ -72,7 +72,7 @@ int SettingManager::initialize(SettingManagerConfigTAG& settingConfig)
 #ifdef SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(settingManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[sm] ini %i", 1);
 #endif // SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
-    ret = this->initSettingList(1); // @@
+    ret = this->initSettingList(2); // @@
     if (ret != 0)
     {
       break;
@@ -81,18 +81,21 @@ int SettingManager::initialize(SettingManagerConfigTAG& settingConfig)
     CONSOLE_LOG_BUF(settingManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[sm] ini %i", 2);
 #endif // SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
     this->setting_List[0] = &this->scanner_Set;
+    this->setting_List[1] = &this->system_Set;
     // @@
 
     SettingCollectionConfigTAG collectionConfig = SettingCollectionConfigTAG();
-    collectionConfig.dbTableId = FEM_SET_DB_TBL_ID_SCANNER;
-#ifdef SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(settingManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[sm] ini %i", 3);
-#endif // SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
     // scanner
+    collectionConfig.dbTableId = FEM_SET_DB_TBL_ID_SCANNER;
     ret = this->scanner_Set.initialize(collectionConfig);
-#ifdef SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(settingManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[sm] ini %i %i", 4, ret);
-#endif // SETTING_MANAGER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // system
+    collectionConfig.dbTableId = FEM_SET_DB_TBL_ID_SYSTEM;
+    ret = this->system_Set.initialize(collectionConfig);
     if (ret != 0)
     {
       break;
@@ -229,6 +232,11 @@ void SettingManager::clearSettingList(void)
 ScannerSettingCollection& SettingManager::scanner(void)
 {
   return this->scanner_Set;
+}
+
+SystemSettingCollection& SettingManager::system(void)
+{
+  return this->system_Set;
 }
 
 

@@ -6,6 +6,7 @@
 /////////////////////////////////////////////////
 // INCLUDE
 #include "ScannerSettingCollection.h"
+#include "SystemSettingCollection.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -59,6 +60,7 @@ public:
   int                                                           save(void);
   void                                                          clear(void);
   ScannerSettingCollection&                                     scanner(void);
+  SystemSettingCollection&                                      system(void);
   //MainSettingCollection&                                        main(void);
   //SensorSettingCollection&                                      sensor(void);
   //ExCommSettingCollection&                                      excomm(void);
@@ -69,7 +71,7 @@ protected:
 
 protected:
   ScannerSettingCollection                                      scanner_Set;
-
+  SystemSettingCollection                                       system_Set;
   SettingCollection**                                           setting_List;
   byte                                                          setting_List_Count;
 };

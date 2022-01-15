@@ -80,6 +80,9 @@
     <Filter Include="src\source\task_switch">
       <UniqueIdentifier>{271956c0-0d85-432b-83ab-3063a12b2a24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\system">
+      <UniqueIdentifier>{6cf93c2b-80c1-4e32-af77-f8e236fee172}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -175,7 +178,7 @@
     <ClInclude Include="src\source\task_main\MainNormalController.h">
       <Filter>src\source\task_main</Filter>
     </ClInclude>
-    <ClInclude Include="src\source\task_main\MainSettingController .h">
+    <ClInclude Include="src\source\task_main\MainSettingController.h">
       <Filter>src\source\task_main</Filter>
     </ClInclude>
     <ClInclude Include="src\source\settings\SettingManager.h">
@@ -241,6 +244,18 @@
     <ClInclude Include="src\source\task_switch\TaskSwitchConstant.h">
       <Filter>src\source\task_switch</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\settings\SystemSettingCollection.h">
+      <Filter>src\source\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\settings\SettingDefinition.h">
+      <Filter>src\source\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_scanner\ScanningSettingDefinition.h">
+      <Filter>src\source\task_scanning</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\system\SystemSettingDefinition.h">
+      <Filter>src\source\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -294,7 +309,7 @@
     <ClCompile Include="src\source\task_main\MainNormalController.cpp">
       <Filter>src\source\task_main</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\task_main\MainSettingController .cpp">
+    <ClCompile Include="src\source\task_main\MainSettingController.cpp">
       <Filter>src\source\task_main</Filter>
     </ClCompile>
     <ClCompile Include="src\source\settings\SettingManager.cpp">
@@ -344,6 +359,9 @@
     </ClCompile>
     <ClCompile Include="src\source\task_switch\SwitchManager.cpp">
       <Filter>src\source\task_switch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\settings\SystemSettingCollection.cpp">
+      <Filter>src\source\settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

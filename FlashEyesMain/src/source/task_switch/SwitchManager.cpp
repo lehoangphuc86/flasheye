@@ -115,26 +115,12 @@ int SwitchManager::start(SwitchManagerConfigTAG& swManagerConfig)
 
 SysMode_t SwitchManager::getSystemMode(void)
 {
-  SysMode_t systemMode = SYS_MODE_INVALID;
-  int ret = 0;
-  byte orOpCode = 0;
+  
+  SysMode_t orOpCode = 0;
   bool isPressed = false;
   do
   {
-    if (this->isValid() == false)
-    {
-      break;
-    }
-
-    for (byte wk_idx = 0; wk_idx < this->sw_Count; wk_idx++)
-    {
-      isPressed = OpCodeMenu::getInstance().isPressedByOpCode(this->sw_Opcode[wk_idx]);
-      if (isPressed != false)
-      {
-        orOpCode |= this->sw_Opcode[wk_idx];
-      }
-    }
-
+    orOpCode = this->getState();
     switch (orOpCode)
     {
       case FEM_SW_SYS_MODE_SETTING_BIT: // reset button pressed only
@@ -147,6 +133,36 @@ SysMode_t SwitchManager::getSystemMode(void)
 
   } while (0);
   return SYS_MODE_INVALID;
+}
+
+SysMode_t SwitchManager::getState(void)
+{
+  SysMode_t orOpCode = 0; 
+  bool isPressed = false;
+  do
+  {
+    if (this->isValid() == false)
+    {
+      break;
+    }
+
+    for (byte wk_idx = 0; wk_idx < this->sw_Count; wk_idx++)
+    {
+      isPressed = this->isPressed(this->sw_Opcode[wk_idx]);// OpCodeMenu::getInstance().isPressedByOpCode(this->sw_Opcode[wk_idx]);
+      if (isPressed != false)
+      {
+        orOpCode |= this->sw_Opcode[wk_idx];
+      }
+    }
+
+    return orOpCode;
+  } while (0);
+  return 0;
+}
+
+bool SwitchManager::isPressed(byte opCode)
+{
+  return OpCodeMenu::getInstance().isPressedByOpCode(opCode);
 }
 
 void SwitchManager::stop(void)

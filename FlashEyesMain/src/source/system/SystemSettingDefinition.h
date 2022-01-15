@@ -1,31 +1,23 @@
-#ifndef _SYSTEM_COMMON_WIN_H
-#define _SYSTEM_COMMON_WIN_H
-
-#include "../../FlashEyesCoreLibConfig.h"
-#ifdef SYSTEM_WIN_PLATFORM
-/////////////////////////////////////////////////
-// Preprocessor
-
+#include "../../FlashEyesMain.h"
+#ifndef _SYSTEM_SETTING_DEFINITION_H
+#define _SYSTEM_SETTING_DEFINITION_H
 /////////////////////////////////////////////////
 // INCLUDE
-// windows
-#include <windows.h>
-#include <tchar.h>
-#include <stdint.h>
-#include <mutex>
-
+#if (_CONF_SYSTEM_SETTING_DEFINITION_ENABLED)
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
 /////////////////////////////////////////////////
 // DEFINE
+//#########################Setting enum###############
+//-------------------comm----------------------
+// System: Last sys mode
+
+//#########################Setting default###########
 
 /////////////////////////////////////////////////
 // MARCO
 
-// SYSTEM_PC_BASED
-#define SYSTEM_SLEEP(x)                                   Sleep(x)
-#define SYSTEM_REBOOT()                                   
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 
@@ -34,7 +26,7 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (TYPEDEF)
-typedef UINT_PTR                                          TimerHanlder_t;
+
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 
@@ -46,6 +38,7 @@ typedef UINT_PTR                                          TimerHanlder_t;
 
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
+//
 
 /////////////////////////////////////////////////
 // EXTERN
@@ -53,5 +46,8 @@ typedef UINT_PTR                                          TimerHanlder_t;
 /////////////////////////////////////////////////
 // CLASS DEFINITION
 
-#endif // SYSTEM_WIN_PLATFORM
-#endif // _SYSTEM_COMMON_WIN_H
+
+#endif // _CONF_SYSTEM_SETTING_DEFINITION_ENABLED
+
+#endif // _SYSTEM_SETTING_DEFINITION_H
+

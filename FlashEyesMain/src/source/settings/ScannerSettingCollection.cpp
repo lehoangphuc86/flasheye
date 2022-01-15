@@ -8,7 +8,7 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
+//#define SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
 
 /////////////////////////////////////////////////
 // MARCO
@@ -221,9 +221,6 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
 #endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
-#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i", -98);
-#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
   this->clear();
 #ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i", -99);

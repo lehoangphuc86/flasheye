@@ -134,6 +134,9 @@ int main(void)
       dbManagerConfig.dbPath = FEM_DB_PATH;
       dbManagerConfig.dbTableName = g_FEM_Db_Tbl_Names;
       dbManagerConfig.dbTableIdMax = FEM_DB_TBL_ID_MAX;
+
+      //FileSystemManager::getInstance().deleteFile(FEM_DB_PATH);
+      bool existingDB = FileSystemManager::getInstance().exist(FEM_DB_PATH);
       ret = DBManager::getInstance().initialize(dbManagerConfig);
       if (ret != 0)
       {
@@ -142,17 +145,20 @@ int main(void)
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "DB running");
 
-#ifdef MAIN_DEBUG_RESET_DB
-      char* tmpSqlCmdBuf = new char[250];
-      ret = DBManager::getInstance().exeScriptFile(FEM_DB_TBL_CONFIG_SCRIPT_PATH, tmpSqlCmdBuf, 250);
-      delete[] tmpSqlCmdBuf;
-      tmpSqlCmdBuf = NULL;
-      if (ret != 0)
+      if (existingDB == false)
       {
-        CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "DB reset failed");
-        break;
+        CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Not found db, generating..");
+        char* tmpSqlCmdBuf = new char[DB_SCRIPT_LINE_LEN_MAX];
+        ret = DBManager::getInstance().resetDB(g_FEM_Db_Tbl_Scripts, FEM_DB_TBL_ID_MAX, tmpSqlCmdBuf, DB_SCRIPT_LINE_LEN_MAX);
+        delete[] tmpSqlCmdBuf;
+        tmpSqlCmdBuf = NULL;
+        if (ret != 0)
+        {
+          CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "DB generating failed");
+          break;
+        }
+        CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "DB generating completed.");
       }
-#endif // MAIN_DEBUG_RESET_DB
     }
 
     //######################Setting: load##########################
@@ -199,7 +205,7 @@ int main(void)
       buzzerMgrConfig.deviceConfig = buzzerDeviceConfig;
 
       ret = BuzzerManager::getInstance().start(buzzerMgrConfig);
-      BuzzerDeviceManager::getInstance().dump();
+      //BuzzerDeviceManager::getInstance().dump();
       if (ret != 0)
       {
         CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Buzzer start failed");
@@ -280,17 +286,10 @@ int main(void)
         break;
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "UI running");
-      //@@
-      UiMessSysStateTAG sysStateTag = UiMessSysStateTAG();
-      sysStateTag.state = 99;
-
-      UiManager::getInstance().show(UIConstant::UIMessageId::UiMessSysState, sizeof(sysStateTag), (unsigned char*)&sysStateTag);
-      // @@
+      
+      UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_BOOTING, UI_MESS_SYS_STATE_SUB_START);
     }
-    //
-    // @@@
-    // load setting from db, if it required SettingMode, no need to get systemode
-    
+
     //######################SW menu: start##########################
     {
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "SysMode getting");
@@ -311,7 +310,7 @@ int main(void)
       swConfig.switchConfig.bounceTime = FEM_SW_BUTTON_BOUNCE_TIME;
       swConfig.switchConfig.switchItems = swItems;
       swConfig.switchConfig.switchItemCount = FEM_SW_BUTTON_COUNT;
-      ret = SwitchManager::getInstance().start(swConfig);//@@ setupSWMenu();
+      ret = SwitchManager::getInstance().start(swConfig);
       if (ret != 0)
       {
         CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "SW menu setup failed");
@@ -322,14 +321,19 @@ int main(void)
 #ifdef MAIN_DEBUG_RESET_MODE
       systemMode = SystemMode::ResetMode;
 #else // MAIN_DEBUG_RESET_MODE
-      byte tryTime = FEM_SW_SYS_MODE_TRY_TIME;
-      while ( (tryTime >0) 
-        && (systemMode == SYS_MODE_NORMAL)
+      SysMode_t lastSystemMode = SettingManager::getInstance().system().lastSysMode();
+      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set pre mode %d", lastSystemMode);
+      // clear last sysmode
+      SettingManager::getInstance().system().lastSysMode(SYS_MODE_INVALID, true);
+      if ((systemMode == SYS_MODE_NORMAL)
+        && (lastSystemMode < SYS_MODE_INVALID)
         )
       {
-        tryTime--;
+        systemMode = lastSystemMode;
+      }
+      else
+      {
         systemMode = SwitchManager::getInstance().getSystemMode();
-        //CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set try= %i mode=%i", tryTime, systemMode);
       }
 #endif // MAIN_DEBUG_RESET_MODE
       if (systemMode >= SYS_MODE_INVALID)
@@ -339,7 +343,7 @@ int main(void)
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set SysMode=%i", systemMode);
 
-      SwitchManager::getInstance().stop();
+      //@@SwitchManager::getInstance().stop();
     }
 
     // generate main controller
@@ -374,7 +378,6 @@ int main(void)
           break;
         }
       }
-
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Controller running");
     }
     //######################Completed##########################
@@ -383,6 +386,7 @@ int main(void)
   } while (0);
 
   CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[m] set %s", "Set up failed");
+  UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_BOOTING, UI_MESS_SYS_STATE_SUB_ERROR);
   return -1;
 }
 

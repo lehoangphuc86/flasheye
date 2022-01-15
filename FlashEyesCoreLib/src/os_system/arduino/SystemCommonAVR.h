@@ -52,6 +52,13 @@ do {                                                      \
 #define ANALOG_WRITE(channel, value)                      analogWrite(channel, value)
 #define SYSTEM_IRAM_ATTR                                  //nothing
 #define SYSTEM_TIME_BASE_FREQ                             F_CPU
+#define SYSTEM_REBOOT()                                   \
+({                                                        \
+  wdt_disable();                                          \
+  wdt_enable(WDTO_15MS);                                  \
+  while (1) {}()                                          \
+})
+
 
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES

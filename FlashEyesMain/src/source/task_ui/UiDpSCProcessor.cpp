@@ -95,7 +95,7 @@ int UiDpSCProcessor::uiMessMessage(UiMessMessageTAG* param)
 
 int UiDpSCProcessor::uiMessSysState(UiMessSysStateTAG* param)
 {
-  SYSTEM_PRINT_BUF(this->tmp_Buff, UI_DP_SC_PROCESSOR_TMP_BUFF_LEN, "[UI] state:%u", param->state);
+  SYSTEM_PRINT_BUF(this->tmp_Buff, UI_DP_SC_PROCESSOR_TMP_BUFF_LEN, "[UI] state:%u sub:%u", param->stateId, param->stateSubId);
   this->dp_Controller->println(this->tmp_Buff);
   return 0;
 }

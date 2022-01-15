@@ -56,7 +56,7 @@ do {                                                      \
 #define ANALOG_WRITE(channel, value)                      ANALOG_WRITE_GENERIC(channel, value , 255)
 #define SYSTEM_IRAM_ATTR                                  IRAM_ATTR
 #define SYSTEM_TIME_BASE_FREQ                             ((80)*(1000000))
-
+#define SYSTEM_REBOOT()                                   esp_restart()
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 

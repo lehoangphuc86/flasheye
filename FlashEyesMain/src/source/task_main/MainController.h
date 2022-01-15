@@ -11,7 +11,7 @@
 #if (!_CONF_TASK_MANAGER_ENABLED)
 #error Task manager is required
 #endif // !_CONF_TASK_MANAGER_ENABLED
-
+#include "../settings/SettingManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 

@@ -52,6 +52,8 @@ public:
   bool                                                          isValid(void);
   int                                                           start(SwitchManagerConfigTAG& swManagerConfig);
   SysMode_t                                                     getSystemMode(void);
+  SysMode_t                                                     getState(void);
+  bool                                                          isPressed(byte opCode);
   void                                                          stop(void);
 private:
   SwitchManager(void);

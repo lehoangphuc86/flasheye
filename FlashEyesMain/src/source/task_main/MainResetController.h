@@ -59,7 +59,7 @@ protected:
   int                                                           onEventHandling(EventDataItem* eventData) override;
 
 protected:
-  //JsonParser                                                    js_Parser;
+  char*                                                         sql_Script_Buff;
 };
 #endif // _MAIN_RESET_CONTROLLER_H
 

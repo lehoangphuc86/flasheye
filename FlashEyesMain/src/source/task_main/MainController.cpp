@@ -2,6 +2,7 @@
 // INCLUDE
 #include "MainController.h"
 #if (_CONF_MAIN_CONTROLLER_ENABLED)
+#include "../db/DBManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -101,7 +102,6 @@ int MainController::start(MainControllerConfigTAG& controllerConfig)
     }
 
     this->stop();
-
     // data manager
     ret = this->data_Manager.prepare(controllerConfig.bufferConfig);
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE

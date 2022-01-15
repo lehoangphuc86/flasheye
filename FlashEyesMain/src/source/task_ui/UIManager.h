@@ -63,6 +63,7 @@ public:
   int                                                           startTask(UiManagerConfigTAG& uiManagerConfig);
   void                                                          stopTask(void);
   int                                                           show(UIMessageId_t uiMessageId, DataSize_t dataSize, unsigned char* data);
+  int                                                           showSysState(byte stateId, byte stateSubId);
 protected:
   UiControlTask                                                 control_Task;
 };

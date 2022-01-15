@@ -152,4 +152,12 @@ int UiManager::show(UIMessageId_t uiMessageId, DataSize_t dataSize, unsigned cha
   }
   return -1;
 }
+
+int UiManager::showSysState(byte stateId, byte stateSubId)
+{
+  UiMessSysStateTAG sysStateTag = UiMessSysStateTAG();
+  sysStateTag.stateId = stateId;
+  sysStateTag.stateSubId = stateSubId;
+  return this->show(UIConstant::UIMessageId::UiMessSysState, sizeof(sysStateTag), (unsigned char*)&sysStateTag);
+}
 #endif // _CONF_UI_MANAGER_ENABLED

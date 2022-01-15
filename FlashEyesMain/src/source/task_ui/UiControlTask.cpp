@@ -6,7 +6,7 @@
 #include "task_buzzer/BuzzerManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
-#define UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+//#define UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -398,9 +398,9 @@ int UiControlTask::onUiMessSysState(EventUiMessageTAG* eventData)
     }
 
     UiMessSysStateTAG* param = (UiMessSysStateTAG*)eventData->buffItem->bufferAddress();
-#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i %i", 1, param->state);
-#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+//#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i %i", 1, param->state);
+//#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
     ret = this->dp_Processor->uiMessSysState(param);
 
     LedManager::getInstance().turnOn(FEM_LED_YELLOW, LED_DEVICE_INTENSITY_LEVEL_MAX, 0);

@@ -70,6 +70,7 @@ public:
   bool                                                          isValid(void);
   DBHandler_t                                                   dbHandler(void);
   int                                                           exec(const char* sql, int (*callback)(void*, int, char**, char**), void*, char** errmsg);
+  int                                                           resetDB(const char** scripts, byte scriptCount, char* tmpBuf, DataSize_t tmpBufSize, const char lineTeminator = DB_MANAGER_LINE_TERMINATOR_DEFAULT);
   int                                                           exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tmpBufSize, const char lineTeminator = DB_MANAGER_LINE_TERMINATOR_DEFAULT);
   int                                                           selectCellStr(DbTableId_t tableId, const char* colName, const char* keyName, unsigned int id, char* val, DataSize_t valLen);
   template <typename T>
@@ -119,13 +120,14 @@ int DBManager::selectCellNum(DbTableId_t tableId, const char* colName, const cha
     {
       SystemMutexLocker locker(this->db_Locker[tableId]);
       SYSTEM_PRINT_BUF(this->sql_Query[tableId], DB_QUERY_LEN_MAX, "SELECT %s FROM %s WHERE %s=%u", colName, this->db_Table_Names[tableId], keyName, id);
-//#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
-//      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[db] sCN %i %s", 2, this->sql_Query[tableId]);
-//#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, DB_QUERY_LEN_MAX, "[db] sCN %i %s", 2, this->sql_Query[tableId]);
+#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      //ret = sqlite3_exec(this->db_Handler, this->sql_Query[tableId], DBManager::cbSelectCellNum, (void*)&numData, &errorMess);
       ret = sqlite3_exec(this->db_Handler, this->sql_Query[tableId], DBManager::cbSelectCellNum, (void*)&numData, NULL);
-//#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
-//      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db]: sCN %i %i %f", 7, ret , dVal);
-//#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+#ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db]: sCN %i %i %f", 7, ret , dVal);
+#endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
     }
 
     if ((ret != DB_RET_OK)
@@ -133,8 +135,8 @@ int DBManager::selectCellNum(DbTableId_t tableId, const char* colName, const cha
       )
     {
 #ifdef DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
-      /*CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", errorMess);
-      sqlite3_free(errorMess);*/
+      //CONSOLE_LOG_BUF(this->dbMgrLogBuf2, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", errorMess);
+      //sqlite3_free(errorMess);
 #endif // DB_MANAGER_2_CONSOLE_DEBUG_ENABLE
       break;
     }

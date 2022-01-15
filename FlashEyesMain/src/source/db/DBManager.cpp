@@ -10,9 +10,7 @@
 /////////////////////////////////////////////////
 // DEFINE
 //#define DB_MANAGER_CONSOLE_DEBUG_ENABLE
-#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
-char dbMgrLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
-#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+
 /////////////////////////////////////////////////
 // MARCO
 
@@ -30,7 +28,9 @@ char dbMgrLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 
 /////////////////////////////////////////////////
 // STATIC DATA
-
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+char dbMgrLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 
@@ -210,6 +210,40 @@ int DBManager::exec(const char* sql, int (*callback)(void*, int, char**, char**)
   return -1;
 }
 
+int DBManager::resetDB(const char** scripts, byte scriptCount, char* tmpBuf, DataSize_t tmpBufSize, const char lineTeminator)
+{
+  int ret = 0;
+  do
+  {
+    if ( (scripts == NULL)
+      || (tmpBuf == NULL)
+      || (scriptCount <= 0)
+      || (tmpBufSize <= 0)
+      )
+    {
+      break;
+    }
+
+    byte wkIdx = 0;
+    for (wkIdx = 0; wkIdx < scriptCount; wkIdx++)
+    {
+      ret = this->exeScriptFile(scripts[wkIdx], tmpBuf, tmpBufSize, lineTeminator);
+      if (ret != 0)
+      {
+        break;
+      }
+    }
+
+    if (wkIdx < scriptCount)
+    {
+      break;
+    }
+
+    return 0;
+  } while (0);
+  return -1;
+}
+
 int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tmpBufSize, const char lineTeminator)
 {
   FileHandler_t scriptFileHandler = FS_FILE_HANDLER_INVALID;
@@ -228,6 +262,9 @@ int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tm
   {
     if (this->isValid() == false)
     {
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", -1);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -236,6 +273,9 @@ int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tm
       || (tmpBufSize <=1)
       )
     {
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", -2);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -243,12 +283,19 @@ int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tm
 
     if (FileSystemManager::getInstance().exist(scriptFile) == false)
     {
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", -3);
+      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", scriptFile);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
     scriptFileHandler = FileSystemManager::getInstance().openFile(scriptFile, "r");
     if (FileSystemManager::getInstance().isValidFileHandler(scriptFileHandler) == false)
     {
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", -4);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -259,9 +306,9 @@ int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tm
       if (curCmdLen >= tmpValidSize)
       {
         error = true;
-//#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
-//        CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i %i %i", -1, curCmdLen , tmpBufSize);
-//#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i %i %i", -1, curCmdLen , tmpBufSize);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
         break;
       }
       // read 1 char
@@ -269,6 +316,9 @@ int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tm
       if (readLen <= 0)
       {
         error = true;
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i", -9);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
         break;
       }
 
@@ -287,10 +337,10 @@ int DBManager::exeScriptFile(const char* scriptFile, char* tmpBuf, DataSize_t tm
       // run 
       tmpBuf[curCmdLen] = '\0';
       ret = sqlite3_exec(this->db_Handler, tmpBuf, NULL, NULL, NULL);
-//#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
-//      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i %i %i", 6, ret, curCmdLen);
-//      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", tmpBuf);
-//#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
+#ifdef DB_MANAGER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[db] eS2 %i %i %i", 6, ret, curCmdLen);
+      CONSOLE_LOG_BUF(dbMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", tmpBuf);
+#endif // DB_MANAGER_CONSOLE_DEBUG_ENABLE
       curCmdLen = 0;
       if (ret != DB_RET_OK)
       {

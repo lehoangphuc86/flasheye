@@ -11,10 +11,33 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-//#define DB_QUERY_LEN_MAX                          128
-#define UI_MESS_RAW_DATA_LEN_MAX                    32
+//#define DB_QUERY_LEN_MAX                                          128
+#define UI_MESS_RAW_DATA_LEN_MAX                                    32
 
-#define UI_MESS_MESSAGE_LEN_MAX                     32
+#define UI_MESS_MESSAGE_LEN_MAX                                     32
+
+//##############UiMessSysState::stateId##############
+#define UI_MESS_SYS_STATE_BOOTING                                   0
+#define UI_MESS_SYS_STATE_RESETTING                                 1
+#define UI_MESS_SYS_STATE_SETTING                                   2
+#define UI_MESS_SYS_STATE_IDLE                                      3
+#define UI_MESS_SYS_STATE_SLEEPING                                  4
+#define UI_MESS_SYS_STATE_SCANNING                                  5
+#define UI_MESS_SYS_STATE_ERROR                                     6
+#define UI_MESS_SYS_STATE_LOADDING                                  7
+#define UI_MESS_SYS_STATE_MAX                                       8
+
+//################UiMessSysState::stateSubId#########
+//--------------------
+#define UI_MESS_SYS_STATE_SUB_NONE                                  0
+#define UI_MESS_SYS_STATE_SUB_START                                 1
+#define UI_MESS_SYS_STATE_SUB_RUNNING                               2
+#define UI_MESS_SYS_STATE_SUB_END                                   3
+#define UI_MESS_SYS_STATE_SUB_CANCEL                                4
+#define UI_MESS_SYS_STATE_SUB_ERROR                                 5
+//----------------UI_MESS_SYS_STATE_RESETTING--------
+#define UI_MESS_SYS_STATE_SUB_RESETTING_DB_RESETING                 0
+#define UI_MESS_SYS_STATE_SUB_RESETTING_DB_ERROR                    1
 /////////////////////////////////////////////////
 // MARCO
 
@@ -68,7 +91,8 @@ typedef struct _uiMessMessageTag
 
 typedef struct _uiMessSysStateTag
 {
-  byte state; //
+  byte stateId; //
+  byte stateSubId; //
 } UiMessSysStateTAG;
 
 

@@ -135,9 +135,12 @@
     <ClInclude Include="src\source\main.h" />
     <ClInclude Include="src\source\settings\ScannerSettingCollection.h" />
     <ClInclude Include="src\source\settings\SettingCollection.h" />
+    <ClInclude Include="src\source\settings\SettingDefinition.h" />
     <ClInclude Include="src\source\settings\SettingItem.h" />
     <ClInclude Include="src\source\settings\SettingManager.h" />
     <ClInclude Include="src\source\settings\SettingManagerConstant.h" />
+    <ClInclude Include="src\source\settings\SystemSettingCollection.h" />
+    <ClInclude Include="src\source\system\SystemSettingDefinition.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpConstant.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.h" />
@@ -150,7 +153,7 @@
     <ClInclude Include="src\source\task_main\MainControllerFactory.h" />
     <ClInclude Include="src\source\task_main\MainNormalController.h" />
     <ClInclude Include="src\source\task_main\MainResetController.h" />
-    <ClInclude Include="src\source\task_main\MainSettingController .h" />
+    <ClInclude Include="src\source\task_main\MainSettingController.h" />
     <ClInclude Include="src\source\task_net\NetManagerConstant.h" />
     <ClInclude Include="src\source\task_net\wifi\WifiControllerTask.h" />
     <ClInclude Include="src\source\task_net\wifi\WifiManagerConstant.h" />
@@ -158,6 +161,7 @@
     <ClInclude Include="src\source\task_scanner\ScanningControllerFactory.h" />
     <ClInclude Include="src\source\task_scanner\ScanningControlTask.h" />
     <ClInclude Include="src\source\task_scanner\ScanningEVController.h" />
+    <ClInclude Include="src\source\task_scanner\ScanningSettingDefinition.h" />
     <ClInclude Include="src\source\task_scanner\ScanningTaskConstant.h" />
     <ClInclude Include="src\source\task_switch\SwitchManager.h" />
     <ClInclude Include="src\source\task_switch\TaskSwitchConstant.h" />
@@ -185,6 +189,7 @@
     <ClCompile Include="src\source\settings\SettingCollection.cpp" />
     <ClCompile Include="src\source\settings\SettingItem.cpp" />
     <ClCompile Include="src\source\settings\SettingManager.cpp" />
+    <ClCompile Include="src\source\settings\SystemSettingCollection.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.cpp" />
     <ClCompile Include="src\source\task_http\CommHttp.cpp" />
@@ -194,7 +199,7 @@
     <ClCompile Include="src\source\task_main\MainControllerFactory.cpp" />
     <ClCompile Include="src\source\task_main\MainNormalController.cpp" />
     <ClCompile Include="src\source\task_main\MainResetController.cpp" />
-    <ClCompile Include="src\source\task_main\MainSettingController .cpp" />
+    <ClCompile Include="src\source\task_main\MainSettingController.cpp" />
     <ClCompile Include="src\source\task_net\wifi\WifiControllerTask.cpp" />
     <ClCompile Include="src\source\task_scanner\ScanningController.cpp" />
     <ClCompile Include="src\source\task_scanner\ScanningControllerFactory.cpp" />
