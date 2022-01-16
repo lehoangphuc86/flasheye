@@ -69,6 +69,7 @@ protected:
   int                                                           onUiMessRaw(EventUiMessageTAG* eventData);
   int                                                           onUiMessMessage(EventUiMessageTAG* eventData);
   int                                                           onUiMessSysState(EventUiMessageTAG* eventData);
+  int                                                           onUiMessNetState(EventUiMessageTAG* eventData);
 protected:
   DataSize_t                                                    max_Data_Size;
   BufferDataManager                                             data_Manager;

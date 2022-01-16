@@ -1,11 +1,11 @@
-#include "WifiControllerTask.h"
-#if (_CONF_WIFI_CONTROLLER_TASK_ENABLED)
+#include "NetWifi.h"
+#if (_CONF_NET_WIFI_ENABLED)
 /////////////////////////////////////////////////
 // INCLUDE
 
 /////////////////////////////////////////////////
 // PREPROCESSOR
-//#define WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+//#define NET_WIFI_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -29,9 +29,9 @@
 
 /////////////////////////////////////////////////
 // STATIC DATA
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-char wifiCtrlTaskLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+char netWifiLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 static void cbWifiEventHandler(void* arg, esp_event_base_t eventBase, int32_t eventId, void* eventData);
@@ -40,24 +40,24 @@ static void cbWifiEventHandler(void* arg, esp_event_base_t eventBase, int32_t ev
 
 /////////////////////////////////////////////////
 // CLASS IMPLEMENTAION
-/*WifiControllerTask*/
+/*NetWifi*/
 
 // static 
-byte WifiControllerTask::g_Instance_Count = 0;
-WifiNetHandler_t WifiControllerTask::g_AP_Handler = NULL;
-WifiNetHandler_t WifiControllerTask::g_STA_Handler = NULL;
-int WifiControllerTask::globalInit(void)
+byte NetWifi::g_Instance_Count = 0;
+WifiNetHandler_t NetWifi::g_AP_Handler = NULL;
+WifiNetHandler_t NetWifi::g_STA_Handler = NULL;
+int NetWifi::globalInit(void)
 {
   do
   {
-    WifiControllerTask::g_Instance_Count++;
-    if (WifiControllerTask::g_Instance_Count > 1)
+    NetWifi::g_Instance_Count++;
+    if (NetWifi::g_Instance_Count > 1)
     {
       return 0; // already
     }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     // first instance
     WifiRet_T ret = nvs_flash_init();
     /*if ( (ret == ESP_ERR_NVS_NO_FREE_PAGES)
@@ -74,45 +74,45 @@ int WifiControllerTask::globalInit(void)
 
     if (ret != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -1);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -1);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
     ret = esp_netif_init();
     if (ret != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -2);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -2);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
     ret = esp_event_loop_create_default();
     if (ret != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -3);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -3);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
-    WifiControllerTask::g_AP_Handler = esp_netif_create_default_wifi_ap();
-    if (WifiControllerTask::g_AP_Handler == WIFI_DRV_HANDLER_INVALID)
+    NetWifi::g_AP_Handler = esp_netif_create_default_wifi_ap();
+    if (NetWifi::g_AP_Handler == WIFI_DRV_HANDLER_INVALID)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -4);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -4);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
-    WifiControllerTask::g_STA_Handler = esp_netif_create_default_wifi_sta();
-    if (WifiControllerTask::g_STA_Handler == WIFI_DRV_HANDLER_INVALID)
+    NetWifi::g_STA_Handler = esp_netif_create_default_wifi_sta();
+    if (NetWifi::g_STA_Handler == WIFI_DRV_HANDLER_INVALID)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -5);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -5);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -121,43 +121,43 @@ int WifiControllerTask::globalInit(void)
     WifiRet_T wifiRet = esp_wifi_init(&wifiInit);
     if (wifiRet != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -6);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -6);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", 99);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", 99);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -99);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  WifiControllerTask::globalDeinit();
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFg] init %i", -99);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
+  NetWifi::globalDeinit();
   return -1;
 }
 
-int WifiControllerTask::globalDeinit(void)
+int NetWifi::globalDeinit(void)
 {
   do
   {
-    WifiControllerTask::g_Instance_Count--;
-    if (WifiControllerTask::g_Instance_Count > 0)
+    NetWifi::g_Instance_Count--;
+    if (NetWifi::g_Instance_Count > 0)
     {
       break;
     }
     // last instance
     esp_wifi_deinit();
 
-    if (WifiControllerTask::g_AP_Handler != WIFI_DRV_HANDLER_INVALID)
+    if (NetWifi::g_AP_Handler != WIFI_DRV_HANDLER_INVALID)
     {
-      esp_netif_destroy_default_wifi(WifiControllerTask::g_AP_Handler);
+      esp_netif_destroy_default_wifi(NetWifi::g_AP_Handler);
     }
 
-    if (WifiControllerTask::g_STA_Handler != WIFI_DRV_HANDLER_INVALID)
+    if (NetWifi::g_STA_Handler != WIFI_DRV_HANDLER_INVALID)
     {
-      esp_netif_destroy_default_wifi(WifiControllerTask::g_STA_Handler);
+      esp_netif_destroy_default_wifi(NetWifi::g_STA_Handler);
     }
     esp_event_loop_delete_default();
     esp_netif_deinit();
@@ -170,8 +170,9 @@ int WifiControllerTask::globalDeinit(void)
 
 // end static 
 
-WifiControllerTask::WifiControllerTask(void)
+NetWifi::NetWifi(void)
   : TaskManager()
+  , NetInterface(NetInterfaceTypeUN::NetInterfaceWifi)
   , working_Mode(WIFI_MGR_MODE_INVALID)
   , ret_Start(-1)
   , ret_Stop(-1)
@@ -183,28 +184,28 @@ WifiControllerTask::WifiControllerTask(void)
   memset(&this->conn_Config, 0, sizeof(WifiConnectionConfigTAG));
 }
 
-WifiControllerTask::~WifiControllerTask(void)
+NetWifi::~NetWifi(void)
 {
-  this->cleanUp();
+  this->stopTask();
 }
 
-int WifiControllerTask::inititialize(void)
-{
-  do
-  {
-    int result = WifiControllerTask::globalInit();
-    if (result != 0)
-    {
-      break;
-    }
-    
-    return result;
-  } while (0);
-  this->cleanUp();
-  return -1;
-}
+//int NetWifi::inititialize(void)
+//{
+//  do
+//  {
+//    int result = NetWifi::globalInit();
+//    if (result != 0)
+//    {
+//      break;
+//    }
+//    
+//    return result;
+//  } while (0);
+//  this->cleanUp();
+//  return -1;
+//}
 
-bool WifiControllerTask::isStarted(void)
+bool NetWifi::isStarted(void)
 {
   do
   {
@@ -217,11 +218,16 @@ bool WifiControllerTask::isStarted(void)
   return false;
 }
 
-WifiMode_t WifiControllerTask::mode(void)
+bool NetWifi::isEnabled(void)
+{
+  return this->isStarted();
+}
+
+WifiMode_t NetWifi::mode(void)
 {
   return working_Mode;
 }
-int WifiControllerTask::getNetConfig(NetIPConfigTAG& netConfig)
+int NetWifi::getNetConfig(NetIPConfigTAG& netConfig)
 {
   netConfig = NetIPConfigTAG();
   do
@@ -256,19 +262,19 @@ int WifiControllerTask::getNetConfig(NetIPConfigTAG& netConfig)
   return -1;
 }
 
-int WifiControllerTask::startTask(WifiTaskConfigTAG& wifiTaskConfig)
+int NetWifi::startTask(NetTaskConfigTAG& netTaskConfig)
 {
   do
   {
     int result = 0;
-    if (WifiControllerTask::g_Instance_Count <= 0)
-    {
-      break; //not initilized yet
-    }
+    //if (NetWifi::g_Instance_Count <= 0)
+    //{
+    //  break; //not initilized yet
+    //}
 
     if (this->isTaskRunning() != false)
     {
-      return 0; // already running
+      return -1; // already running
     }
 
     // Set up tasks
@@ -282,7 +288,7 @@ int WifiControllerTask::startTask(WifiTaskConfigTAG& wifiTaskConfig)
       this->registerHanldingEventStructSize(sizeof(EventWifiConnectionClosedTAG));
       this->registerHanldingEventStructSize(sizeof(EventWifiNetGotIPV4TAG));
       
-      result = TaskManager::setConfig(wifiTaskConfig.taskManagerConfig);
+      result = TaskManager::setConfig(netTaskConfig.taskManagerConfig);
       if (result != 0)
       {
         break;
@@ -297,7 +303,7 @@ int WifiControllerTask::startTask(WifiTaskConfigTAG& wifiTaskConfig)
 
     {
       //TaskThreadConfigTAG* threadConfig = (TaskThreadConfigTAG*)wifiTaskConfig.taskThreadConfig;
-      result = TaskManager::startProcess(wifiTaskConfig.taskThreadConfig, true);
+      result = TaskManager::startProcess(netTaskConfig.taskThreadConfig, true);
       if (result != 0)
       {
         break;
@@ -312,73 +318,78 @@ int WifiControllerTask::startTask(WifiTaskConfigTAG& wifiTaskConfig)
 }
 
 
-int WifiControllerTask::startWifi(WifiConnectionConfigTAG& wifiConnConfig, bool waitCompletion)
+int NetWifi::startNet(NetConnectionConfigTAG& netConnConfig, bool waitCompletion)
 {
   do
   {
     if (this->isStarted() != false)
     {
-      this->stopWifi();
+      this->stopNet();
     }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sta %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sta %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     {
       SystemMutexLocker locker(this->mutex_Operating);
       int ret = 0;
-      memcpy(&this->conn_Config, &wifiConnConfig, sizeof(WifiConnectionConfigTAG));
+      memcpy(&this->conn_Config, netConnConfig.config.wifi, sizeof(WifiConnectionConfigTAG));
       EventWifiStartTAG eventStartData = EventWifiStartTAG();
-      memcpy(&eventStartData.apConfig, &wifiConnConfig.apConfig, sizeof(WifiConnectionAPConfigTAG));
-      memcpy(&eventStartData.staConfig, &wifiConnConfig.staConfig, sizeof(WifiConnectionSTAConfigTAG));
+      memcpy(&eventStartData.apConfig, &netConnConfig.config.wifi->apConfig, sizeof(WifiConnectionAPConfigTAG));
+      memcpy(&eventStartData.staConfig, &netConnConfig.config.wifi->staConfig, sizeof(WifiConnectionSTAConfigTAG));
       this->ret_Start = -1;
       this->mutex_wait_Start.unlock();
       this->mutex_wait_Start.lock();
       ret = this->notify((EventId_t)EventManagerConstant::EventMessageId::WifiStart, sizeof(EventWifiStartTAG), (unsigned char*)&eventStartData);
       if (ret != 0)
       {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-        CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sta %i %i", -1, ret);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sta %i %i", -1, ret);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
         break;
       }
 
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sta %i %i", 2, ret);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sta %i %i", 2, ret);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       if (waitCompletion == false)
       {
         return 0;
       }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sta %i %i", 3, this->ret_Start);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sta %i %i", 3, this->ret_Start);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       this->mutex_wait_Start.lock(WIFI_MGR_START_WAIT_TIME);
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sta %i %i", 4, this->ret_Start);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sta %i %i", 4, this->ret_Start);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       if (this->ret_Start != 0)
       {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-        CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sta %i %i", 5, this->ret_Start);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sta %i %i", 5, this->ret_Start);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
         break;
       }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sta %i %i", 99, this->ret_Start);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sta %i %i", 99, this->ret_Start);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     }
 
     return 0;
   } while (0);
-  this->stopWifi();
+  this->stopNet();
   return -1;
 
 }
 
-void WifiControllerTask::stopWifi(bool waitCompletion)
+void NetWifi::stopNet(bool waitCompletion)
 {
   do
   {
+    if (this->isTaskRunning() == false)
+    {
+      return; // already
+    }
+
     if (this->isStarted() == false)
     {
       return; // already
@@ -412,11 +423,11 @@ void WifiControllerTask::stopWifi(bool waitCompletion)
   return;
 }
 
-void WifiControllerTask::stopTask(void)
+void NetWifi::stopTask(void)
 {
   do
   {
-    this->stopWifi();
+    this->stopNet();
     TaskManager::stopProcess();
     return;
   } while (0);
@@ -424,40 +435,50 @@ void WifiControllerTask::stopTask(void)
 }
 
 
-void WifiControllerTask::cleanUp(void)
+void NetWifi::clear(void)
 {
-  this->stopTask();
-  WifiControllerTask::globalDeinit();
+  //this->stopTask();
+  NetWifi::globalDeinit();
 }
 
-int WifiControllerTask::prepare(void)
+int NetWifi::prepare(void)
 {
-  return 0; // do nothing
+  do
+  {
+    int result = NetWifi::globalInit();
+    if (result != 0)
+    {
+      break;
+    }
+    return 0;
+  } while (0);
+  return -1;
 }
 
-void WifiControllerTask::proc(void)
+void NetWifi::proc(void)
 {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG("[WFTsk] proc %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   int prepareRet = this->prepare();
   this->reportPrepareResult(prepareRet);
   if (prepareRet != 0)
   {
     this->waitTerminating();
+    this->clear();
     return;
   }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG("[WFTsk] proc %i", 1);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   EventDataItem* eventData = NULL;
   bool isStop = false;
   while (isStop == false) // A Task shall never return or exit.
   {
     eventData = this->event_Manager.wait(1000);
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
     //CONSOLE_LOG("[WFTsk] proc %i", 2);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     if (eventData == NULL)
     {
       continue;
@@ -511,16 +532,17 @@ void WifiControllerTask::proc(void)
     }
     this->event_Manager.release(eventData);
   }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+  this->clear();
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG("[WFTsk] stop %i", 99);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
 }
 
-int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataSize)
+int NetWifi::onEventWifiStart(unsigned char* data, unsigned int dataSize)
 {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   WifiRet_T wifiRet = 0;
   do
   {
@@ -557,9 +579,9 @@ int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataS
     wifiRet = esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &cbWifiEventHandler,  this, this->wifi_Event_Handler);
     if (wifiRet != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i", -1);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i", -1);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -583,25 +605,25 @@ int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataS
       wifiRet = esp_event_handler_instance_register(IP_EVENT, ESP_EVENT_ANY_ID, &cbWifiEventHandler, this, this->ip_Event_Handler);
       if (wifiRet != WIFI_DRV_RET_OK)
       {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-        CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i", -2);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i", -2);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
         break;
       }
 
       if (eventData->staConfig.netConfig.useStaticIP() != false)
       {
         // set static ip
-        esp_netif_dhcpc_stop(WifiControllerTask::g_STA_Handler);
+        esp_netif_dhcpc_stop(NetWifi::g_STA_Handler);
         esp_netif_ip_info_t ipInfo;
         ipInfo.ip.addr = eventData->staConfig.netConfig.IPV4;
         ipInfo.netmask.addr = eventData->staConfig.netConfig.subnetMask;
         ipInfo.gw.addr = eventData->staConfig.netConfig.defaultGW;
-        wifiRet = esp_netif_set_ip_info(WifiControllerTask::g_STA_Handler, &ipInfo);
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-        CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i", 2, (int)wifiRet);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-        esp_netif_dhcpc_start(WifiControllerTask::g_STA_Handler);
+        wifiRet = esp_netif_set_ip_info(NetWifi::g_STA_Handler, &ipInfo);
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i", 2, (int)wifiRet);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
+        esp_netif_dhcpc_start(NetWifi::g_STA_Handler);
         if (wifiRet != WIFI_DRV_RET_OK)
         {
           break;
@@ -631,16 +653,16 @@ int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataS
       if (eventData->apConfig.netConfig.useStaticIP() != false)
       {
         // set static ip
-        esp_netif_dhcpc_stop(WifiControllerTask::g_AP_Handler);
+        esp_netif_dhcpc_stop(NetWifi::g_AP_Handler);
         esp_netif_ip_info_t ipInfo;
         ipInfo.ip.addr = eventData->apConfig.netConfig.IPV4;
         ipInfo.netmask.addr = eventData->apConfig.netConfig.subnetMask;
         ipInfo.gw.addr = eventData->apConfig.netConfig.defaultGW;
-        wifiRet = esp_netif_set_ip_info(WifiControllerTask::g_AP_Handler, &ipInfo);
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-        CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i", 3, (int)wifiRet);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-        esp_netif_dhcpc_start(WifiControllerTask::g_AP_Handler);
+        wifiRet = esp_netif_set_ip_info(NetWifi::g_AP_Handler, &ipInfo);
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+        CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i", 3, (int)wifiRet);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
+        esp_netif_dhcpc_start(NetWifi::g_AP_Handler);
         if (wifiRet != WIFI_DRV_RET_OK)
         {
           break;
@@ -663,9 +685,9 @@ int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataS
         break;
     }
 
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i %i", 4, workingMode);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i %i", 4, workingMode);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     if (wifiRet != WIFI_DRV_RET_OK)
     {
       break;
@@ -689,18 +711,18 @@ int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataS
     
     if (wifiRet != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
       wifi_mode_t mode = WIFI_MODE_MAX;
       esp_wifi_get_mode(&mode);
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i %i", -4, (int)wifiRet);
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i %i %i", -4, (int)mode, workingMode);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i %i", -4, (int)wifiRet);
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i %i %i", -4, (int)mode, workingMode);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[ssid] %s", wifi_config.sta.ssid);
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[pwd] %s", wifi_config.sta.password);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[ssid] %s", wifi_config.sta.ssid);
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[pwd] %s", wifi_config.sta.password);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
 
 
 
@@ -708,9 +730,9 @@ int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataS
     wifiRet = esp_wifi_start();
     if (wifiRet != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i", -5);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i", -5);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -730,11 +752,11 @@ int WifiControllerTask::onEventWifiStart(unsigned char* data, unsigned int dataS
   return -1;
 }
 
-int WifiControllerTask::onEventWifiStop(unsigned char* data, unsigned int dataSize)
+int NetWifi::onEventWifiStop(unsigned char* data, unsigned int dataSize)
 {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] sto %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] sto %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   //SystemMutex* waitMutex = NULL;
   do
   {
@@ -781,11 +803,11 @@ int WifiControllerTask::onEventWifiStop(unsigned char* data, unsigned int dataSi
   return -1;
 }
 
-int WifiControllerTask::onEventWifiStarted(unsigned char* data, unsigned int dataSize)
+int NetWifi::onEventWifiStarted(unsigned char* data, unsigned int dataSize)
 {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] staed %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] staed %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   do
   {
     if ((dataSize != sizeof(EventWifiStartedTAG))
@@ -796,9 +818,9 @@ int WifiControllerTask::onEventWifiStarted(unsigned char* data, unsigned int dat
 
     if (this->isStarted() == false)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] staed %i", -1);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] staed %i", -1);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -812,18 +834,18 @@ int WifiControllerTask::onEventWifiStarted(unsigned char* data, unsigned int dat
       return 0;
     }
 
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] staed %i", 3);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] staed %i", 3);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     // STA
     this->sta_Conn_Retry_Count = this->sta_Conn_Retry_Max;
     
     WifiRet_T wifiRet = esp_wifi_connect();
     if (wifiRet != WIFI_DRV_RET_OK)
     {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] eSta %i %i", -5, wifiRet);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] eSta %i %i", -5, wifiRet);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -833,11 +855,11 @@ int WifiControllerTask::onEventWifiStarted(unsigned char* data, unsigned int dat
 }
 
 
-int WifiControllerTask::onEventWifiStopped(unsigned char* data, unsigned int dataSize)
+int NetWifi::onEventWifiStopped(unsigned char* data, unsigned int dataSize)
 {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] stoped %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] stoped %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   do
   {
     if ((dataSize != sizeof(EventWifiStoppedTAG))
@@ -860,11 +882,11 @@ int WifiControllerTask::onEventWifiStopped(unsigned char* data, unsigned int dat
   return -1;
 }
 
-int WifiControllerTask::onEventWifiConnectionOpened(unsigned char* data, unsigned int dataSize)
+int NetWifi::onEventWifiConnectionOpened(unsigned char* data, unsigned int dataSize)
 {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] opned %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] opned %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   do
   {
     if ((dataSize != sizeof(EventWifiConnectionOpenedTAG))
@@ -880,15 +902,15 @@ int WifiControllerTask::onEventWifiConnectionOpened(unsigned char* data, unsigne
 
     EventWifiConnectionOpenedTAG* eventData = (EventWifiConnectionOpenedTAG*)data;
     //@@ notify coordinator
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] opned %i %u", 1, eventData->connId);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] opned %i %u", 1, eventData->connId);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
   return -1;
 }
 
-int WifiControllerTask::onEventWifiConnectionClosed(unsigned char* data, unsigned int dataSize)
+int NetWifi::onEventWifiConnectionClosed(unsigned char* data, unsigned int dataSize)
 {
 
   do
@@ -905,9 +927,9 @@ int WifiControllerTask::onEventWifiConnectionClosed(unsigned char* data, unsigne
     }
 
     EventWifiConnectionClosedTAG* eventData = (EventWifiConnectionClosedTAG*)data;
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] closed %i %i %i", 0, eventData->connId, eventData->disReason);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] closed %i %i %i", 0, eventData->connId, eventData->disReason);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     if (eventData->isAP != 0)
     {
       //
@@ -920,9 +942,9 @@ int WifiControllerTask::onEventWifiConnectionClosed(unsigned char* data, unsigne
     {
       this->ret_Start = -1;
       this->mutex_wait_Start.unlock();
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] closed %i %i %i", -1, eventData->connId, this->ret_Start);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] closed %i %i %i", -1, eventData->connId, this->ret_Start);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
       //notify coordinator
       break;
     }
@@ -935,11 +957,11 @@ int WifiControllerTask::onEventWifiConnectionClosed(unsigned char* data, unsigne
   return -1;
 }
 
-int WifiControllerTask::onEventWifiNetGotIPV4(unsigned char* data, unsigned int dataSize)
+int NetWifi::onEventWifiNetGotIPV4(unsigned char* data, unsigned int dataSize)
 {
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] ip4 %i", 0);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] ip4 %i", 0);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
   do
   {
     if (this->isStarted() == false)
@@ -953,9 +975,9 @@ int WifiControllerTask::onEventWifiNetGotIPV4(unsigned char* data, unsigned int 
       break; // this is for STA only
     }
 
-#ifdef WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(wifiCtrlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[WFTask] ip4 %i %u", 1, eventData->ipv4);
-#endif // WIFI_CONTROLLER_TASK_CONSOLE_DEBUG_ENABLE
+#ifdef NET_WIFI_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(netWifiLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[NetWF] ip4 %i %u", 1, eventData->ipv4);
+#endif // NET_WIFI_CONSOLE_DEBUG_ENABLE
     // @@ notify coordinator IP
     this->sta_Conn_Retry_Count = this->sta_Conn_Retry_Max;
     this->ret_Start = 0;
@@ -975,7 +997,7 @@ static void cbWifiEventHandler(void* arg, esp_event_base_t eventBase, int32_t ev
       break;
     }
 
-    WifiControllerTask* handler = (WifiControllerTask*)arg;
+    NetWifi* handler = (NetWifi*)arg;
     switch (eventId)
     {
       // AP
@@ -1064,4 +1086,4 @@ static void cbWifiEventHandler(void* arg, esp_event_base_t eventBase, int32_t ev
   return;
 
 }
-#endif // _CONF_WIFI_CONTROLLER_TASK_ENABLED
+#endif // _CONF_NET_WIFI_ENABLED

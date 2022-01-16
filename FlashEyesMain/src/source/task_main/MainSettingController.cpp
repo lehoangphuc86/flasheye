@@ -84,9 +84,18 @@ int MainSettingController::prepare(void)
       break;
     }
 
-    ret = this->startScanningTask();
+    ret = this->startNetManager();
 #ifdef MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainSettingControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[msTsk] pre %i %i", 2, ret);
+#endif // MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    ret = this->startScanningTask();
+#ifdef MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainSettingControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[msTsk] pre %i %i", 3, ret);
 #endif // MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
@@ -109,6 +118,7 @@ void MainSettingController::clear(void)
   do
   {
     this->stopScanningTask();
+    this->stopNetManager();
     MainController::clear();
     return;
   } while (0);

@@ -76,8 +76,11 @@ protected:
 
   //###############below functions are implemented but called inside inherited classes##############
   // start sub tasks
+  virtual int                                                   startNetManager(void);
   virtual int                                                   startScanningTask(void);
+  
   // stop sub tasks
+  virtual void                                                  stopNetManager(void);
   virtual void                                                  stopScanningTask(void);
   // event handlers
   virtual int                                                   onEventScanningDeviceSetting(unsigned char* data, unsigned int dataSize);

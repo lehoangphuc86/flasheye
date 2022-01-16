@@ -5,7 +5,9 @@
 #if (_CONF_NET_MANAGER_CONSTANT_ENABLED)
 /////////////////////////////////////////////////
 // INCLUDE
-
+#include "task_manager/TaskManagerConstant.h"
+#include "NetIPConstant.h"
+//#include "wifi/NetWifiConstant.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -20,54 +22,39 @@
 
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
-
+typedef enum _netInterfaceTypeUN
+{
+  NetInterfaceWifi = 0,
+  NetInterfaceTypeMax
+} NetInterfaceTypeUN;
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
-
-typedef struct _netIPConfigTAG
+struct _wifiConnectionConfigTAG;
+typedef struct _netConnectionConfigTag
 {
-  bool enabledStaticIP : 1;
-  byte reserverd : 7;
-  uint32_t IPV4;
-  uint32_t subnetMask;
-  uint32_t defaultGW;
-  _netIPConfigTAG(void)
+  union _netConnectionConfigUN
   {
-    this->enabledStaticIP = 0;
-    this->IPV4 = 0;;
-    this->subnetMask = 0;
-    this->defaultGW = 0;
-  }
+    _wifiConnectionConfigTAG* wifi;
+    void* ethernet;
+  } config;
+} NetConnectionConfigTAG;
 
-  bool useStaticIP(void)
-  {
-    return this->enabledStaticIP;
-  }
+typedef struct _netTaskConfigTAG
+{
+  TaskManagerConfigTAG taskManagerConfig;
+  TaskThreadConfigTAG taskThreadConfig;
+} NetTaskConfigTAG;
 
+typedef struct _netManagerTaskConfigTag
+{
+  byte interfaceType;
+  NetTaskConfigTAG netTaskConfig;
+} NetManagerConfigTAG;
 
-  bool isValidStaticIP(void)
-  {
-    do
-    {
-      if (this->enabledStaticIP == 0)
-      {
-        return true;
-      }
-
-      if ((this->IPV4 == 0)
-        || (this->subnetMask == 0)
-        || (this->defaultGW == 0)
-        )
-      {
-        break;
-      }
-
-      return true;
-    } while (0);
-    return false;
-  }
-} NetIPConfigTAG;
-
+typedef struct _netManagerConnectionConfigTag
+{
+  NetConnectionConfigTAG netConnConfig;
+} NetManagerConnectionConfigTAG;
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
 

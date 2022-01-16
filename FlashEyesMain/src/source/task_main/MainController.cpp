@@ -4,6 +4,9 @@
 #if (_CONF_MAIN_CONTROLLER_ENABLED)
 #include "../db/DBManager.h"
 #include "timer_manager/TimerManager.h"
+#include "../task_net/NetManager.h"
+#include "../task_net/wifi/NetWifi.h"
+#include "../task_ui/UiManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -198,8 +201,17 @@ void MainController::proc(void)
   this->reportPrepareResult(prepareRet);
   if (prepareRet != 0)
   {
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] proc %i", -1);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     this->waitTerminating();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] proc %i", -2);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     this->clear();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] proc %i", -109);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     return;
   }
   EventDataItem* eventData = NULL;
@@ -245,21 +257,118 @@ int MainController::prepare(void)
 // clear
 void MainController::clear(void)
 {
-
+  return;
 }
 
 //###############below functions are implemented but called inside inherited classes##############
 // start sub tasks
+
+int MainController::startNetManager(void)
+{
+  int ret = 0;
+  do
+  {
+    {
+      NetManagerConfigTAG netConfig = NetManagerConfigTAG();
+      netConfig.interfaceType = FEM_NET_INTERFACE_TYPE;
+      netConfig.netTaskConfig.taskManagerConfig.eventItemNumber = FEM_NET_TASK_EVENT_NUM;
+      netConfig.netTaskConfig.taskManagerConfig.eventUsePool = false;
+      netConfig.netTaskConfig.taskThreadConfig.enabled = true;
+      netConfig.netTaskConfig.taskThreadConfig.useThreadPool = false;
+      netConfig.netTaskConfig.taskThreadConfig.usStackDepth = FEM_NET_TASK_MEM;
+      netConfig.netTaskConfig.taskThreadConfig.uxPriority = FEM_NET_TASK_PRIORITY;
+
+      ret = NetManager::getInstance().startTask(netConfig);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stNet %i %i", 0, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      if (ret != 0)
+      {
+        break;
+      }
+    }
+
+    //if (0)
+    {
+      WifiConnectionConfigTAG wifiConfig = WifiConnectionConfigTAG();
+      if (FEM_WIFI_IS_AP == false)
+      {
+        wifiConfig.staConfig.ssid = (char*)FEM_WIFI_STA_SSID;
+        wifiConfig.staConfig.password = (char*)FEM_WIFI_STA_PWD;
+        wifiConfig.staConfig.connRetryMax = FEM_WIFI_CONN_RETRY;
+        wifiConfig.staConfig.authMode = FEM_WIFI_AUTH_MODE;
+        wifiConfig.staConfig.netConfig.enabledStaticIP = 0;
+        wifiConfig.staConfig.netConfig.IPV4 = FEM_WIFI_STA_NET_STATIC_IP;
+        wifiConfig.staConfig.netConfig.defaultGW = FEM_WIFI_STA_NET_STATIC_GW;
+        wifiConfig.staConfig.netConfig.subnetMask = FEM_WIFI_STA_NET_STATIC_NETMARK;
+      }
+      else
+      {
+        wifiConfig.apConfig.ssid = (char*)FEM_WIFI_AP_SSID;
+        wifiConfig.apConfig.password = (char*)FEM_WIFI_AP_PWD;
+        wifiConfig.apConfig.channel = FEM_WIFI_AP_CHANNEL;
+        wifiConfig.apConfig.authMode = FEM_WIFI_AUTH_MODE;
+        wifiConfig.apConfig.maxConn = FEM_WIFI_AP_MAX_CONN;
+        wifiConfig.apConfig.netConfig.IPV4 = FEM_WIFI_AP_NET_STATIC_IP;
+        wifiConfig.apConfig.netConfig.defaultGW = FEM_WIFI_AP_NET_STATIC_GW;
+        wifiConfig.apConfig.netConfig.subnetMask = FEM_WIFI_AP_NET_STATIC_NETMARK;
+      }
+      
+      NetManagerConnectionConfigTAG netMgrconfig = NetManagerConnectionConfigTAG();
+      netMgrconfig.netConnConfig.config.wifi = &wifiConfig;
+
+      ret = NetManager::getInstance().startNet(netMgrconfig, true);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stNet %i %i", 1, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      if (ret != 0)
+      {
+        break;
+      }
+
+      
+      NetIPConfigTAG ipConfig = NetIPConfigTAG();
+      ret = NetManager::getInstance().getNetConfig(ipConfig);
+      {
+        UiMessNetStateTAG netStateTag = UiMessNetStateTAG();
+        netStateTag.stateId = UI_MESS_NET_STATE_CONNECTED;
+        netStateTag.stateSubId = UI_MESS_NET_STATE_SUB_NONE;
+        SYSTEM_PRINT_BUF(netStateTag.ip4, UI_MESS_IP4_LEN_MAX, "%d.%d.%d.%d", NET_IP4_2_STR(ipConfig.IPV4));
+        UiManager::getInstance().show(UIConstant::UIMessageId::UiMessNetState, sizeof(netStateTag), (unsigned char*)&netStateTag);
+      }
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stNet %i %i", 2, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      if (ret != 0)
+      {
+        break;
+      }
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %d.%d.%d.%d", "ip", NET_IP4_2_STR(ipConfig.IPV4));
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %d.%d.%d.%d", "mask", NET_IP4_2_STR(ipConfig.subnetMask));
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s] %d.%d.%d.%d", "gw", NET_IP4_2_STR(ipConfig.defaultGW));
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      
+    }
+    
+    return 0;
+  } while (0);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stNet %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 int MainController::startScanningTask(void)
 {
   int ret = 0;
   do
   {
-    ret = this->scanning_Task.inititialize();
+    /*ret = this->scanning_Task.inititialize();
     if (ret != 0)
     {
       break;
-    }
+    }*/
 
     {
       ScanningTaskConfigTAG scanningConfig = ScanningTaskConfigTAG();
@@ -301,9 +410,22 @@ int MainController::startScanningTask(void)
 }
 
 // stop sub tasks
+void MainController::stopNetManager(void)
+{
+  NetManager::getInstance().stopTask();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopNet %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return;
+}
+
 void MainController::stopScanningTask(void)
 {
-  this->scanning_Task.cleanUp();
+  this->scanning_Task.stopTask();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopSc %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return;
 }
 
 int MainController::onEventScanningDeviceSetting(unsigned char* data, unsigned int dataSize)

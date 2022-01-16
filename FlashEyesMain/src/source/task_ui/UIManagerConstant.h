@@ -16,6 +16,8 @@
 
 #define UI_MESS_MESSAGE_LEN_MAX                                     32
 
+#define UI_MESS_IP4_LEN_MAX                                         18
+
 //##############UiMessSysState::stateId##############
 #define UI_MESS_SYS_STATE_BOOTING                                   0
 #define UI_MESS_SYS_STATE_RESETTING                                 1
@@ -38,6 +40,16 @@
 //----------------UI_MESS_SYS_STATE_RESETTING--------
 #define UI_MESS_SYS_STATE_SUB_RESETTING_DB_RESETING                 0
 #define UI_MESS_SYS_STATE_SUB_RESETTING_DB_ERROR                    1
+
+
+//################UiMessNetState::stateId############
+#define UI_MESS_NET_STATE_DISCONNECTED                              0
+#define UI_MESS_NET_STATE_CONNECTED                                 1
+#define UI_MESS_NET_STATE_ERROR                                     2
+#define UI_MESS_NET_STATE_MAX                                       3
+//################UiMessNetState::stateSubId#########
+#define UI_MESS_NET_STATE_SUB_NONE                                  0
+
 /////////////////////////////////////////////////
 // MARCO
 
@@ -95,6 +107,12 @@ typedef struct _uiMessSysStateTag
   byte stateSubId; //
 } UiMessSysStateTAG;
 
+typedef struct _uiMessNetStateTag
+{
+  byte stateId; //
+  byte stateSubId; //
+  char ip4[UI_MESS_IP4_LEN_MAX];
+} UiMessNetStateTAG;
 
 // event
 typedef struct _eventUiMessageTag
@@ -128,6 +146,7 @@ public:
     UiMessRaw,
     UiMessMessage,
     UiMessSysState,
+    UiMessNetState,
     UiMessMax
   };
 
@@ -143,6 +162,7 @@ public:
       case UIConstant::UIMessageId::UiMessRaw:
       case UIConstant::UIMessageId::UiMessMessage:
       case UIConstant::UIMessageId::UiMessSysState:
+      case UIConstant::UIMessageId::UiMessNetState:
         return true;
       default:
         return false;

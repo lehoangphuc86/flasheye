@@ -32,7 +32,9 @@
 
 /////////////////////////////////////////////////
 // STATIC DATA
-
+#ifdef TASK_MANAGER_DEBUG_CONSOLE_ENABLED
+char taskManagerLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
+#endif // TASK_MANAGER_DEBUG_CONSOLE_ENABLED
 /////////////////////////////////////////////////
 // STATIC FUNCTIONS
 
@@ -382,6 +384,9 @@ int TaskManager::waitPrepareResult(void)
 
 void TaskManager::waitTerminating(void)
 {
+#ifdef TASK_MANAGER_DEBUG_CONSOLE_ENABLED
+  CONSOLE_LOG_BUF(taskManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tm] wT %i %i", 0, this->usingEvent());
+#endif // TASK_MANAGER_DEBUG_CONSOLE_ENABLED
   if (this->usingEvent() != false)
   {
     while (this->isTaskRunning() != false) // A Task shall never return or exit.
@@ -391,6 +396,9 @@ void TaskManager::waitTerminating(void)
       {
         continue;
       }
+#ifdef TASK_MANAGER_DEBUG_CONSOLE_ENABLED
+      CONSOLE_LOG_BUF(taskManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tm] wT %i %i", 3, eventData->messageId());
+#endif // TASK_MANAGER_DEBUG_CONSOLE_ENABLED
       switch (eventData->messageId())
       {
       case (int)EventManagerConstant::EventMessageId::TerminateProcess:
@@ -404,6 +412,9 @@ void TaskManager::waitTerminating(void)
     return;
   }
   
+#ifdef TASK_MANAGER_DEBUG_CONSOLE_ENABLED
+  CONSOLE_LOG_BUF(taskManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[tm] wT %i %i", 4, this->isTaskRunning());
+#endif // TASK_MANAGER_DEBUG_CONSOLE_ENABLED
   while (this->isTaskRunning() != false)
   {
     SYSTEM_SLEEP(TASK_MANAGER_CHECK_TERMINATOR_INTERVAL); // sleep and wait for terminator

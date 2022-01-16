@@ -550,7 +550,7 @@ int CommHttpClient::onEventCommHttpClientRequest(unsigned char* data, unsigned i
     // download response
     CommHttpHeaderTAG* resHeader = (CommHttpHeaderTAG*)resPackage->header();
     {
-      char* headerKey = COMM_HTTP_HEADER_CONTENT_NAME;
+      const char* headerKey = COMM_HTTP_HEADER_CONTENT_NAME;
       char* headerVal = NULL;
       httpRet = esp_http_client_get_header(this->http_Handler, headerKey, &headerVal);
       if (httpRet != HTTP_RET_OK)

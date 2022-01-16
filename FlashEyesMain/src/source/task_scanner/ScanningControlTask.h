@@ -62,14 +62,15 @@ public:
   virtual ~ScanningControlTask(void);
   bool                                                          isBusy(void);
   bool                                                          isValid(void);
-  virtual int                                                   inititialize(void);
+  //virtual int                                                   inititialize(void);
   virtual int                                                   startTask(ScanningTaskConfigTAG& scanningConfig);
   virtual void                                                  stopTask(void);
-  virtual void                                                  cleanUp(void);
+  //virtual void                                                  cleanUp(void);
 protected:
   void                                                          isBusy(bool flag);
   virtual void                                                  proc(void) override;
   virtual int                                                   prepare(void);
+  virtual void                                                  clear(void);
   int                                                           onEventScanningStart(unsigned char* data, unsigned int dataSize);
   int                                                           onEventScanningStop(unsigned char* data, unsigned int dataSize);
   int                                                           onEventScanningDeviceSetting(unsigned char* data, unsigned int dataSize);

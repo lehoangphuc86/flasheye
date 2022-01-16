@@ -100,6 +100,14 @@ int UiDpSCProcessor::uiMessSysState(UiMessSysStateTAG* param)
   return 0;
 }
 
+int UiDpSCProcessor::uiMessNetState(UiMessNetStateTAG* param)
+{
+  SYSTEM_PRINT_BUF(this->tmp_Buff, UI_DP_SC_PROCESSOR_TMP_BUFF_LEN, "[UI] nets:%u sub:%u", param->stateId, param->stateSubId);
+  SYSTEM_PRINT_BUF(this->tmp_Buff, UI_DP_SC_PROCESSOR_TMP_BUFF_LEN, "[UI] ip:%s", param->ip4);
+  this->dp_Controller->println(this->tmp_Buff);
+  return 0;
+}
+
 void UiDpSCProcessor::stop(void)
 {
   UiDpProcessor::stop();

@@ -51,7 +51,8 @@ ScanningControlTask::ScanningControlTask(void)
 }
 ScanningControlTask::~ScanningControlTask(void)
 {
-  this->cleanUp();
+  //this->cleanUp();
+  this->stopTask();
 }
 
 bool ScanningControlTask::isBusy(void)
@@ -65,15 +66,15 @@ bool ScanningControlTask::isValid(void)
   return (this->sc_Controller == NULL ? false : true);
 }
 
-int ScanningControlTask::inititialize(void)
-{
-  do
-  {
-    return 0;
-  } while (0);
-  this->cleanUp();
-  return -1;
-}
+//int ScanningControlTask::inititialize(void)
+//{
+//  do
+//  {
+//    return 0;
+//  } while (0);
+//  this->cleanUp();
+//  return -1;
+//}
 
 int ScanningControlTask::startTask(ScanningTaskConfigTAG& scanningConfig)
 {
@@ -162,10 +163,10 @@ void ScanningControlTask::stopTask(void)
   return;
 }
 
-void ScanningControlTask::cleanUp(void)
-{
-  this->stopTask();
-}
+//void ScanningControlTask::cleanUp(void)
+//{
+//  this->stopTask();
+//}
 
 void ScanningControlTask::isBusy(bool flag)
 {
@@ -183,6 +184,7 @@ void ScanningControlTask::proc(void)
   if (prepareRet != 0)
   {
     this->waitTerminating();
+    this->clear();
     return;
   }
   EventDataItem* eventData = NULL;
@@ -228,6 +230,7 @@ void ScanningControlTask::proc(void)
     }
     this->event_Manager.release(eventData);
   }
+  this->clear();
 #ifdef SCANNING_TASK_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] proc %i", 99);
 #endif // SCANNING_TASK_CONSOLE_DEBUG_ENABLE
@@ -237,6 +240,11 @@ int ScanningControlTask::prepare(void)
 {
   this->resetSequence();
   return 0; //do nothing
+}
+
+void ScanningControlTask::clear(void)
+{
+  return;
 }
 
 int ScanningControlTask::onEventScanningStart(unsigned char* data, unsigned int dataSize)

@@ -1,12 +1,12 @@
-#ifndef _WIFI_CONTROLLER_CONSTANT_H
-#define _WIFI_CONTROLLER_CONSTANT_H
+#ifndef _NET_WIFI_CONSTANT_H
+#define _NET_WIFI_CONSTANT_H
 
 #include "../../../FlashEyesMain.h"
-#if (_CONF_WIFI_MANAGER_CONSTANT_ENABLED)
+#if (_CONF_NET_WIFI_CONSTANT_ENABLED)
 /////////////////////////////////////////////////
 // INCLUDE
 #include "../../../drivers/esp32/net/wifi/wifi.h"
-#include "../NetManagerConstant.h"
+#include "../NetIPConstant.h"
 #include "task_manager/TaskManagerConstant.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
@@ -196,6 +196,6 @@ typedef struct _eventWifiNetGotIPV4TAG
 /////////////////////////////////////////////////
 // CLASS DEFINITION
 
-#endif // _CONF_WIFI_MANAGER_CONSTANT_ENABLED
+#endif // _CONF_NET_WIFI_CONSTANT_ENABLED
 
-#endif // _WIFI_CONTROLLER_CONSTANT_H
+#endif // _NET_WIFI_CONSTANT_H

@@ -56,6 +56,7 @@ public:
   int                                                           uiMessRaw(UiMessRawTAG* param) override;
   int                                                           uiMessMessage(UiMessMessageTAG* param) override;
   int                                                           uiMessSysState(UiMessSysStateTAG* param) override;
+  int                                                           uiMessNetState(UiMessNetStateTAG* param) override;
 
 protected:
   char*                                                         tmp_Buff;

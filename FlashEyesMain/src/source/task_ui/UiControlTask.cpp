@@ -101,6 +101,9 @@ DataSize_t UiControlTask::getUIMessageParamSize(UIMessageId_t messageId)
       case (UIMessageId_t)UIConstant::UIMessageId::UiMessSysState:
         maxSize = sizeof(UiMessSysStateTAG);
         break;
+      case (UIMessageId_t)UIConstant::UIMessageId::UiMessNetState:
+        maxSize = sizeof(UiMessNetStateTAG);
+        break;
       default:
         maxSize = 0;
         break;
@@ -305,6 +308,11 @@ int UiControlTask::onEventUiMessage(unsigned char* data, unsigned int dataSize)
         this->onUiMessSysState(eventData);
         break;
       }
+      case (byte)UIConstant::UIMessageId::UiMessNetState:
+      {
+        this->onUiMessNetState(eventData);
+        break;
+      }
       default:
         break;
     }
@@ -418,6 +426,37 @@ int UiControlTask::onUiMessSysState(EventUiMessageTAG* eventData)
   } while (0);
 #ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i", -99);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+int UiControlTask::onUiMessNetState(EventUiMessageTAG* eventData)
+{
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oNetS %i", 0);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  int ret = 0;
+  do
+  {
+    // play sound
+    // play led
+    if ((eventData->buffItem == NULL)
+      || (eventData->buffItem->dataLength() < sizeof(UiMessNetStateTAG))
+      )
+    {
+      break;
+    }
+
+    UiMessNetStateTAG* param = (UiMessNetStateTAG*)eventData->buffItem->bufferAddress();
+    ret = this->dp_Processor->uiMessNetState(param);
+    if (ret != 0)
+    {
+      break;
+    }
+    return 0;
+  } while (0);
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oNetS %i", -99);
 #endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
   return -1;
 }

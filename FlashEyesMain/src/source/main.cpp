@@ -252,6 +252,7 @@ int main(void)
       UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessRaw);
       UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessMessage);
       UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessSysState);
+      UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessNetState);
 
       UiManagerConfigTAG uiConfig = UiManagerConfigTAG();
       uiConfig.dpProcType = FEM_UI_CONTROL_TYPE;

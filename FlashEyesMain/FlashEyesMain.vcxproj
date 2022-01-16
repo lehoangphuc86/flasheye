@@ -154,9 +154,13 @@
     <ClInclude Include="src\source\task_main\MainNormalController.h" />
     <ClInclude Include="src\source\task_main\MainResetController.h" />
     <ClInclude Include="src\source\task_main\MainSettingController.h" />
+    <ClInclude Include="src\source\task_net\NetInterface.h" />
+    <ClInclude Include="src\source\task_net\NetInterfaceFactory.h" />
+    <ClInclude Include="src\source\task_net\NetIPConstant.h" />
+    <ClInclude Include="src\source\task_net\NetManager.h" />
     <ClInclude Include="src\source\task_net\NetManagerConstant.h" />
-    <ClInclude Include="src\source\task_net\wifi\WifiControllerTask.h" />
-    <ClInclude Include="src\source\task_net\wifi\WifiManagerConstant.h" />
+    <ClInclude Include="src\source\task_net\wifi\NetWifi.h" />
+    <ClInclude Include="src\source\task_net\wifi\NetWifiConstant.h" />
     <ClInclude Include="src\source\task_scanner\ScanningController.h" />
     <ClInclude Include="src\source\task_scanner\ScanningControllerFactory.h" />
     <ClInclude Include="src\source\task_scanner\ScanningControlTask.h" />
@@ -200,7 +204,10 @@
     <ClCompile Include="src\source\task_main\MainNormalController.cpp" />
     <ClCompile Include="src\source\task_main\MainResetController.cpp" />
     <ClCompile Include="src\source\task_main\MainSettingController.cpp" />
-    <ClCompile Include="src\source\task_net\wifi\WifiControllerTask.cpp" />
+    <ClCompile Include="src\source\task_net\NetInterface.cpp" />
+    <ClCompile Include="src\source\task_net\NetInterfaceFactory.cpp" />
+    <ClCompile Include="src\source\task_net\NetManager.cpp" />
+    <ClCompile Include="src\source\task_net\wifi\NetWifi.cpp" />
     <ClCompile Include="src\source\task_scanner\ScanningController.cpp" />
     <ClCompile Include="src\source\task_scanner\ScanningControllerFactory.cpp" />
     <ClCompile Include="src\source\task_scanner\ScanningControlTask.cpp" />

@@ -9,7 +9,7 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define UI_MANAGER_CONSOLE_DEBUG_ENABLE
+//#define UI_MANAGER_CONSOLE_DEBUG_ENABLE
 #ifdef UI_MANAGER_CONSOLE_DEBUG_ENABLE
 char uiMgrLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 #endif // UI_MANAGER_CONSOLE_DEBUG_ENABLE

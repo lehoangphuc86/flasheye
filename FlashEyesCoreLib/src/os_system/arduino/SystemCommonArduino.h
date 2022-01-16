@@ -16,6 +16,7 @@
 
 /////////////////////////////////////////////////
 // INCLUDE
+#define Binary_h
 #include "Arduino.h"
 #include <stdio.h>
 #include "string.h"

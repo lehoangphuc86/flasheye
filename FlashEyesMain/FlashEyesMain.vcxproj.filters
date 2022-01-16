@@ -133,10 +133,10 @@
     <ClInclude Include="src\drivers\esp32\net\wifi\wifi.h">
       <Filter>src\drivers\esp32\net\wifi</Filter>
     </ClInclude>
-    <ClInclude Include="src\source\task_net\wifi\WifiControllerTask.h">
+    <ClInclude Include="src\source\task_net\wifi\NetWifi.h">
       <Filter>src\source\task_net\wifi</Filter>
     </ClInclude>
-    <ClInclude Include="src\source\task_net\wifi\WifiManagerConstant.h">
+    <ClInclude Include="src\source\task_net\wifi\NetWifiConstant.h">
       <Filter>src\source\task_net\wifi</Filter>
     </ClInclude>
     <ClInclude Include="src\source\task_http\CommHttp.h">
@@ -256,6 +256,18 @@
     <ClInclude Include="src\source\system\SystemSettingDefinition.h">
       <Filter>src\source\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_net\NetInterface.h">
+      <Filter>src\source\task_net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_net\NetManager.h">
+      <Filter>src\source\task_net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_net\NetInterfaceFactory.h">
+      <Filter>src\source\task_net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_net\NetIPConstant.h">
+      <Filter>src\source\task_net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -279,7 +291,7 @@
     <ClCompile Include="src\libs\sqlite3\esp32.cpp">
       <Filter>src\libs\sqlite3</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\task_net\wifi\WifiControllerTask.cpp">
+    <ClCompile Include="src\source\task_net\wifi\NetWifi.cpp">
       <Filter>src\source\task_net\wifi</Filter>
     </ClCompile>
     <ClCompile Include="src\source\task_http\CommHttp.cpp">
@@ -362,6 +374,15 @@
     </ClCompile>
     <ClCompile Include="src\source\settings\SystemSettingCollection.cpp">
       <Filter>src\source\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_net\NetManager.cpp">
+      <Filter>src\source\task_net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_net\NetInterfaceFactory.cpp">
+      <Filter>src\source\task_net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_net\NetInterface.cpp">
+      <Filter>src\source\task_net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

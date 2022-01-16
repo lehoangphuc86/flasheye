@@ -8,6 +8,8 @@
 #include "source/task_http/CommHttpConstant.h"
 #include "timer_manager/TimerManagerConstant.h"
 #include "source/task_ui/UiManagerConstant.h"
+#include "source/task_net/NetManagerConstant.h"
+#include "source/task_net/wifi/NetWifiConstant.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -151,10 +153,33 @@
 #define FEM_DB_TBL_ID_MAX                             2
 
 #define FEM_DB_TBL_ID_INVALID                         FEM_DB_TBL_ID_MAX
+
+// Net
+#define FEM_NET_INTERFACE_TYPE                        NetInterfaceTypeUN::NetInterfaceWifi
+#define FEM_NET_TASK_MEM                              2048
+#define FEM_NET_TASK_PRIORITY                         FEM_TASK_PRIORITY_DEFAULT
+#define FEM_NET_TASK_EVENT_NUM                        5
+
 // Wifi
-#define FEM_WIFI_SERVER_TASK_MEM                      2048
-#define FEM_WIFI_SERVER_TASK_PRIORITY                 FEM_TASK_PRIORITY_DEFAULT
-#define FEM_WIFI_SERVER_TASK_EVENT_NUM                5
+#define FEM_WIFI_IS_AP                                false
+#define FEM_WIFI_STA_SSID                             "SamsungJ7"
+#define FEM_WIFI_STA_PWD                              "donotconnect"
+
+#define FEM_WIFI_AP_SSID                              "SamsungJ7_2"
+#define FEM_WIFI_AP_PWD                               "donotconnect"
+#define FEM_WIFI_AP_CHANNEL                           WIFI_MGR_CHANNEL_DEFAULT
+#define FEM_WIFI_AP_MAX_CONN                          WIFI_MGR_MAX_CONN_DEFAULT
+
+#define FEM_WIFI_CONN_RETRY                           WIFI_MGR_CONN_RETRY_MAX_DEFAULT
+#define FEM_WIFI_AUTH_MODE                            WIFI_MGR_AUTH_MODE_DEFAULT
+
+#define FEM_WIFI_STA_NET_STATIC_IP                    NET_IP4_INIT(192, 168, 137, 100)
+#define FEM_WIFI_STA_NET_STATIC_NETMARK               NET_IP4_INIT(255, 255, 255, 0)
+#define FEM_WIFI_STA_NET_STATIC_GW                    NET_IP4_INIT(192, 168, 137, 1)
+
+#define FEM_WIFI_AP_NET_STATIC_IP                     NET_IP4_INIT(192, 169, 0, 100)
+#define FEM_WIFI_AP_NET_STATIC_NETMARK                NET_IP4_INIT(255, 255, 255, 0)
+#define FEM_WIFI_AP_NET_STATIC_GW                     NET_IP4_INIT(192, 169, 0, 1)
 
 // Http server
 #define FEM_HTTP_SERVER_IS_HEADER_LESS                0

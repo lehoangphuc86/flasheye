@@ -1,10 +1,10 @@
-#ifndef _WIFI_CONTROLLER_H
-#define _WIFI_CONTROLLER_H
+#ifndef _NET_WIFI_H
+#define _NET_WIFI_H
 /////////////////////////////////////////////////
 // INCLUDE
-#include "WifiManagerConstant.h"
-#if (_CONF_WIFI_CONTROLLER_TASK_ENABLED)
-
+#include "NetWifiConstant.h"
+#if (_CONF_NET_WIFI_ENABLED)
+#include "../NetInterface.h"
 #include "task_manager/TaskManager.h"
 #include "os_system/SystemCriticalSession.h"
 /////////////////////////////////////////////////
@@ -42,24 +42,27 @@
 /////////////////////////////////////////////////
 // CLASS IMPLEMENTAION
 
-/*WifiControllerTask*/
-class WifiControllerTask
-  : public TaskManager
+/*NetWifi*/
+class NetWifi
+  : public NetInterface
+  , public TaskManager
 {
 public:
-  WifiControllerTask(void);
-  virtual ~WifiControllerTask(void);
-  int                                                           inititialize(void);  
+  NetWifi(void);
+  virtual ~NetWifi(void);
+  //int                                                           inititialize(void);  
   bool                                                          isStarted(void);
+  bool                                                          isEnabled(void) override;
   WifiMode_t                                                    mode(void);
-  int                                                           getNetConfig(NetIPConfigTAG& netConfig);
-  int                                                           startTask(WifiTaskConfigTAG& wifiTaskConfig);
-  int                                                           startWifi(WifiConnectionConfigTAG& wifiConnConfig, bool waitCompletion = true);
-  void                                                          stopWifi(bool waitCompletion = true);
-  void                                                          stopTask(void);
-  void                                                          cleanUp(void);
+  int                                                           getNetConfig(NetIPConfigTAG& netConfig) override;
+  int                                                           startTask(NetTaskConfigTAG& netTaskConfig) override;
+  int                                                           startNet(NetConnectionConfigTAG& netConnConfig, bool waitCompletion = true) override;
+  void                                                          stopNet(bool waitCompletion = true) override;
+  void                                                          stopTask(void) override;
+  
 protected:
   int                                                           prepare(void);
+  void                                                          clear(void);
   void                                                          proc(void) override;
   int                                                           onEventWifiStart(unsigned char* data, unsigned int dataSize);
   int                                                           onEventWifiStop(unsigned char* data, unsigned int dataSize);
@@ -89,6 +92,6 @@ private:
   static WifiNetHandler_t                                       g_AP_Handler;
   static WifiNetHandler_t                                       g_STA_Handler;
 };
-#endif // (_CONF_TIMER_CONTROL_TASK_ENABLED)
+#endif // (_CONF_NET_WIFI_ENABLED)
 
-#endif // _WIFI_CONTROLLER_H
+#endif // _NET_WIFI_H
