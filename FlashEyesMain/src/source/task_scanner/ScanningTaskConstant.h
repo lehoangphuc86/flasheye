@@ -40,7 +40,7 @@
 //#########################other###########
 #define SCANNING_DEVICE_BARCODE_LEN_MAX               48
 #define SCANNING_SETTING_ID_SET_ALL                   UINT64_MAX
-#define SCANNING_DEVICE_DATA_TIMEOUT_DEFAULT          100 // ms
+#define SCANNING_DEVICE_DATA_TIMEOUT_DEFAULT          500 // ms
 
 /////////////////////////////////////////////////
 // MARCO

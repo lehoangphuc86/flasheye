@@ -65,7 +65,7 @@ public:
 protected:
   int                                                           createSocket(ScanningEVSerialConfigTAG& socketConfig);
   int                                                           setSocketConfig(ScanningEVSerialConfigTAG& socketConfig);
-  int                                                           exeCommand(ScanningCmdCode_t cmdCode, uint16_t timeout = SCANNING_DEVICE_DATA_TIMEOUT_DEFAULT);
+  int                                                           exeCommand(ScanningCmdCode_t cmdCode, uint16_t timeout = 0);
   int                                                           readCode(ScanningBarCodeTAG& barCode, uint16_t timeout = SCANNING_DEVICE_DATA_TIMEOUT_DEFAULT);
   int                                                           readCommand(ScanningCmdCode_t& cmdCode, uint16_t timeout = SCANNING_DEVICE_DATA_TIMEOUT_DEFAULT);
   int                                                           readRawCommand(uint16_t timeout = SCANNING_DEVICE_DATA_TIMEOUT_DEFAULT);
@@ -77,6 +77,7 @@ protected:
 
   void                                                          flushCommBuff(void);
 
+  int                                                           setRestoreFactoryMode(void);
   int                                                           setCommBaudrate(byte baudrate);
   int                                                           setCommParity(byte parity);
   int                                                           setCommStopbit(byte stopbit);

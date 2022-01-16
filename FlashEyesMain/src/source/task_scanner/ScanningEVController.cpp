@@ -513,6 +513,16 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       return -1;
     }
 
+    if (SYSTEM_BITREAD(idSet, SCANNING_SET_ID_RESTORE_FACTORY) != 0)
+    {
+      ret = this->setRestoreFactoryMode();
+      if (ret != 0)
+      {
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_RESTORE_FACTORY);
+        break;
+      }
+    }
+
     if (SYSTEM_BITREAD(idSet, SCANNING_SET_ID_COM_BAUDRATE) != 0)
     {
       ret = this->setCommBaudrate(scannerSetting.commBaudrate());
@@ -528,7 +538,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCommParity(scannerSetting.commParity());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_PARITY);
         break;
       }
     }
@@ -538,7 +548,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCommStopbit(scannerSetting.commStopbit());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_STOPBIT);
         break;
       }
     }
@@ -548,7 +558,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCommDatabit(scannerSetting.commDatabit());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_DATABIT);
         break;
       }
     }
@@ -558,7 +568,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCommFlowCtrl(scannerSetting.commFlowCtrl());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_FLOW_CTRL);
         break;
       }
     }
@@ -568,7 +578,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCharacterFormat(scannerSetting.characterFormat());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_CHARACTER);
         break;
       }
     }
@@ -578,7 +588,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setReadState(scannerSetting.readState());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_READ_STATE);
         break;
       }
     }
@@ -588,7 +598,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setAutoScan(scannerSetting.autoScan());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_AUTO_SCAN);
         break;
       }
     }
@@ -598,7 +608,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setContScan(scannerSetting.contScan());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_CONT_SCAN);
         break;
       }
     }
@@ -608,7 +618,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setSecurityLevel(scannerSetting.securityLevel());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_SECURITY_LEVEL);
         break;
       }
     }
@@ -618,7 +628,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setEnablePrefix(scannerSetting.enablePrefix());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_CODE_PREFIX);
         break;
       }
     }
@@ -628,7 +638,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCustomPrefix(scannerSetting.customPrefix());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_CODE_PREFIX_MOD);
         break;
       }
     }
@@ -638,7 +648,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCustomSuffix(scannerSetting.customSuffix());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_CODE_SUFFIX_MOD);
         break;
       }
     }
@@ -648,7 +658,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setCustomCodeFormat(scannerSetting.customCodeFormat());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_CODE_CUS_FORMAT);
         break;
       }
     }
@@ -658,7 +668,7 @@ int ScanningEVController::setting(ScanningDeviceSettingTAG& setting, ScanningDev
       ret = this->setMessTerminator(scannerSetting.messTerminator());
       if (ret != 0)
       {
-        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_COM_BAUDRATE);
+        SYSTEM_BITSET(errorSet, SCANNING_SET_ID_MESS_TER);
         break;
       }
     }
@@ -684,19 +694,26 @@ int ScanningEVController::exeCommand(ScanningCmdCode_t cmdCode, uint16_t timeout
 {
   int ret = 0;
   ScanningCmdCode_t resCode = 0;
+  uint16_t cmdTimeout = (timeout == 0? this->data_Timeout : timeout);
   do
   {
-    ret = this->writeCommand(cmdCode);
+    ret = this->writeCommand(cmdCode, cmdTimeout);
     if (ret != 0)
     {
+#ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] exe %d %d %d %d", -1, ret, cmdCode, timeout);
+#endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
-    ret = this->readCommand(resCode);
+    ret = this->readCommand(resCode, cmdTimeout);
     if ( (ret != 0)
       || (resCode != cmdCode)
       )
     {
+#ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] exe %d %d %d %d %d", -2, ret, cmdCode, resCode, timeout);
+#endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
       break;
     }
     return 0;
@@ -1125,6 +1142,11 @@ int ScanningEVController::writeCommand(ScanningCmdCode_t cmdCode, uint16_t timeo
   return -1;
 }
 
+int ScanningEVController::setRestoreFactoryMode(void)
+{
+  return this->exeCommand(EV_CMD_SET_RESTORE_FACTORY);
+}
+
 int ScanningEVController::setCommBaudrate(byte baudrate)
 {
   ScanningCmdCode_t cmdCode = EV_CMD_SET_INVALID;
@@ -1340,7 +1362,7 @@ int ScanningEVController::setReadState(byte readState)
 
 int ScanningEVController::setAutoScan(byte flag)
 {
-  ScanningCmdCode_t cmdCode = EV_CMD_OP_START_SCAN; // press button to stop auto scanning
+  ScanningCmdCode_t cmdCode = EV_CMD_OP_STOP_SCAN; // press button to stop auto scanning
   do
   {
     if (flag != 0)
@@ -1355,7 +1377,7 @@ int ScanningEVController::setAutoScan(byte flag)
 
 int ScanningEVController::setContScan(byte flag)
 {
-  ScanningCmdCode_t cmdCode = EV_CMD_OP_START_SCAN; // press button to stop continue scanning @@need to confirm
+  ScanningCmdCode_t cmdCode = EV_CMD_OP_STOP_SCAN; // press button to stop continue scanning @@need to confirm
   do
   {
     if (flag != 0)

@@ -139,6 +139,9 @@ SysMode_t SwitchManager::getState(void)
 {
   SysMode_t orOpCode = 0; 
   bool isPressed = false;
+#ifdef SWITCH_MANAGER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(swManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[swM] getS %d", 0);
+#endif // SWITCH_MANAGER_CONSOLE_DEBUG_ENABLE
   do
   {
     if (this->isValid() == false)
@@ -153,6 +156,9 @@ SysMode_t SwitchManager::getState(void)
       {
         orOpCode |= this->sw_Opcode[wk_idx];
       }
+#ifdef SWITCH_MANAGER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(swManagerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[swM] getS %d %d %d %d %d", 1, wk_idx, this->sw_Opcode[wk_idx], isPressed, orOpCode);
+#endif // SWITCH_MANAGER_CONSOLE_DEBUG_ENABLE
     }
 
     return orOpCode;

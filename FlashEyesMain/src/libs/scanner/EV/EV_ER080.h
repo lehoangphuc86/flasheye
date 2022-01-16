@@ -42,6 +42,9 @@
 //#########################settings#############################
 #define EV_CMD_SET_INVALID                              9999
 
+//-------------------------restoreFactory-------------------
+#define EV_CMD_SET_RESTORE_FACTORY                      30
+
 //-------------------------comm-----------------------------
 // Comm::baudrate
 #define EV_CMD_SET_COMM_BAUD_1200                       1001
@@ -80,24 +83,24 @@
 #define EV_CMD_SET_CHARACTER_REVERSE                    1133
 
 //-------------------------Read state-----------------------
-#define EV_CMD_SET_READ_STATE_ENABLE                    0042
-#define EV_CMD_SET_READ_STATE_DISABLE                   0043
+#define EV_CMD_SET_READ_STATE_ENABLE                    42
+#define EV_CMD_SET_READ_STATE_DISABLE                   43
 
 //-------------------------Auto scanning--------------------
-#define EV_CMD_SET_AUTO_SCAN_ENABLE                     0211
-#define EV_CMD_SET_AUTO_SCAN_TIME_LIMIT                 0250
-#define EV_CMD_SET_AUTO_SCAN_REPEAT_FORBIT              0255
-#define EV_CMD_SET_AUTO_SCAN_REPEAT_ALLOWED             0256
+#define EV_CMD_SET_AUTO_SCAN_ENABLE                     211
+#define EV_CMD_SET_AUTO_SCAN_TIME_LIMIT                 250
+#define EV_CMD_SET_AUTO_SCAN_REPEAT_FORBIT              255
+#define EV_CMD_SET_AUTO_SCAN_REPEAT_ALLOWED             256
 
 //-------------------------Continous scanning---------------
-#define EV_CMD_SET_CONT_SCAN_ENABLE                     0214
-#define EV_CMD_SET_CONT_SCAN_SET_TIME_LEN               0265
+#define EV_CMD_SET_CONT_SCAN_ENABLE                     214
+#define EV_CMD_SET_CONT_SCAN_SET_TIME_LEN               265
 
 //-------------------------Security level-------------------
-#define EV_CMD_SET_SECURITY_LEVEL_1                     0220
-#define EV_CMD_SET_SECURITY_LEVEL_2                     0221
-#define EV_CMD_SET_SECURITY_LEVEL_3                     0222
-#define EV_CMD_SET_SECURITY_LEVEL_4                     0223
+#define EV_CMD_SET_SECURITY_LEVEL_1                     220
+#define EV_CMD_SET_SECURITY_LEVEL_2                     221
+#define EV_CMD_SET_SECURITY_LEVEL_3                     222
+#define EV_CMD_SET_SECURITY_LEVEL_4                     223
 
 //-------------------------Code prefix----------------------
 #define EV_CMD_SET_CODE_PREFIX_DISABLE                  2040

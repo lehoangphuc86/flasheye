@@ -58,9 +58,9 @@ protected:
   int                                                           prepare(void) override;
   void                                                          clear(void) override;
   int                                                           onEventHandling(EventDataItem* eventData) override;
-
+  int                                                           onEventScanningDeviceSettingCompleted(unsigned char* data, unsigned int dataSize) override;
 protected:
-  //JsonParser                                                    js_Parser;
+
 };
 #endif // _MAIN_SETTING_CONTROLLER_H
 

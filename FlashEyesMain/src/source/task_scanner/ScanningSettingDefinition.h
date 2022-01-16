@@ -27,6 +27,7 @@
 #define SCANNING_SET_ID_CODE_SUFFIX_MOD               13
 #define SCANNING_SET_ID_CODE_CUS_FORMAT               14
 #define SCANNING_SET_ID_MESS_TER                      15
+#define SCANNING_SET_ID_RESTORE_FACTORY               16
 
 //#########################Setting enum###############
 //-------------------comm----------------------

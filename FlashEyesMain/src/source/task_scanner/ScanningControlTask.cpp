@@ -75,7 +75,7 @@ int ScanningControlTask::inititialize(void)
   return -1;
 }
 
-int ScanningControlTask::startTask(ScanningTaskConfigTAG& displayConfig)
+int ScanningControlTask::startTask(ScanningTaskConfigTAG& scanningConfig)
 {
 #ifdef SCANNING_TASK_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] sta %i", 0);
@@ -88,23 +88,23 @@ int ScanningControlTask::startTask(ScanningTaskConfigTAG& displayConfig)
       return 0; // already running
     }
 
-    if (displayConfig.parentEventer == NULL)
+    if (scanningConfig.parentEventer == NULL)
     {
       break;
     }
     
     this->stopTask();
-    this->parent_Eventer = (EventManager*)displayConfig.parentEventer;
-    this->sc_Controller = ScanningControllerFactory::generate(displayConfig.deviceConfig.deviceType);
+    this->parent_Eventer = (EventManager*)scanningConfig.parentEventer;
+    this->sc_Controller = ScanningControllerFactory::generate(scanningConfig.deviceConfig.deviceType);
     if (this->sc_Controller == NULL)
     {
       break;
     }
 
-    displayConfig.deviceConfig.cbOnSignal = ScanningControlTask::cbScanningDeviceSignal;
-    displayConfig.deviceConfig.signalUserArg = this;
+    scanningConfig.deviceConfig.cbOnSignal = ScanningControlTask::cbScanningDeviceSignal;
+    scanningConfig.deviceConfig.signalUserArg = this;
 
-    result = this->sc_Controller->start(displayConfig.deviceConfig);
+    result = this->sc_Controller->start(scanningConfig.deviceConfig);
     if (result != 0)
     {
       break;
@@ -116,7 +116,7 @@ int ScanningControlTask::startTask(ScanningTaskConfigTAG& displayConfig)
       this->registerHanldingEventStructSize(sizeof(EventScanningStopTAG));
       this->registerHanldingEventStructSize(sizeof(EventScanningDeviceSettingTAG));
       this->registerHanldingEventStructSize(sizeof(EventScanningDeviceSignalTAG));
-      result = TaskManager::setConfig(displayConfig.taskManagerConfig);
+      result = TaskManager::setConfig(scanningConfig.taskManagerConfig);
       if (result != 0)
       {
         break;
@@ -130,7 +130,7 @@ int ScanningControlTask::startTask(ScanningTaskConfigTAG& displayConfig)
     }
 
     {
-      result = TaskManager::startProcess(displayConfig.taskThreadConfig, true);
+      result = TaskManager::startProcess(scanningConfig.taskThreadConfig, true);
       if (result != 0)
       {
         break;

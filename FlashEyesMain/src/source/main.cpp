@@ -16,7 +16,8 @@
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONSOLE_DEBUG_ENABLE
-//#define MAIN_DEBUG_RESET_MODE
+//#define MAIN_DEBUG_SYS_MODE   SYS_MODE_SETTING
+#define MAIN_DEBUG_SYS_MODE   SYS_MODE_INVALID
 //#define MAIN_DEBUG_RESET_DB
 /////////////////////////////////////////////////
 // DEFINE
@@ -318,24 +319,22 @@ int main(void)
       }
 
       // get sw mode
-#ifdef MAIN_DEBUG_RESET_MODE
-      systemMode = SystemMode::ResetMode;
-#else // MAIN_DEBUG_RESET_MODE
+#if (MAIN_DEBUG_SYS_MODE < SYS_MODE_INVALID)
+      systemMode = MAIN_DEBUG_SYS_MODE;
+#else // (MAIN_DEBUG_SYS_MODE < SYS_MODE_INVALID)
       SysMode_t lastSystemMode = SettingManager::getInstance().system().lastSysMode();
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set pre mode %d", lastSystemMode);
       // clear last sysmode
       SettingManager::getInstance().system().lastSysMode(SYS_MODE_INVALID, true);
+      SYSTEM_SLEEP(500); // give user some time to press
+      systemMode = SwitchManager::getInstance().getSystemMode();
       if ((systemMode == SYS_MODE_NORMAL)
         && (lastSystemMode < SYS_MODE_INVALID)
         )
       {
         systemMode = lastSystemMode;
       }
-      else
-      {
-        systemMode = SwitchManager::getInstance().getSystemMode();
-      }
-#endif // MAIN_DEBUG_RESET_MODE
+#endif // (MAIN_DEBUG_SYS_MODE < SYS_MODE_INVALID)
       if (systemMode >= SYS_MODE_INVALID)
       {
         CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "System mode getting failed");

@@ -254,7 +254,7 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 #define FEM_SCAN_TM_PRIORITY                          FEM_TASK_PRIORITY_DEFAULT
 
 #define FEM_SCAN_DEV_DEVICE_TYPE                      ScanningDeviceTypeUN::ScanningEVDevice
-#define FEM_SCAN_DEV_DEVICE_DATA_TIMEOUT              100 // ms
+#define FEM_SCAN_DEV_DEVICE_DATA_TIMEOUT              1000 // ms
 #define FEM_SCAN_DEV_DEVICE_ID                        0
 #define FEM_SCAN_DEV_PIN_LED                          5
 #define FEM_SCAN_DEV_PIN_BUZZER                       18 // no used
