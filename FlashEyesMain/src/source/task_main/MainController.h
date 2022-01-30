@@ -13,6 +13,8 @@
 #endif // !_CONF_TASK_MANAGER_ENABLED
 #include "../settings/SettingManager.h"
 #include "../task_scanner/ScanningControlTask.h"
+#include "mess_broker/MessBrokerManager.h"
+#include "../task_excomm/ExCommConstant.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -67,7 +69,7 @@ protected:
   void                                                          isBusy(bool flag);
   Seq_t                                                         curSeqId(void);
   Seq_t                                                         nextSeqId(void);
-  virtual void                                                  regEventSize(void) = 0;
+  virtual void                                                  regEventSize(void);
   virtual void                                                  proc(void) override;
   virtual int                                                   prepare(void);
   virtual void                                                  clear(void);
@@ -76,12 +78,17 @@ protected:
 
   //###############below functions are implemented but called inside inherited classes##############
   // start sub tasks
+  virtual int                                                   startMessBroker(void);
   virtual int                                                   startNetManager(void);
+  virtual int                                                   startExCommManager(void);
   virtual int                                                   startScanningTask(void);
   
   // stop sub tasks
-  virtual void                                                  stopNetManager(void);
   virtual void                                                  stopScanningTask(void);
+  virtual void                                                  stopExCommManager(void);
+  virtual void                                                  stopNetManager(void);
+  virtual void                                                  stopMessBroker(void);
+
   // event handlers
   virtual int                                                   onEventScanningDeviceSetting(unsigned char* data, unsigned int dataSize);
   virtual int                                                   onEventScanningDeviceSettingCompleted(unsigned char* data, unsigned int dataSize);
@@ -89,6 +96,12 @@ protected:
   virtual int                                                   onEventScanningResult(unsigned char* data, unsigned int dataSize);
   virtual int                                                   onEventScanningCompleted(unsigned char* data, unsigned int dataSize);
   virtual int                                                   onEventTimerFired1(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventSysPower(unsigned char* data, unsigned int dataSize);
+
+  // mbc comm handler
+  virtual int                                                   onMbcCommMBCStart1(ExCommMBCParamTAG& mbcParams);
+  virtual int                                                   onMbcCommMBCSystemSetting(ExCommMBCParamTAG& mbcParams);
+
   // common functions
   virtual void                                                  resetSequence(void);
   virtual int                                                   startTimer(TimePoint_t timeout);
@@ -108,6 +121,7 @@ protected:
   
 protected:
   static void                                                   cbTimerFired(TimerId_t timerId, void* extraArg, bool* woken);
+  static int                                                    cbExCommRev(void* arg, ExCommMBCParamTAG& mbcParams);
 };
 
 #endif // _MAIN_CONTROLLER_H

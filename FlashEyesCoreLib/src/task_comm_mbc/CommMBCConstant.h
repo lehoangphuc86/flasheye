@@ -17,14 +17,13 @@
 #define COMM_MBC_STRING_TERMINATOR               '\0'
 #define COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN     128
 
+#define COMM_MBC_DATA_T_8                         SYS_DATA_T_8
+#define COMM_MBC_DATA_T_DOUBLE                    SYS_DATA_T_DOUBLE
+#define COMM_MBC_DATA_T_STRING                    SYS_DATA_T_STRING
+#define COMM_MBC_DATA_T_16                        SYS_DATA_T_16
+#define COMM_MBC_DATA_T_32                        SYS_DATA_T_32
+#define COMM_MBC_DATA_T_64                        SYS_DATA_T_64
 
-
-#define COMM_MBC_DATA_T_8                         0
-#define COMM_MBC_DATA_T_16                        1
-#define COMM_MBC_DATA_T_32                        2
-#define COMM_MBC_DATA_T_64                        3
-#define COMM_MBC_DATA_T_DOUBLE                    4
-#define COMM_MBC_DATA_T_STRING                    5
 
 /////////////////////////////////////////////////
 // MARCO
@@ -98,8 +97,10 @@ typedef struct _commMBCSystemSettingTag
     bool isReply : 1;
     bool isUpdate : 1; // 0: get, 1: update
     byte dataType : 3; // 
-    byte reserved : 3;
-  } bitSet1;
+    bool isUpdateDB : 1; // 
+    bool isRebootRequired : 1; // 
+    byte reserved : 1;
+  } bitSet1; // 0b reserved -> isReply ex:0b00001001
   
   uint8_t errorCode; // isReply = 1
   DataSize_t sLen;

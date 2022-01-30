@@ -144,6 +144,8 @@
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpConstant.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.h" />
+    <ClInclude Include="src\source\task_excomm\ExCommConstant.h" />
+    <ClInclude Include="src\source\task_excomm\ExCommManager.h" />
     <ClInclude Include="src\source\task_http\CommHttp.h" />
     <ClInclude Include="src\source\task_http\CommHttpClient.h" />
     <ClInclude Include="src\source\task_http\CommHttpConstant.h" />
@@ -196,6 +198,7 @@
     <ClCompile Include="src\source\settings\SystemSettingCollection.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.cpp" />
+    <ClCompile Include="src\source\task_excomm\ExCommManager.cpp" />
     <ClCompile Include="src\source\task_http\CommHttp.cpp" />
     <ClCompile Include="src\source\task_http\CommHttpClient.cpp" />
     <ClCompile Include="src\source\task_http\CommHttpServer.cpp" />

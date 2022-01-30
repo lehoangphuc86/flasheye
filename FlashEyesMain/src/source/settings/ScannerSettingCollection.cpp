@@ -95,6 +95,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     itemConfig.dbTableId = this->db_Table_Id;
 
     // comm_Baudrate
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_BAUDRATE;
     ret = this->comm_Baudrate.initialize(itemConfig);
     if (ret != 0)
@@ -103,6 +104,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // comm_Parity
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_PARITY;
     ret = this->comm_Parity.initialize(itemConfig);
     if (ret != 0)
@@ -111,6 +113,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // comm_Stopbit
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_STOPBIT;
     ret = this->comm_Stopbit.initialize(itemConfig);
     if (ret != 0)
@@ -119,6 +122,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // comm_Databit
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_DATABIT;
     ret = this->comm_Databit.initialize(itemConfig);
     if (ret != 0)
@@ -127,6 +131,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // comm_FlowCtrl
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_COM_FLOW_CTRL;
     ret = this->comm_FlowCtrl.initialize(itemConfig);
     if (ret != 0)
@@ -135,6 +140,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // character_Format
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CHARACTER;
     ret = this->character_Format.initialize(itemConfig);
     if (ret != 0)
@@ -143,6 +149,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // read_State
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_READ_STATE;
     ret = this->read_State.initialize(itemConfig);
     if (ret != 0)
@@ -151,6 +158,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // auto_Scan
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_AUTO_SCAN;
     ret = this->auto_Scan.initialize(itemConfig);
     if (ret != 0)
@@ -159,6 +167,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // cont_Scan
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CONT_SCAN;
     ret = this->cont_Scan.initialize(itemConfig);
     if (ret != 0)
@@ -167,6 +176,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // security_Level
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_SECURITY_LEVEL;
     ret = this->security_Level.initialize(itemConfig);
     if (ret != 0)
@@ -175,6 +185,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // enable_Prefix
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX;
     ret = this->enable_Prefix.initialize(itemConfig);
     if (ret != 0)
@@ -182,6 +193,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
       break;
     }
     // custom_Code_Format
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_CUS_FORMAT;
     ret = this->custom_Code_Format.initialize(itemConfig);
     if (ret != 0)
@@ -189,6 +201,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
       break;
     }
     // mess_Terminator
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_MESS_TER;
     ret = this->mess_Terminator.initialize(itemConfig);
     if (ret != 0)
@@ -198,6 +211,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
 
 
     // custom_Prefix
+    itemConfig.dataType = SYS_DATA_T_STRING;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX_MOD;
     itemConfig.sMaxLen = FEM_SET_DB_STR_LEN_SCANNER_CODE_PREFIX_MOD;
     ret = this->custom_Prefix.initialize(itemConfig);
@@ -207,6 +221,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     }
 
     // custom_Suffix
+    itemConfig.dataType = SYS_DATA_T_STRING;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_CODE_SUFFIX_MOD;
     itemConfig.sMaxLen = FEM_SET_DB_STR_LEN_SCANNER_CODE_SUFFIX_MOD;
     ret = this->custom_Suffix.initialize(itemConfig);
@@ -226,6 +241,177 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
   CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i", -99);
 #endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
   return -1;
+}
+
+
+int ScannerSettingCollection::get(SettingParamTAG& settingParam)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  switch (settingParam.settingId)
+  {
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_BAUDRATE:
+    {
+      return this->comm_Baudrate.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_PARITY:
+    {
+      return this->comm_Parity.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_STOPBIT:
+    {
+      return this->comm_Stopbit.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_DATABIT:
+    {
+      return this->comm_Databit.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_FLOW_CTRL:
+    {
+      return this->comm_FlowCtrl.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CHARACTER:
+    {
+      return this->character_Format.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_READ_STATE:
+    {
+      return this->read_State.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_AUTO_SCAN:
+    {
+      return this->auto_Scan.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CONT_SCAN:
+    {
+      return this->cont_Scan.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_SECURITY_LEVEL:
+    {
+      return this->security_Level.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX:
+    {
+      return this->enable_Prefix.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX_MOD:
+    {
+      return this->custom_Prefix.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_SUFFIX_MOD:
+    {
+      return this->custom_Suffix.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_CUS_FORMAT:
+    {
+      return this->custom_Code_Format.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_MESS_TER:
+    {
+      return this->mess_Terminator.get(settingParam);
+      break;
+    }
+    default:
+      return -1;
+  }
+}
+
+int ScannerSettingCollection::set(SettingParamTAG& settingParam)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  switch (settingParam.settingId)
+  {
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_BAUDRATE:
+    {
+      return this->comm_Baudrate.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_PARITY:
+    {
+      return this->comm_Parity.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_STOPBIT:
+    {
+      return this->comm_Stopbit.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_DATABIT:
+    {
+      return this->comm_Databit.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_COM_FLOW_CTRL:
+    {
+      return this->comm_FlowCtrl.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CHARACTER:
+    {
+      return this->character_Format.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_READ_STATE:
+    {
+      return this->read_State.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_AUTO_SCAN:
+    {
+      return this->auto_Scan.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CONT_SCAN:
+    {
+      return this->cont_Scan.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_SECURITY_LEVEL:
+    {
+      return this->security_Level.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX:
+    {
+      return this->enable_Prefix.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_PREFIX_MOD:
+    {
+      return this->custom_Prefix.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_SUFFIX_MOD:
+    {
+      return this->custom_Suffix.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_CODE_CUS_FORMAT:
+    {
+      return this->custom_Code_Format.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_MESS_TER:
+    {
+      return this->mess_Terminator.set(settingParam);
+      break;
+    }
+    default:
+      return -1;
+  }
 }
 
 uint8_t ScannerSettingCollection::commBaudrate(void)

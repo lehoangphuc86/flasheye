@@ -43,6 +43,7 @@ SettingItem::SettingItem(void)
   : db_Key_Id(FEM_SETTING_ITEM_DB_ID_INVALID)
   , db_Table_Id(FEM_DB_TBL_ID_INVALID)
   , local_Setting_Id(FEM_SETTING_ITEM_LOCAL_SETTING_ID_INVALID)
+  , data_Type(SYS_DATA_T_DOUBLE)
 {
 
 }
@@ -59,10 +60,17 @@ int SettingItem::initialize(SettingItemConfigTAG& settingConfig)
     this->db_Key_Id = settingConfig.dbKeyId;
     this->db_Table_Id = settingConfig.dbTableId;
     this->local_Setting_Id = settingConfig.localSettingId;
+    this->data_Type = settingConfig.dataType;
     return 0;
   } while (0);
   this->clear();
   return -1;
+}
+
+
+int SettingItem::dataType(void)
+{
+  return this->data_Type;
 }
 
 bool SettingItem::isInDB(void)
@@ -82,7 +90,7 @@ StrSettingItem::StrSettingItem(void)
   , cur_Val(NULL)
   , max_Len(0)
 {
-
+  this->data_Type = SYS_DATA_T_STRING;
 }
 
 StrSettingItem::~StrSettingItem(void)
@@ -144,6 +152,21 @@ int StrSettingItem::loadDB(void)
         , this->db_Key_Id
         , this->cur_Val
         , this->max_Len);
+    }
+
+    {
+      // check data type
+      byte dataType = SYS_DATA_T_STRING;
+      ret = DBManager::getInstance().selectCellNum(
+        this->db_Table_Id
+        , FEM_SETTING_ITEM_DB_DATA_TYPE_COLUMN_NAME
+        , FEM_SETTING_ITEM_DB_ID_COLUMN_NAME
+        , this->db_Key_Id
+        , dataType);
+      if (dataType != this->data_Type)
+      {
+        break;
+      }
     }
 #ifdef SETTING_ITEM_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(settingItemLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[sSI]: lDB %i %i %s", 1, ret, this->cur_Val);
@@ -213,6 +236,47 @@ char* StrSettingItem::get(void)
 {
   //SystemCriticalLocker locker(this->cri_Key);
   return this->cur_Val;
+}
+
+int StrSettingItem::get(SettingParamTAG& settingParam)
+{
+  settingParam.errorCode = 0;
+  do
+  {
+    if (settingParam.bitSet1.dataType != this->data_Type)
+    {
+      break;
+    }
+
+    settingParam.data.sVal = this->get();
+    settingParam.sLen = this->getLen();
+    return 0;
+  } while (0);
+  settingParam.errorCode = -1;
+  return -1;
+}
+
+int StrSettingItem::set(SettingParamTAG& settingParam)
+{
+  settingParam.errorCode = 0;
+  int ret = 0;
+  do
+  {
+    if (settingParam.bitSet1.dataType != this->data_Type)
+    {
+      break;
+    }
+
+    ret = this->set(settingParam.data.sVal, settingParam.sLen, settingParam.bitSet1.isUpdateDB);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    return 0;
+  } while (0);
+  settingParam.errorCode = -1;
+  return -1;
 }
 
 DataSize_t StrSettingItem::getLen(void)

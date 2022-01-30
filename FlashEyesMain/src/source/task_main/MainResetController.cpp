@@ -66,7 +66,7 @@ bool MainResetController::isValid(void)
 
 void MainResetController::regEventSize(void)
 {
-
+  MainController::regEventSize();
 }
 
 int MainResetController::prepare(void)

@@ -54,6 +54,8 @@ public:
   bool                                                          isValid(void);
   virtual int                                                   load(void);
   virtual int                                                   save(void);
+  virtual int                                                   set(SettingParamTAG& settingParam) = 0;
+  virtual int                                                   get(SettingParamTAG& settingParam) = 0;
   virtual void                                                  clear(void);
 protected:
   int                                                           initItemList(byte itemCount);

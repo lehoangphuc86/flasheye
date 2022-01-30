@@ -100,6 +100,15 @@
     <Filter Include="src\task_buzzer">
       <UniqueIdentifier>{a2cb78ee-5a99-47f8-b2a6-4a2fb141d3fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\interfaces">
+      <UniqueIdentifier>{9d676e75-e92f-4194-8411-374be77e2ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\interfaces\pub_sub">
+      <UniqueIdentifier>{b3e6fcb4-e786-4b6e-8a32-ded624d85e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mess_broker">
+      <UniqueIdentifier>{050c24c4-779f-44db-8990-7b2340319f51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
@@ -318,6 +327,18 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\libs\buzzer\Buzzer.cpp">
       <Filter>src\libs\buzzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\interfaces\pub_sub\PublisherInterface.cpp">
+      <Filter>src\interfaces\pub_sub</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\interfaces\pub_sub\SubscriberInterface.cpp">
+      <Filter>src\interfaces\pub_sub</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\mess_broker\MessBrokerInfo.cpp">
+      <Filter>src\mess_broker</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\mess_broker\MessBrokerManager.cpp">
+      <Filter>src\mess_broker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -611,6 +632,24 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\buzzer\BuzzerNotes.h">
       <Filter>src\libs\buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\interfaces\pub_sub\PublisherInterface.h">
+      <Filter>src\interfaces\pub_sub</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\interfaces\pub_sub\PubSubConstant.h">
+      <Filter>src\interfaces\pub_sub</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\interfaces\pub_sub\SubscriberInterface.h">
+      <Filter>src\interfaces\pub_sub</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\mess_broker\MessBrokerConstant.h">
+      <Filter>src\mess_broker</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\mess_broker\MessBrokerInfo.h">
+      <Filter>src\mess_broker</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\mess_broker\MessBrokerManager.h">
+      <Filter>src\mess_broker</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

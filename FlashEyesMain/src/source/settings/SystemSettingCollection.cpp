@@ -71,6 +71,7 @@ int SystemSettingCollection::initialize(SettingCollectionConfigTAG& settingConfi
     itemConfig.dbTableId = this->db_Table_Id;
 
     // comm_Baudrate
+    itemConfig.dataType = SYS_DATA_T_8;
     itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SYS_LAST_SYS_MODE;
     ret = this->last_Sys_Mode.initialize(itemConfig);
     if (ret != 0)
@@ -82,6 +83,38 @@ int SystemSettingCollection::initialize(SettingCollectionConfigTAG& settingConfi
   } while (0);
   this->clear();
   return -1;
+}
+
+int SystemSettingCollection::set(SettingParamTAG& settingParam)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  switch (settingParam.settingId)
+  {
+    case FEM_SET_DB_KEY_ID_SYS_LAST_SYS_MODE:
+    {
+      return this->last_Sys_Mode.set(settingParam);
+      break;
+    }
+   
+    default:
+      return -1;
+  }
+}
+
+int SystemSettingCollection::get(SettingParamTAG& settingParam)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  switch (settingParam.settingId)
+  {
+    case FEM_SET_DB_KEY_ID_SYS_LAST_SYS_MODE:
+    {
+      return this->last_Sys_Mode.get(settingParam);
+      break;
+    }
+
+    default:
+      return -1;
+  }
 }
 
 uint8_t SystemSettingCollection::lastSysMode(void)

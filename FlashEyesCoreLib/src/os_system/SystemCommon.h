@@ -26,6 +26,14 @@
 #define DIGITIAL_VALUE_MIN                                0
 #define DIGITIAL_VALUE_MAX                                255
 
+
+#define SYS_DATA_T_DOUBLE                                 0
+#define SYS_DATA_T_8                                      1
+#define SYS_DATA_T_STRING                                 2
+#define SYS_DATA_T_16                                     3
+#define SYS_DATA_T_32                                     4
+#define SYS_DATA_T_64                                     5
+
 /////////////////////////////////////////////////
 // MARCO
 

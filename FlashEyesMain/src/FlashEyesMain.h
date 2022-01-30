@@ -183,9 +183,12 @@
 
 // Http server
 #define FEM_HTTP_SERVER_IS_HEADER_LESS                0
+#define FEM_HTTP_SERVER_TASK_USE_POOL                 false
 #define FEM_HTTP_SERVER_TASK_MEM                      4096
 #define FEM_HTTP_SERVER_TASK_PRIORITY                 FEM_TASK_PRIORITY_DEFAULT
+#define FEM_HTTP_SERVER_TASK_EVENT_USE_POOL           false
 #define FEM_HTTP_SERVER_TASK_EVENT_NUM                5
+#define FEM_HTTP_SERVER_BUFF_USE_POOL                 false
 #define FEM_HTTP_SERVER_BUFF_COUNT                    6
 #define FEM_HTTP_SERVER_BUFF_SIZE                     200
 
@@ -209,16 +212,24 @@
 #define FEM_HTTP_SERVER_URI_2_DATATYPE                COMM_HTTP_DATA_TYPE_APP_JSON
 
 // Http client
-#define FEM_HTTP_CLIENT_IS_HEADER_LESS                0
+#define FEM_HTTP_CLIENT_IS_HEADER_LESS                true
 #define FEM_HTTP_CLIENT_TASK_MEM                      4096
+#define FEM_HTTP_CLIENT_TASK_USE_POOL                 false
 #define FEM_HTTP_CLIENT_TASK_PRIORITY                 FEM_TASK_PRIORITY_DEFAULT
 #define FEM_HTTP_CLIENT_TASK_EVENT_NUM                5
+#define FEM_HTTP_CLIENT_TASK_EVENT_USE_POOL           false
+#define FEM_HTTP_CLIENT_BUFF_USE_POOL                 false
 #define FEM_HTTP_CLIENT_BUFF_COUNT                    5
 #define FEM_HTTP_CLIENT_BUFF_SIZE                     200
 
+
 #define FEM_HTTP_CLIENT_PATH                          "http://192.168.137.234/api/v1/system/info"
 #define FEM_HTTP_CLIENT_REQ_URI                       "http://192.168.137.234/api/v1/system/update"
+#define FEM_HTTP_CLIENT_REQ_URI_ID                    1
 #define FEM_HTTP_CLIENT_REQ_GET_URI                   "https://gorest.co.in/public/v1/users/123/todos"
+#define FEM_HTTP_CLIENT_REQ_DATATYPE                  COMM_HTTP_DATA_TYPE_APP_JSON
+#define FEM_HTTP_CLIENT_REQ_METHOD                    COMM_HTTP_METHOD_POST
+
 
 #define FEM_HTTP_CLIENT_REQ_CERT                      NULL
 #define FEM_HTTP_CLIENT_REQ_CERT_GOREST               "-----BEGIN CERTIFICATE-----\n\
@@ -311,8 +322,44 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 
 #define FEM_MAIN_RESET_CONFIRM_TIME                   5000 // ms
 
+
+// Mess broker
+// mess id
+#define FEM_MB_MESS_ID_HEADLESS                       0
+#define FEM_MB_MESS_ID_START1                         1
+#define FEM_MB_MESS_ID_RESULT1                        2
+#define FEM_MB_MESS_ID_SYSTEMSETTING                  3
+#define FEM_MB_MESS_ID_MAX                            4
+// mess sub max count
+#define FEM_MB_SUB_MAX_HEADLESS                       1
+#define FEM_MB_SUB_MAX_START1                         1
+#define FEM_MB_SUB_MAX_RESULT1                        1
+#define FEM_MB_SUB_MAX_SYSTEMSETTING                  1
+
+// member id
+#define FEM_MB_MEM_ID_MAIN_CONTROLLER                 1
+#define FEM_MB_MEM_ID_EXCOMM_MANAGER                  2
+#define FEM_MB_MEM_ID_NET_MANAGER                     3
+
+// pattern
+#define FEM_MB_MATCH_PATTERN_NONE                     MB_MATCH_PATTERN_NONE
+#define FEM_MB_MATCH_PATTERN_ALL                      MB_MATCH_PATTERN_ALL
+#define FEM_MB_MATCH_PATTERN_SEND                     0x0001
+#define FEM_MB_MATCH_PATTERN_REV                      0x0002
+
+// Sys com
+#define FEM_SYS_POWER_WAKEUP                          0
+#define FEM_SYS_POWER_SLEEP                           1
+#define FEM_SYS_POWER_SLEEP_FORCE                     2
+#define FEM_SYS_POWER_RESTART                         3
+#define FEM_SYS_POWER_RESTART_FORCE                   4
+#define FEM_SYS_POWER_SHUTDOWN                        5
+#define FEM_SYS_POWER_SHUTDOWN_FORCE                  6
+
+#define FEM_SYS_POWER_DELAY                           1000 //sc
 /////////////////////////////////////////////////
 // MARCO
+
 
 /////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -367,5 +414,65 @@ static const char* g_FEM_Db_Tbl_Scripts[] = {
 
 /////////////////////////////////////////////////
 // CLASS DEFINITION
+//
+///*FEMConstant*/
+//class FEMConstant
+//{
+//public:
+//  FEMConstant(void) {};
+//  // WARNING: if inherite from this class, deconstructor must be virtual
+//  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~FEMConstant(void) {};
+//
+//  static MBMessId_t MBC2MBMessId(MbcMessageId_t mbcMessId)
+//  {
+//      MBMessId_t mbMessId = MB_MESS_ID_INVALID;
+//      switch (mbcMessId)
+//      {
+//        case (int)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess:
+//          mbMessId = FEM_MB_MESS_ID_HEADLESS;
+//          break;
+//        case (int)CommMBCConstant::CommMBCMessageId::CommMBCStart1:
+//          mbMessId = FEM_MB_MESS_ID_START1;
+//          break;
+//        case (int)CommMBCConstant::CommMBCMessageId::CommMBCResult1:
+//          mbMessId = FEM_MB_MESS_ID_RESULT1;
+//          break;
+//        case (int)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
+//          mbMessId = FEM_MB_MESS_ID_SYSTEMSETTING;
+//          break;
+//        default:
+//          break;
+//      }
+//      return mbMessId;
+//  }
+//
+//  static MbcMessageId_t MB2MBCMessId(MBMessId_t mbMessId)
+//  {
+//    MbcMessageId_t mbcMessId= CommMBCConstant::CommMBCMessageId::CommMBCMessageIdInvalid;
+//    switch (mbMessId)
+//    {
+//      case FEM_MB_MESS_ID_HEADLESS:
+//        mbcMessId = (int)CommMBCConstant::CommMBCMessageId::CommMBCHeadLess;
+//        break;
+//      case FEM_MB_MESS_ID_START1:
+//        mbcMessId = (int)CommMBCConstant::CommMBCMessageId::CommMBCStart1;
+//        break;
+//      case FEM_MB_MESS_ID_RESULT1:
+//        mbcMessId = (int)CommMBCConstant::CommMBCMessageId::CommMBCResult1;
+//        break;
+//      case FEM_MB_MESS_ID_SYSTEMSETTING:
+//        mbcMessId = (int)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting;
+//        break;
+//      default:
+//        break;
+//    }
+//    return mbcMessId;
+//  }
+//};
+
+
+
+
+
 
 #endif // _FLASH_EYE_MAIN_CONSTANT_H

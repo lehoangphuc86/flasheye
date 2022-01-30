@@ -68,6 +68,13 @@ typedef struct _eventTriggerStartScanningTag
   byte source;
 } EventTriggerStartScanningTAG;
 
+
+typedef struct _eventSysPowerTag
+{
+  byte opCode;
+  TimePoint_t delay;
+} EventSysPowerTAG;
+
 /////////////////////////////////////////////////
 // STATIC DATA
 

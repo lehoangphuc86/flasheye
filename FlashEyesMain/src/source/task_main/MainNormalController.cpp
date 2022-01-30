@@ -62,6 +62,7 @@ bool MainNormalController::isValid(void)
 
 void MainNormalController::regEventSize(void)
 {
+  MainController::regEventSize();
   this->registerHanldingEventStructSize(sizeof(EventScanningDeviceSettingTAG));
   this->registerHanldingEventStructSize(sizeof(EventScanningDeviceSettingCompletedTAG));
   this->registerHanldingEventStructSize(sizeof(EventTimerFiredTAG));
@@ -96,9 +97,18 @@ int MainNormalController::prepare(void)
       break;
     }
 
-    ret = this->startScanningTask();
+    ret = this->startExCommManager();
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 3, ret);
+#endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    ret = this->startScanningTask();
+#ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 4, ret);
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
@@ -121,6 +131,7 @@ void MainNormalController::clear(void)
   do
   {
     this->stopScanningTask();
+    this->stopExCommManager();
     this->stopNetManager();
     MainController::clear();
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -137,42 +148,6 @@ int MainNormalController::onEventHandling(EventDataItem* eventData)
   {
     if (eventData == NULL)
     {
-      static int count = 0;
-      count++;
-      //@@
-      if (count == 1)
-      {
-        EventTriggerStartScanningTAG trgStart = EventTriggerStartScanningTAG();
-        trgStart.source = 1;
-        this->notify(
-          (int)EventManagerConstant::EventMessageId::TriggerStartScanning
-          , sizeof(EventTriggerStartScanningTAG)
-          , (unsigned char*)&trgStart);
-
-        //EventScanningDeviceSettingTAG devSetting = EventScanningDeviceSettingTAG();
-        //devSetting.setting.settingIdSet0 = (1UL << SCANNING_SET_ID_COM_BAUDRATE);
-        //this->notify(
-        //  (int)EventManagerConstant::EventMessageId::ScanningDeviceSetting
-        //  , sizeof(EventScanningDeviceSettingTAG)
-        //  , (unsigned char*)&devSetting);
-      }
-
-      //if (count == 2)
-      //{
-      //  EventTriggerStartScanningTAG trgStart = EventTriggerStartScanningTAG();
-      //  trgStart.source = 1;
-      //  this->notify(
-      //    (int)EventManagerConstant::EventMessageId::TriggerStartScanning
-      //    , sizeof(EventTriggerStartScanningTAG)
-      //    , (unsigned char*)&trgStart);
-
-      //  //EventScanningDeviceSettingTAG devSetting = EventScanningDeviceSettingTAG();
-      //  //devSetting.setting.settingIdSet0 = (1UL << SCANNING_SET_ID_COM_BAUDRATE);
-      //  //this->notify(
-      //  //  (int)EventManagerConstant::EventMessageId::ScanningDeviceSetting
-      //  //  , sizeof(EventScanningDeviceSettingTAG)
-      //  //  , (unsigned char*)&devSetting);
-      //}
       break;
     }
 

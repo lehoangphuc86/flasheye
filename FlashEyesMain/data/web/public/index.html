@@ -1,32 +1,386 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FlashEye</title>
-    <script>
-      function submitSettings(element) {
-        var name = document.getElementById("fname").value;
-        var age = document.getElementById("rAge").value;
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-             if (this.readyState == 4 && this.status == 200) {
-				 document.getElementById("sRes").innerHTML = this.responseText;
-             }
-        };
-        xhttp.open("POST", "/api/v1/system/update", true);
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.send(JSON.stringify({ "name": name, "age": age }));
+  <title>FlashEye</title>
+  <script type="text/javascript" src="js/SysCommon.js"></script>
+  <script type="text/javascript" src="js/MBCHttpClient.js"></script>
+  <script type="text/javascript">
+    const DATA_SEC_ID_NAME = 'data-secId';
+    const DATA_SET_ID_NAME = 'data-setId';
+    const DATA_TYPE_ID_NAME = 'data-type';
+    const LBL_STATUS_ID = 'lblStatus';
+    const STA_LEVEL_NORMAL = 0;
+    const STA_LEVEL_WARNING = 1;
+    const STA_LEVEL_ERROR = 2;
+
+    class SettingManager {
+      constructor() {
+        this.commMBCHttpClient = new CommMBCHttpClient();
       }
-	</script>
+
+      load(sectionId) {
+        var ret = 0;
+        do {
+          var selector = "[" + DATA_SEC_ID_NAME + "='" + sectionId + "']";
+          const setElements = document.querySelectorAll(selector);
+          for (var wkIdx = 0; wkIdx < setElements.length; wkIdx++) {
+            ret = this.setting(sectionId, setElements[wkIdx], 0, 0, 0);
+            if (ret != 0) {
+              break;
+            }
+          }
+
+          if (ret != 0) {
+            break;
+          }
+          return 0;
+        } while (0);
+        return -1;
+      }
+
+      submit(sectionId, updateDB = 1, forceReboot = 0) {
+        var ret = 0;
+        do {
+          var selector = "[" + DATA_SEC_ID_NAME + "='" + sectionId + "']";
+          const setElements = document.querySelectorAll(selector);
+          var reboot = forceReboot;
+          for (var wkIdx = 0; wkIdx < setElements.length; wkIdx++) {
+            ret = this.setting(sectionId, setElements[wkIdx], 1, updateDB, reboot);
+            if (ret != 0) {
+              break;
+            }
+          }
+
+          if (ret != 0) {
+            break;
+          }
+          return 0;
+        } while (0);
+        return -1;
+      }
+
+      setting(secId, setElement, isUpdate = 0, isUpdateDB = 0, isReboot = 0) {
+        var ret = 0;
+        do {
+          var commMBCSystemSetting = new CommMBCSystemSettingTAG(secId, 0, 0b00000000, 0, 0, 0);
+          var setIdStr = setElement.getAttribute(DATA_SET_ID_NAME);
+          if (!setIdStr) {
+            return 0; // not valid
+          }
+
+          var setId = parseInt(setIdStr);
+          commMBCSystemSetting.settingId = setId;
+
+          var dataType = parseInt(setElement.getAttribute(DATA_TYPE_ID_NAME));
+          if (Utility.isValidType(dataType) == false) {
+            console.log("[SettingManager::setting] -2");
+            break;
+          }
+
+          var isNumeric = Utility.isNumericType(dataType);
+
+          var dataStr = setElement.value;
+          commMBCSystemSetting.sLen = (isNumeric == true ? 0 : setElement.value.length);
+          if ((setElement.tagName == "INPUT")
+            && (setElement.getAttribute("type") == "checkbox")
+          ) {
+            dataStr = (dataStr == "on" ? 1 : 0);
+          }
+
+          if (isNumeric != false) {
+            commMBCSystemSetting.data = parseFloat(dataStr);
+          }
+          else {
+            commMBCSystemSetting.data = dataStr;
+          }
+
+          commMBCSystemSetting.bitSet1 = 0b00000000;
+          commMBCSystemSetting.bitSet1 |= (0 << 0);
+          commMBCSystemSetting.bitSet1 |= (isUpdate << 1);
+          commMBCSystemSetting.bitSet1 |= (dataType << 2);
+          commMBCSystemSetting.bitSet1 |= (isUpdateDB << 5);
+          commMBCSystemSetting.bitSet1 |= (isReboot << 6);
+
+          var reqCommMBCPackage = new CommMBCPackageTAG(COMM_MBC_MESS_ID_SYSTEMSETTING, commMBCSystemSetting);
+          var resCommMBCPackage = new CommMBCPackageTAG(0, null);
+          ret = this.commMBCHttpClient.send(reqCommMBCPackage, resCommMBCPackage, false);
+          if (ret != 0) {
+            break;
+          }
+
+          ret = this.proceedResponse(setElement, resCommMBCPackage);
+          if (ret != 0) {
+            break;
+          }
+          return 0;
+        } while (0);
+
+        console.log("[SettingManager::setting] -99");
+        return -1;
+      }
+
+      proceedResponse(setElement, resCommMBCPackage) {
+        var status = "";
+        do {
+
+          if (resCommMBCPackage.messageId != COMM_MBC_MESS_ID_SYSTEMSETTING) {
+            status += "Wrong message. Rev:" + resCommMBCPackage.messageId + " Expected:" + COMM_MBC_MESS_ID_SYSTEMSETTING;
+            break;
+          }
+
+          if (resCommMBCPackage.body.errorCode != 0) {
+            status += "Error rev:" + resCommMBCPackage.body.errorCode;
+            break;
+          }
+
+          setElement.value = resCommMBCPackage.body.data;
+          //this.updateStatus("Loaded. " + status, STA_LEVEL_NORMAL);
+          return 0;
+        } while (0);
+
+        this.updateStatus("Failed to proceed. Details:" + status, STA_LEVEL_ERROR, true);
+        return -1;
+      }
+
+      updateStatus(txtStatus, level, isAppend = false) {
+        var lblStatusEl = document.getElementById(LBL_STATUS_ID);
+        if (isAppend != false) {
+          txtStatus = lblStatusEl.textContent + "\n" + txtStatus;
+        }
+
+        lblStatusEl.textContent = txtStatus;
+        var color = 'green';
+        switch (level) {
+          case STA_LEVEL_WARNING:
+            color = 'blueviolet';
+            break;
+          case STA_LEVEL_ERROR:
+            color = 'red';
+            break;
+          case STA_LEVEL_NORMAL:
+          default:
+            color = 'green';
+            break;
+        }
+        lblStatusEl.style.color = color;
+      }
+
+      reboot() {
+        var ret = 0;
+        do {
+          ret = this.submit(0, 0, 1); // section=0, updateDB=0, rebootAtCompleted=1
+          if (ret != 0) {
+            break;
+          }
+
+          return 0;
+        } while (0);
+        return -1;
+      }
+    }
+
+    var g_SettingManager = new SettingManager();
+    document.addEventListener('DOMContentLoaded', reloadSettings, false);
+
+    function changeCtrlStates(sectionId, isEnabled) {
+      if (sectionId < 0) {
+        changeCtrlStates(0, isEnabled);
+        changeCtrlStates(1, isEnabled);
+        return;
+      }
+
+      var selector = "[" + DATA_SEC_ID_NAME + "='" + sectionId + "']";
+      const setElements = document.querySelectorAll(selector);
+      for (var wkIdx = 0; wkIdx < setElements.length; wkIdx++) {
+        setElements[wkIdx].disabled = !isEnabled;
+      }
+    }
+
+    function asyncSleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    }
+
+    async function reloadSettings() {
+      changeCtrlStates(-1, false);
+      g_SettingManager.updateStatus("Loading setting..", STA_LEVEL_NORMAL);
+      var ret = 0;
+      do {
+        await asyncSleep();
+        ret = g_SettingManager.load(0);
+        if (ret != 0) {
+          break;
+        }
+
+        ret = g_SettingManager.load(1);
+        if (ret != 0) {
+          break;
+        }
+
+        g_SettingManager.updateStatus("Loading setting ok.", STA_LEVEL_NORMAL);
+        changeCtrlStates(-1, true);
+        return 0;
+      } while (0);
+      changeCtrlStates(-1, true);
+      g_SettingManager.updateStatus("Loading setting failed.", STA_LEVEL_ERROR, true);
+      return -1;
+    }
+
+    async function reboot() {
+      changeCtrlStates(-1, false);
+      g_SettingManager.updateStatus("Rebooting..", STA_LEVEL_WARNING);
+      var ret = 0;
+      do {
+        await asyncSleep();
+        ret = g_SettingManager.reboot();
+        if (ret != 0) {
+          break;
+        }
+        g_SettingManager.updateStatus("Reboot. Auto relead after 10 sec", STA_LEVEL_WARNING);
+        //changeCtrlStates(-1, true);
+        setTimeout(function () {
+          window.location.reload(1);
+        }, 10000);
+        return 0;
+      } while (0);
+      changeCtrlStates(-1, true);
+      g_SettingManager.updateStatus("Rebooting failed.", STA_LEVEL_ERROR, true);
+      return -1;
+    }
+
+    async function submit(element) {
+      var ret = 0;
+      changeCtrlStates(-1, false);
+      g_SettingManager.updateStatus("Submitting..", STA_LEVEL_NORMAL);
+      do {
+        await asyncSleep();
+        var targetSecId = element.getAttribute(DATA_SEC_ID_NAME);
+        ret = g_SettingManager.submit(parseInt(targetSecId));
+
+        if (ret != 0) {
+          break;
+        }
+        g_SettingManager.updateStatus("Submitting OK", STA_LEVEL_NORMAL);
+        changeCtrlStates(-1, true);
+        return 0;
+      } while (0);
+      g_SettingManager.updateStatus("Submitting failed", STA_LEVEL_ERROR, true);
+      changeCtrlStates(-1, true);
+      return -1;
+    }
+  </script>
 </head>
 <body>
 
-<h2>Settings</h2>
-  <label for="fname">Name:</label><br>
-  <input type="text" id="fname" name="fname" value="John"><br>
-  <label for="rAge">Age:</label><br>
-  <input type="number" id="rAge" min="1" max="100" value="50"><br>
-  <input type="submit" value="Submit" onclick ="submitSettings(this)" id = "btnSubmit">
-  <h1>"Res:" <span id="sRes"></span></h1>
+  <h1>Settings</h1>
+  <label for="lblStatus">Status:</label>
+  <label id="lblStatus">Loading</label>
+  <h2>System</h2>
+  <label for="slSysLastMode">LastMode:</label>
+  <select id="slSysLastMode" data-secId='0' data-setId='1' data-type='1'>
+    <option value=3>None</option>
+    <option value=0>Reset</option>
+    <option value=1>Setting</option>
+    <option value=2>Normal</option>
+  </select>
+  <br>
+  <input type="submit" value="Submit" data-secId='0' onclick="submit(this)" id="btnSubmitSys">
+
+  <h2>Scanner</h2>
+  <h3>Comm</h3>
+  <label for="slScanComBaud">Baudrate:</label>
+  <select id="slScanComBaud" data-secId='1' data-setId='1' data-type='1'>
+    <option value=0>1200</option>
+    <option value=1>2400</option>
+    <option value=2>4800</option>
+    <option value=3>9600</option>
+  </select>
+  <br>
+  <label for="slScanComParity">Parity:</label>
+  <select id="slScanComParity" data-secId='1' data-setId='2' data-type='1'>
+    <option value=0>None</option>
+    <option value=1>Odd</option>
+    <option value=2>Even</option>
+  </select>
+  <br>
+  <label for="slScanComStopbit">Stopbit:</label>
+  <select id="slScanComStopbit" data-secId='1' data-setId='3' data-type='1'>
+    <option value=0>1</option>
+    <option value=1>2</option>
+  </select>
+  <br>
+  <label for="slScanComStopbit">Databit:</label>
+  <select id="slScanComStopbit" data-secId='1' data-setId='4' data-type='1'>
+    <option value=0>8</option>
+    <option value=1>7</option>
+    <option value=2>6</option>
+    <option value=3>5</option>
+  </select>
+  <br>
+  <label for="slScanComFlow">Flow:</label>
+  <select id="slScanComFlow" data-secId='1' data-setId='5' data-type='1'>
+    <option value=0>None</option>
+    <option value=1>No RTS</option>
+    <option value=2>No CTS</option>
+    <option value=3>CTS</option>
+  </select>
+  <br>
+  <h3>Device</h3>
+  <label for="slScanChaFmt">Character format:</label>
+  <select id="slScanChaFmt" data-secId='1' data-setId='6' data-type='1'>
+    <option value=0>None</option>
+    <option value=1>Upper</option>
+    <option value=2>Lower</option>
+    <option value=3>Reverse</option>
+  </select>
+  <br>
+  <label for="chkReadState">Read State:</label>
+  <input type="checkbox" id="chkReadState" data-secId='1' data-setId='7' data-type='1' checked />
+  <br>
+  <label for="chkAutoScan">Auto scan:</label>
+  <input type="checkbox" id="chkAutoScan" data-secId='1' data-setId='8' data-type='1' />
+  <br>
+  <label for="chkContScan">Continous scan:</label>
+  <input type="checkbox" id="chkContScan" data-secId='1' data-setId='9' data-type='1' />
+  <br>
+  <label for="slScanSecLvl">Security level:</label>
+  <select id="slScanSecLvl" data-secId='1' data-setId='10' data-type='1'>
+    <option value=0>1</option>
+    <option value=1>2</option>
+    <option value=2>3</option>
+    <option value=3>4</option>
+  </select>
+  <br>
+  <label for="chkCodePrefix">Use prefix:</label>
+  <input type="checkbox" id="chkCodePrefix" data-secId='1' data-setId='11' data-type='1' checked />
+  <br>
+  <label for="txtPrefix">Prefix:</label>
+  <input type="text" id="txtPrefix" value="" data-secId='1' data-setId='12' data-type='2' maxlength=8 />
+  <br>
+  <label for="txtSuffix">Suffix:</label>
+  <input type="text" id="txtSuffix" value="" data-secId='1' data-setId='13' data-type='2' maxlength=8 />
+  <br>
+  <label for="slScanPreFmt">Pre/sufix format:</label>
+  <select id="slScanPreFmt" data-secId='1' data-setId='14' data-type='1'>
+    <option value=0>Code + Cus + AIMID</option>
+    <option value=1>Cus + Code + AIMID</option>
+  </select>
+  <br>
+
+  <label for="slScanMesTer">Mess terminator:</label>
+  <select id="slScanMesTer" data-secId='1' data-setId='15' data-type='1'>
+    <option value=0>None</option>
+    <option value=1>0x0D</option>
+    <option value=2>0x0D + 0x0A</option>
+    <option value=3>0x0A</option>
+  </select>
+  <br>
+  <input type="submit" value="Submit" data-secId='1' onclick="submit(this)" id="btnSubmitScan" />
+
+  <br />
+  <br />
+  <input type="submit" value="Reload" onclick="reloadSettings()" id="btnReload" data-secId='1'/>
+  <input type="submit" value="Reboot" onclick="reboot()" id="btnReboot" data-secId='1'/>
+
 </body>
 </html>
 

@@ -65,6 +65,8 @@ public:
   //SensorSettingCollection&                                      sensor(void);
   //ExCommSettingCollection&                                      excomm(void);
   //UiSettingCollection&                                          ui(void);
+  int                                                           set(SettingParamTAG& settingParam);
+  int                                                           get(SettingParamTAG& settingParam);
 protected:
   int                                                           initSettingList(byte listCount);
   void                                                          clearSettingList(void);

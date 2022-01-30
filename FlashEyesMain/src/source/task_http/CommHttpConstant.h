@@ -359,6 +359,16 @@ typedef struct _commHttpPackageTAG
     this->clear();
   }
 
+  BufferDataItem* getDataItem(void)
+  {
+    return this->dataItem;
+  }
+
+  BufferDataManager* getDataManager(void)
+  {
+    return this->dataManager;
+  }
+
   protected:
     BufferDataItem* dataItem;
     BufferDataManager* dataManager;

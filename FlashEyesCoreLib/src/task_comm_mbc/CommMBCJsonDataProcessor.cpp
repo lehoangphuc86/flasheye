@@ -10,6 +10,7 @@
 #define COMM_MBC_JSON_MAKEUP_LEN_START1                 42
 #define COMM_MBC_JSON_MAKEUP_LEN_RESULT1                42
 #define COMM_MBC_JSON_MAKEUP_LEN_SYSTEM_SETTING         52
+#define COMM_MBC_JSON_FILL_BLANK_CHARACTER              ' '
 
 /////////////////////////////////////////////////
 // MARCO
@@ -190,6 +191,8 @@ int CommMBCJsonDataProcessor::encodeHeader(CommMBCHeaderTAG& inMbcHeader, unsign
     {
       break;
     }
+
+    memset(outputBuffer + outputUsedSize, COMM_MBC_JSON_FILL_BLANK_CHARACTER, outputSize - outputUsedSize);
 //#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
 //    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enH %i", 99);
 //#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
@@ -332,7 +335,11 @@ int CommMBCJsonDataProcessor::encodeSystemSetting(unsigned char* inputBuffer, Mb
 //#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     switch (inputTag->bitSet1.dataType)
     {
+      case COMM_MBC_DATA_T_8:
       case COMM_MBC_DATA_T_DOUBLE:
+      case COMM_MBC_DATA_T_16:
+      case COMM_MBC_DATA_T_32:
+      case COMM_MBC_DATA_T_64:
         printedLen = JsonSnprintf((char*)outputBuffer, outputSize, "\"data\":%g}}", inputTag->data.dVal);
         break;
       case COMM_MBC_DATA_T_STRING:
@@ -515,9 +522,9 @@ int CommMBCJsonDataProcessor::decodeResult1(unsigned char* inputBuffer, MbcDataS
 
 int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
 {
-#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i", 0);
-#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i", 0);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
   do
   {
     int ret = 0;
@@ -565,7 +572,11 @@ int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
 //#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
     switch (outputTag->bitSet1.dataType)
     {
+      case COMM_MBC_DATA_T_8:
       case COMM_MBC_DATA_T_DOUBLE:
+      case COMM_MBC_DATA_T_16:
+      case COMM_MBC_DATA_T_32:
+      case COMM_MBC_DATA_T_64:
         ret |= this->js_Parser.getNumber("$.b.data", outputTag->data.dVal);
         break;
       case COMM_MBC_DATA_T_STRING:

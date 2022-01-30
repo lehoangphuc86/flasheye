@@ -48,6 +48,7 @@ typedef struct _settingItemConfigTag
   DbTableId_t dbTableId;
   DataSize_t sMaxLen;
   byte localSettingId;
+  byte dataType;
   //SettingItemValueTAG initData;
 } SettingItemConfigTAG;
 /////////////////////////////////////////////////
@@ -69,13 +70,17 @@ public:
   virtual ~SettingItem(void);
   virtual int                                                   initialize(SettingItemConfigTAG& settingConfig);
   bool                                                          isInDB(void);
+  int                                                           dataType(void);
   virtual int                                                   loadDB(void) = 0;
   virtual int                                                   saveDB(void) = 0;
+  virtual int                                                   get(SettingParamTAG& settingParam) = 0;
+  virtual int                                                   set(SettingParamTAG& settingParam) = 0;
   virtual void                                                  clear(void);
 protected:
   byte                                                          db_Key_Id;
   DbTableId_t                                                   db_Table_Id;
   byte                                                          local_Setting_Id; // used for local
+  byte                                                          data_Type;
   //SystemCriticalSession                                         cri_Key;
   //SystemMutex                                                   mutex_Key;
 };
@@ -92,6 +97,8 @@ public:
   int                                                           loadDB(void) override;
   int                                                           saveDB(void) override;
   void                                                          clear(void) override;
+  int                                                           get(SettingParamTAG& settingParam) override;
+  int                                                           set(SettingParamTAG& settingParam) override;
   T                                                             get(void);
   int                                                           set(T val, bool updateDb = false);
 protected:
@@ -109,6 +116,8 @@ public:
   int                                                           loadDB(void) override;
   int                                                           saveDB(void) override;
   void                                                          clear(void) override;
+  int                                                           get(SettingParamTAG& settingParam) override;
+  int                                                           set(SettingParamTAG& settingParam) override;
   char*                                                         get(void);
   DataSize_t                                                    getLen(void);
   int                                                           set(char* val, DataSize_t len, bool updateDb = false);
@@ -128,7 +137,7 @@ NumSettingItem<T>::NumSettingItem(void)
   : SettingItem()
   , cur_Val(0)
 {
-
+  this->data_Type = SYS_DATA_T_DOUBLE;
 }
 template <typename T>
 NumSettingItem<T>::~NumSettingItem(void)
@@ -206,6 +215,21 @@ int NumSettingItem<T>::loadDB(void)
         , this->db_Key_Id
         , this->cur_Val);
     }
+
+    {
+      // check data type
+      byte dataType = SYS_DATA_T_STRING;
+      ret = DBManager::getInstance().selectCellNum(
+        this->db_Table_Id
+        , FEM_SETTING_ITEM_DB_DATA_TYPE_COLUMN_NAME
+        , FEM_SETTING_ITEM_DB_ID_COLUMN_NAME
+        , this->db_Key_Id
+        , dataType);
+      if (dataType != this->data_Type)
+      {
+        break;
+      }
+    }
 //#ifdef SETTING_ITEM_2_CONSOLE_DEBUG_ENABLE
 //    CONSOLE_LOG_BUF(settingItem2LogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[nSI]: lDB %i %i %i", 1, ret, this->cur_Val);
 //#endif // SETTING_ITEM_2_CONSOLE_DEBUG_ENABLE
@@ -258,6 +282,48 @@ void NumSettingItem<T>::clear(void)
   //SystemCriticalLocker locker(this->cri_Key);
   this->cur_Val = 0;
   SettingItem::clear();
+}
+
+template <typename T>
+int NumSettingItem<T>::get(SettingParamTAG& settingParam)
+{
+  settingParam.errorCode = 0;
+  do
+  {
+    if (settingParam.bitSet1.dataType != this->data_Type)
+    {
+      break;
+    }
+
+    settingParam.data.dVal = this->get();
+    return 0;
+  } while (0);
+  settingParam.errorCode = -1;
+  return -1;
+}
+
+template <typename T>
+int NumSettingItem<T>::set(SettingParamTAG& settingParam)
+{
+  settingParam.errorCode = 0;
+  int ret = 0;
+  do
+  {
+    if (settingParam.bitSet1.dataType != this->data_Type)
+    {
+      break;
+    }
+
+    ret = this->set((T)settingParam.data.dVal, settingParam.bitSet1.isUpdateDB);
+    if (ret != 0)
+    {
+      break;
+    }
+
+    return 0;
+  } while (0);
+  settingParam.errorCode = -1;
+  return -1;
 }
 
 template <typename T>

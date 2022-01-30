@@ -62,6 +62,7 @@ bool MainSettingController::isValid(void)
 
 void MainSettingController::regEventSize(void)
 {
+  MainController::regEventSize();
   this->registerHanldingEventStructSize(sizeof(EventScanningDeviceSettingTAG));
   this->registerHanldingEventStructSize(sizeof(EventScanningDeviceSettingCompletedTAG));
   this->registerHanldingEventStructSize(sizeof(EventTimerFiredTAG));
@@ -93,9 +94,18 @@ int MainSettingController::prepare(void)
       break;
     }
 
-    ret = this->startScanningTask();
+    ret = this->startExCommManager();
 #ifdef MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainSettingControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[msTsk] pre %i %i", 3, ret);
+#endif // MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    ret = this->startScanningTask();
+#ifdef MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainSettingControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[msTsk] pre %i %i", 4, ret);
 #endif // MAIN_SETTING_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
@@ -118,6 +128,7 @@ void MainSettingController::clear(void)
   do
   {
     this->stopScanningTask();
+    this->startExCommManager();
     this->stopNetManager();
     MainController::clear();
     return;
@@ -131,18 +142,6 @@ int MainSettingController::onEventHandling(EventDataItem* eventData)
   {
     if (eventData == NULL)
     {
-      static int count = 0;
-      count++;
-      //@@
-      if (count == 1)
-      {
-        EventScanningDeviceSettingTAG devSetting = EventScanningDeviceSettingTAG();
-        devSetting.setting.settingIdSet0 = SCANNING_SETTING_ID_SET_ALL;
-        this->notify(
-          (int)EventManagerConstant::EventMessageId::ScanningDeviceSetting
-          , sizeof(EventScanningDeviceSettingTAG)
-          , (unsigned char*)&devSetting);
-      }
       break;
     }
 

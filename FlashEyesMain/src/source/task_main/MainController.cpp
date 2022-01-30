@@ -7,6 +7,8 @@
 #include "../task_net/NetManager.h"
 #include "../task_net/wifi/NetWifi.h"
 #include "../task_ui/UiManager.h"
+#include "mess_broker/MessBrokerManager.h"
+#include "../task_excomm/ExCommManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -192,6 +194,11 @@ Seq_t MainController::nextSeqId(void)
   return this->sequence_Id;
 }
 
+void MainController::regEventSize(void)
+{
+  this->registerHanldingEventStructSize(sizeof(EventSysPowerTAG));
+}
+
 void MainController::proc(void)
 {
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -233,6 +240,9 @@ void MainController::proc(void)
       isStop = true;
       break;
     }
+    case (int)EventManagerConstant::EventMessageId::SysPower:
+      this->onEventSysPower(eventData->bufferAddress(), eventData->dataLength());
+      break;
     default:
       this->onEventHandling(eventData);
       break;
@@ -249,7 +259,17 @@ void MainController::proc(void)
 // prepare/start sub tasks
 int MainController::prepare(void)
 {
-  
+  int ret = 0;
+  do
+  {
+    ret = this->startMessBroker();
+    if (ret != 0)
+    {
+      break;
+    }
+
+    return 0;
+  } while (0);
   return 0;
 }
 
@@ -257,11 +277,49 @@ int MainController::prepare(void)
 // clear
 void MainController::clear(void)
 {
+  this->stopMessBroker();
   return;
 }
 
 //###############below functions are implemented but called inside inherited classes##############
 // start sub tasks
+int MainController::startMessBroker(void)
+{
+#if (_CONF_MESS_BROKER_MANAGER_ENABLED)
+  int ret = 0;
+  do
+  {
+    {
+      MBMessConfigTAG mbMessConfig[FEM_MB_MESS_ID_MAX];
+      mbMessConfig[FEM_MB_MESS_ID_HEADLESS].subMaxCount = FEM_MB_SUB_MAX_HEADLESS;
+      mbMessConfig[FEM_MB_MESS_ID_START1].subMaxCount = FEM_MB_SUB_MAX_START1;
+      mbMessConfig[FEM_MB_MESS_ID_RESULT1].subMaxCount = FEM_MB_SUB_MAX_RESULT1;
+      mbMessConfig[FEM_MB_MESS_ID_SYSTEMSETTING].subMaxCount = FEM_MB_SUB_MAX_SYSTEMSETTING;
+
+      MBConfigTAG mbMgrConfig = MBConfigTAG();
+      mbMgrConfig.messMaxCount = FEM_MB_MESS_ID_MAX;
+      mbMgrConfig.messConfig = mbMessConfig;
+
+      ret = MessBrokerManager::getInstance().start(mbMgrConfig);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stMB %i %i", 0, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      if (ret != 0)
+      {
+        break;
+      }
+    }
+
+    return 0;
+  } while (0);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stMB %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+#else // _CONF_MESS_BROKER_MANAGER_ENABLED
+  return 0;
+#endif // _CONF_MESS_BROKER_MANAGER_ENABLED
+}
 
 int MainController::startNetManager(void)
 {
@@ -359,6 +417,45 @@ int MainController::startNetManager(void)
   return -1;
 }
 
+int MainController::startExCommManager(void)
+{
+  int ret = 0;
+  do
+  {
+    // start task
+    {
+      ExCommManagerConfigTAG excommMgrConfig = ExCommManagerConfigTAG();
+      excommMgrConfig.cbOnCommRevArg = this;
+      excommMgrConfig.cbOnCommRev = MainController::cbExCommRev;
+      
+      ret = ExCommManager::getInstance().startTask(excommMgrConfig);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stEx %i %i", 0, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      if (ret != 0)
+      {
+        break;
+      }
+    }
+
+    // start comm
+    ret = ExCommManager::getInstance().startComm(true);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stEx %i %i", 1, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    return 0;
+  } while (0);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stEx %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 int MainController::startScanningTask(void)
 {
   int ret = 0;
@@ -410,6 +507,25 @@ int MainController::startScanningTask(void)
 }
 
 // stop sub tasks
+void MainController::stopScanningTask(void)
+{
+  this->scanning_Task.stopTask();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopSc %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return;
+}
+
+void MainController::stopExCommManager(void)
+{
+  ExCommManager::getInstance().stopComm(true);
+  ExCommManager::getInstance().stopTask();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopEx %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return;
+}
+
 void MainController::stopNetManager(void)
 {
   NetManager::getInstance().stopTask();
@@ -419,12 +535,11 @@ void MainController::stopNetManager(void)
   return;
 }
 
-void MainController::stopScanningTask(void)
+void MainController::stopMessBroker(void)
 {
-  this->scanning_Task.stopTask();
-#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopSc %i", 99);
-#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+#if (_CONF_MESS_BROKER_MANAGER_ENABLED)
+  MessBrokerManager::getInstance().stop();
+#endif // _CONF_MESS_BROKER_MANAGER_ENABLED
   return;
 }
 
@@ -627,14 +742,11 @@ int MainController::onEventScanningCompleted(unsigned char* data, unsigned int d
   int ret = 0;
   do
   {
-#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %i", 0);
-#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+//#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %i", 0);
+//#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (this->isBusy() == false)
     {
-#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %i", -1);
-#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
@@ -642,30 +754,21 @@ int MainController::onEventScanningCompleted(unsigned char* data, unsigned int d
       || (dataSize != sizeof(EventScanningCompletedTAG))
       )
     {
-#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %i", -2);
-#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
     EventScanningCompletedTAG* eventData = (EventScanningCompletedTAG*)data;
     if (eventData->seqId != this->curSeqId())
     {
-#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %d %d %d", -3, eventData->seqId, this->curSeqId());
-#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
       break;
     }
     this->resetSequence();
-#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %i %i %i %i", 10, eventData->seqId, eventData->errorId, eventData->scannedCount);
-#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
 
-#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %i", -99);
-#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+//#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sco %i", -99);
+//#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
   return -1;
 }
 
@@ -706,6 +809,158 @@ int MainController::onEventTimerFired1(unsigned char* data, unsigned int dataSiz
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
   return -1;
 }
+
+int MainController::onEventSysPower(unsigned char* data, unsigned int dataSize)
+{
+  int ret = 0;
+  do
+  {
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] pow %i", 0);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+
+    if ((data == NULL)
+      || (dataSize != sizeof(EventSysPowerTAG))
+      )
+    {
+      break;
+    }
+    bool forwardEvent = false;
+    EventSysPowerTAG* eventData = (EventSysPowerTAG*)data;
+    switch (eventData->opCode)
+    {
+      case FEM_SYS_POWER_RESTART_FORCE:
+        break;
+      case FEM_SYS_POWER_RESTART:
+        if (this->isBusy() != false)
+        {
+          forwardEvent = true;
+        }
+        break;
+      default:
+        ret = -1;
+        break;
+    }
+
+    if (ret != 0)
+    {
+      break;
+    }
+
+    if (forwardEvent == false)
+    {
+      SYSTEM_SLEEP(eventData->delay);
+      SYSTEM_REBOOT();
+      return 0;
+    }
+
+    ret  =this->notify((int)EventManagerConstant::EventMessageId::SysPower, dataSize, data);
+    if (ret != 0)
+    {
+      break;
+    }
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] pow %i", 10);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] pow %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+//mbc comm handler
+int MainController::onMbcCommMBCStart1(ExCommMBCParamTAG& mbcParams)
+{
+  int ret = 0;
+  do
+  {
+    if (mbcParams.reqPackage.data == NULL)
+    {
+      break;
+    }
+    // print
+    CommMBCStart1TAG* commData = (CommMBCStart1TAG*)mbcParams.reqPackage.data;
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSta %i %d %d", 0, commData->param1, commData->param2);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+
+    return 0;
+  } while (0);
+  return -1;
+}
+
+int MainController::onMbcCommMBCSystemSetting(ExCommMBCParamTAG& mbcParams)
+{
+  int ret = 0;
+  do
+  {
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSS %i", 0);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (mbcParams.reqPackage.data == NULL)
+    {
+      break;
+    }
+
+    // req
+    CommMBCSystemSettingTAG* reqCommData = (CommMBCSystemSettingTAG*)mbcParams.reqPackage.data;
+    // response
+    CommMBCSystemSettingTAG* resCommData = reqCommData;
+    resCommData->errorCode = 0;
+    resCommData->bitSet1.isReply = 1;
+
+    if (reqCommData->bitSet1.isUpdate == 0)
+    {
+      ret = SettingManager::getInstance().get(*resCommData);
+    }
+    else
+    {
+      ret = SettingManager::getInstance().set(*resCommData);
+    }
+    
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSS %d %d", 10, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      resCommData->errorCode = 1;
+    }
+    
+    mbcParams.resPackage.data = (unsigned char*)reqCommData;
+    mbcParams.resPackage.dataSize = sizeof(CommMBCSystemSettingTAG);
+
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSS %d", 97);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (reqCommData->bitSet1.isRebootRequired == 0)
+    {
+      return 0;
+    }
+
+    EventSysPowerTAG powerEvent = EventSysPowerTAG();
+    powerEvent.opCode = FEM_SYS_POWER_RESTART;
+    powerEvent.delay = FEM_SYS_POWER_DELAY;
+
+    ret = this->notify((int)EventManagerConstant::EventMessageId::SysPower, sizeof(EventSysPowerTAG), (unsigned char*)&powerEvent);
+    if (ret != 0)
+    {
+      break;
+    }
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSS %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+
+    return 0;
+  } while (0);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSS %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 
 void MainController::resetSequence(void)
 {
@@ -801,6 +1056,47 @@ void MainController::cbTimerFired(TimerId_t timerId, void* extraArg, bool* woken
   } while (0);
   return;
 }
+
+int MainController::cbExCommRev(void* arg, ExCommMBCParamTAG& mbcParams)
+{
+  int ret = 0;
+  do
+  {
+    if (arg == NULL)
+    {
+      break;
+    }
+
+    MainController* mainCtl = (MainController*)arg;
+
+    mbcParams.resPackage.valid = true;
+    mbcParams.resPackage.messId = mbcParams.reqPackage.messId;
+    mbcParams.resPackage.data = mbcParams.reqPackage.data;
+    mbcParams.resPackage.dataSize = mbcParams.reqPackage.dataSize;
+
+    switch (mbcParams.reqPackage.messId)
+    {
+      case (int)CommMBCConstant::CommMBCMessageId::CommMBCStart1:
+        ret = mainCtl->onMbcCommMBCStart1(mbcParams);
+        break;
+      case (int)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
+        ret = mainCtl->onMbcCommMBCSystemSetting(mbcParams);
+        break;
+      default:
+        ret = -1;
+        break;
+    }
+    
+    if (ret != 0)
+    {
+      break;
+    }
+
+    return 0;
+  } while (0);
+  return -1;
+}
+
 
 //
 //#include "main.h"

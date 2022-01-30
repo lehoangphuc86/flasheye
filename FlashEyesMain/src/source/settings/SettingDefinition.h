@@ -12,6 +12,11 @@
 
 /////////////////////////////////////////////////
 // DEFINE
+//#########################Setting section id##################
+#define FEM_SET_SECTION_ID_SYSTEM                       0
+#define FEM_SET_SECTION_ID_SCANNER                      1
+#define FEM_SET_SECTION_ID_MAX                          2
+// 
 //#########################scanner##################
 //-------------------db table id------------------------
 #define FEM_SET_DB_TBL_ID_SCANNER                       FEM_DB_TBL_ID_CF_SCAN

@@ -117,6 +117,11 @@ public:
     , ScanningDeviceSetting
     , ScanningDeviceSettingCompleted
     , ScanningDeviceSignal
+    // ExComm
+    , ExCommReceived
+    , ExCommSendRequest
+    // sys
+    , SysPower
   };
 
 public:
@@ -181,6 +186,9 @@ public:
     case EventManagerConstant::EventMessageId::ScanningDeviceSetting:
     case EventManagerConstant::EventMessageId::ScanningDeviceSettingCompleted:
     case EventManagerConstant::EventMessageId::ScanningDeviceSignal:
+    case EventManagerConstant::EventMessageId::ExCommReceived:
+    case EventManagerConstant::EventMessageId::ExCommSendRequest:
+    case EventManagerConstant::EventMessageId::SysPower:
       return true;
     default:
       return false;

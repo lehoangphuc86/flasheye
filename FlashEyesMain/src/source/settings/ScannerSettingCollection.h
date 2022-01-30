@@ -49,6 +49,8 @@ public:
   ScannerSettingCollection(void);
   __ATTRIBUTE_VIRTUAL_OPTIMIZED ~ScannerSettingCollection(void);
   int                                                           initialize(SettingCollectionConfigTAG& settingConfig) override;
+  int                                                           set(SettingParamTAG& settingParam) override;
+  int                                                           get(SettingParamTAG& settingParam) override;
   uint8_t                                                       commBaudrate(void);
   void                                                          commBaudrate(uint8_t newVal, bool updateDB = false);
   uint8_t                                                       commParity(void);

@@ -83,6 +83,9 @@
     <Filter Include="src\source\system">
       <UniqueIdentifier>{6cf93c2b-80c1-4e32-af77-f8e236fee172}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\task_excomm">
+      <UniqueIdentifier>{f6dbdbc6-e653-4f2c-97c2-0afa51959f6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -268,6 +271,12 @@
     <ClInclude Include="src\source\task_net\NetIPConstant.h">
       <Filter>src\source\task_net</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_excomm\ExCommConstant.h">
+      <Filter>src\source\task_excomm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_excomm\ExCommManager.h">
+      <Filter>src\source\task_excomm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -383,6 +392,9 @@
     </ClCompile>
     <ClCompile Include="src\source\task_net\NetInterface.cpp">
       <Filter>src\source\task_net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_excomm\ExCommManager.cpp">
+      <Filter>src\source\task_excomm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

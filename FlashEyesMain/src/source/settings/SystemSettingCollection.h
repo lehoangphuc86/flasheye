@@ -49,6 +49,8 @@ public:
   SystemSettingCollection(void);
   __ATTRIBUTE_VIRTUAL_OPTIMIZED ~SystemSettingCollection(void);
   int                                                           initialize(SettingCollectionConfigTAG& settingConfig) override;
+  int                                                           set(SettingParamTAG& settingParam) override;
+  int                                                           get(SettingParamTAG& settingParam) override;
   uint8_t                                                       lastSysMode(void);
   void                                                          lastSysMode(uint8_t newVal, bool updateDB = false);
   

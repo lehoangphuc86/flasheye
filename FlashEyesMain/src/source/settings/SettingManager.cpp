@@ -201,6 +201,42 @@ void SettingManager::clear(void)
   this->clearSettingList();
 }
 
+ScannerSettingCollection& SettingManager::scanner(void)
+{
+  return this->scanner_Set;
+}
+
+SystemSettingCollection& SettingManager::system(void)
+{
+  return this->system_Set;
+}
+
+int SettingManager::set(SettingParamTAG& settingParam)
+{
+  switch (settingParam.sectionId)
+  {
+    case FEM_SET_SECTION_ID_SYSTEM:
+      return this->system_Set.set(settingParam);
+    case FEM_SET_SECTION_ID_SCANNER:
+      return this->scanner_Set.set(settingParam);
+    default:
+      return -1;
+  }
+}
+
+int SettingManager::get(SettingParamTAG& settingParam)
+{
+  switch (settingParam.sectionId)
+  {
+  case FEM_SET_SECTION_ID_SYSTEM:
+    return this->system_Set.get(settingParam);
+  case FEM_SET_SECTION_ID_SCANNER:
+    return this->scanner_Set.get(settingParam);
+  default:
+    return -1;
+  }
+}
+
 int SettingManager::initSettingList(byte listCount)
 {
   do
@@ -228,16 +264,5 @@ void SettingManager::clearSettingList(void)
   this->setting_List_Count = 0;
   this->setting_List = NULL;
 }
-
-ScannerSettingCollection& SettingManager::scanner(void)
-{
-  return this->scanner_Set;
-}
-
-SystemSettingCollection& SettingManager::system(void)
-{
-  return this->system_Set;
-}
-
 
 #endif // _CONF_FILE_SYSTEM_MANAGER_ENABLED
