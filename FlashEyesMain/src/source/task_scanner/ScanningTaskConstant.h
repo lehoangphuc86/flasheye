@@ -41,7 +41,7 @@
 #define SCANNING_DEVICE_BARCODE_LEN_MAX               48
 #define SCANNING_SETTING_ID_SET_ALL                   UINT64_MAX
 #define SCANNING_DEVICE_DATA_TIMEOUT_DEFAULT          500 // ms
-
+#define SCANNING_SAVED_RESULT_COUNT_MAX               2
 /////////////////////////////////////////////////
 // MARCO
 
@@ -126,6 +126,11 @@ typedef struct _scanningBarCodeTag
 
 typedef struct _scanningDeviceResultTag
 {
+  struct _bitSet1
+  {
+    bool enabled : 1;
+    byte reserved : 7;
+  } bitSet1; // 0b reserved -> enabled
   ScanningErr_t errorId;
   //char code[SCANNING_DEVICE_BARCODE_LEN_MAX];
   ScanningBarCodeTAG code;
@@ -140,6 +145,39 @@ typedef struct _scanningDeviceSettingResultTag
 {
   ScanningSettingIdSet_t errorSet0; // 64 setting. 0: no error, 1: error
 } ScanningDeviceSettingResultTAG;
+
+typedef struct _scanningParamsTag
+{
+  uint16_t timeout; //ms
+  bool enabled;
+  byte trgSource;
+  byte maxScanCount;
+  byte reserved[1];
+  uint16_t timeBtwScan;
+} ScanningParamsTAG;
+
+
+typedef struct _scanningResultTag
+{
+  bool enabled;
+  Seq_t sequenceId;
+  byte scanIndex;
+  ScanningParamsTAG trgParam;
+  ScanningDeviceResultTAG deviceResult;
+} ScanningResultTAG;
+
+/*
+* @param: controlling data to start scanning.
+* @savedResult[0]: if n scanning completed, this contains the (n)th result.
+* @savedResult[1]: if n scanning completed, this contains the (n - 1)th result.
+*/
+typedef struct _scanningInfoTag
+{
+  byte curScanIndex;
+  Seq_t curSequenceId;
+  ScanningParamsTAG trgParam;
+  ScanningResultTAG savedResult[SCANNING_SAVED_RESULT_COUNT_MAX]; // [0] (n)th result, [1]: (n -1)th result
+} ScanningInfoTAG;
 //event
 
 typedef struct _eventScanningGetReadyTag
@@ -149,25 +187,30 @@ typedef struct _eventScanningGetReadyTag
 
 typedef struct _eventScanningStartTag
 {
-  Seq_t seqId;
-  byte maxScanCount;
+  Seq_t sequenceId;
+  //byte trgSource;
+  //byte maxScanCount;
+  //uint16_t timeBtwScan;
+  ScanningParamsTAG trgParams;
 } EventScanningStartTAG;
 
 typedef struct _eventScanningStopTag
 {
-  byte reserved;
+  byte sequenceId;
 } EventScanningStopTAG;
 
 typedef struct _eventScanningResultTag
 {
-  Seq_t seqId;
-  byte scanIndex;
-  ScanningDeviceResultTAG deviceResult;
+  //Seq_t sequenceId;
+  //byte scanIndex;
+  //ScanningParamsTAG trgParam;
+  //ScanningDeviceResultTAG deviceResult;
+  ScanningResultTAG result;
 } EventScanningResultTAG;
 
 typedef struct _eventScanningCompletedTag
 {
-  Seq_t seqId;
+  Seq_t sequenceId;
   ScanningErr_t errorId;
   byte scannedCount;
 } EventScanningCompletedTAG;

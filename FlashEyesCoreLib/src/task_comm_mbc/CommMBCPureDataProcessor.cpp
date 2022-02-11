@@ -92,6 +92,9 @@ MbcDataSize_t CommMBCPureDataProcessor::getMaxEncodedSize(MbcMessageId_t message
       case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
         maxSize = this->encodedHeaderSize() + sizeof(CommMBCSystemSettingTAG) + COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN;
         break;
+      case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningControl:
+        maxSize = this->encodedHeaderSize() + sizeof(CommMBCScanningControlTAG);
+        break;
       default:
         maxSize = 0;
         break;
@@ -122,6 +125,9 @@ MbcDataSize_t CommMBCPureDataProcessor::getMaxDecodedSize(MbcMessageId_t message
       break;
     case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
       maxSize = sizeof(CommMBCHeaderTAG) + sizeof(CommMBCSystemSettingTAG) + COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN;
+      break;
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningControl:
+      maxSize = sizeof(CommMBCHeaderTAG) + sizeof(CommMBCScanningControlTAG);
       break;
     default:
       maxSize = 0;
@@ -274,6 +280,79 @@ int CommMBCPureDataProcessor::encodeSystemSetting(unsigned char* inputBuffer, Mb
     }
 
     curOutputBuffer += inputTag->sLen;
+    outputUsedSize = (MbcDataSize_t)(curOutputBuffer - outputBuffer);
+    return 0;
+  } while (0);
+
+  return -1;
+}
+
+int CommMBCPureDataProcessor::encodeScanningControl(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+  do
+  {
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize < sizeof(CommMBCScanningControlTAG))
+      )
+    {
+      break;
+    }
+
+    CommMBCScanningControlTAG* inputTag = (CommMBCScanningControlTAG*)inputBuffer;
+
+    unsigned char* curOutputBuffer = outputBuffer;
+    CommMBCScanningControlTAG* outputTag = (CommMBCScanningControlTAG*)curOutputBuffer;
+    outputTag->sequenceId = inputTag->sequenceId;
+    outputTag->bitSet1 = inputTag->bitSet1;
+    outputTag->errorCode = inputTag->errorCode;
+    memcpy(&outputTag->reserved, &inputTag->reserved, 2);
+    outputTag->trgParams.enabled = inputTag->trgParams.enabled;
+    outputTag->trgParams.timeout = inputTag->trgParams.timeout;
+    outputTag->trgParams.trgSource = inputTag->trgParams.trgSource;
+    outputTag->trgParams.maxScanCount = inputTag->trgParams.maxScanCount;
+    memcpy(&outputTag->trgParams.reserved, &inputTag->trgParams.reserved, 1);
+    outputTag->trgParams.timeBtwScan = inputTag->trgParams.timeBtwScan;
+
+    curOutputBuffer += sizeof(CommMBCSystemSettingTAG);
+    outputUsedSize = (MbcDataSize_t)(curOutputBuffer - outputBuffer);
+    return 0;
+  } while (0);
+
+  return -1;
+}
+
+int CommMBCPureDataProcessor::encodeScanningResult(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+  do
+  {
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize < sizeof(CommMBCScanningResultTAG))
+      )
+    {
+      break;
+    }
+
+    CommMBCScanningResultTAG* inputTag = (CommMBCScanningResultTAG*)inputBuffer;
+
+    unsigned char* curOutputBuffer = outputBuffer;
+    CommMBCScanningResultTAG* outputTag = (CommMBCScanningResultTAG*)curOutputBuffer;
+    outputTag->sequenceId = inputTag->sequenceId;
+    outputTag->bitSet1 = inputTag->bitSet1;
+    outputTag->scanIndex = inputTag->scanIndex;
+    outputTag->errorCode = inputTag->errorCode;
+    outputTag->deviceResult.bitSet1 = inputTag->deviceResult.bitSet1;
+    outputTag->deviceResult.errorId = inputTag->deviceResult.errorId;
+    outputTag->deviceResult.code.type = inputTag->deviceResult.code.type;
+    outputTag->deviceResult.code.codeLen = inputTag->deviceResult.code.codeLen;
+
+    curOutputBuffer += sizeof(CommMBCSystemSettingTAG);
+    outputTag->deviceResult.code.code = (char*)curOutputBuffer;
+    
+    memcpy(curOutputBuffer, inputTag->deviceResult.code.code, inputTag->deviceResult.code.codeLen);
+
+    curOutputBuffer += inputTag->deviceResult.code.codeLen;
     outputUsedSize = (MbcDataSize_t)(curOutputBuffer - outputBuffer);
     return 0;
   } while (0);
@@ -436,4 +515,84 @@ int CommMBCPureDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
 
   return -1;
 }
+
+int CommMBCPureDataProcessor::decodeScanningControl(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+  do
+  {
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize <= 0)
+      || (outputSize <= 0)
+      )
+    {
+      break;
+    }
+
+    unsigned char* inputCurrentBuffer = inputBuffer;
+    CommMBCScanningControlTAG* inputTag = (CommMBCScanningControlTAG*)inputCurrentBuffer;
+
+    unsigned char* outputCurrentBuffer = outputBuffer;
+    CommMBCScanningControlTAG* outputTag = (CommMBCScanningControlTAG*)outputCurrentBuffer;
+    outputTag->sequenceId = inputTag->sequenceId;
+    outputTag->bitSet1 = inputTag->bitSet1;
+    outputTag->errorCode = inputTag->errorCode;
+    memcpy(&outputTag->reserved, &inputTag->reserved, 2);
+    outputTag->trgParams.timeout = inputTag->trgParams.timeout;
+    outputTag->trgParams.enabled = inputTag->trgParams.enabled;
+    outputTag->trgParams.trgSource = inputTag->trgParams.trgSource;
+    outputTag->trgParams.maxScanCount = inputTag->trgParams.maxScanCount;
+    memcpy(&outputTag->trgParams.reserved, &inputTag->trgParams.reserved, 1);
+    outputTag->trgParams.timeBtwScan = inputTag->trgParams.timeBtwScan;
+
+    outputCurrentBuffer += sizeof(CommMBCScanningControlTAG);
+    inputCurrentBuffer += sizeof(CommMBCScanningControlTAG);
+
+    outputUsedSize = (MbcDataSize_t)(outputCurrentBuffer - outputBuffer);
+    return 0;
+  } while (0);
+
+  return -1;
+}
+
+int CommMBCPureDataProcessor::decodeScanningResult(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+  do
+  {
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize <= 0)
+      || (outputSize <= 0)
+      )
+    {
+      break;
+    }
+
+    unsigned char* inputCurrentBuffer = inputBuffer;
+    CommMBCScanningResultTAG* inputTag = (CommMBCScanningResultTAG*)inputCurrentBuffer;
+
+    unsigned char* outputCurrentBuffer = outputBuffer;
+    CommMBCScanningResultTAG* outputTag = (CommMBCScanningResultTAG*)outputCurrentBuffer;
+    outputTag->sequenceId = inputTag->sequenceId;
+    outputTag->bitSet1 = inputTag->bitSet1;
+    outputTag->scanIndex = inputTag->scanIndex;
+    outputTag->errorCode = inputTag->errorCode;
+    outputTag->deviceResult.bitSet1 = inputTag->deviceResult.bitSet1;
+    outputTag->deviceResult.errorId = inputTag->deviceResult.errorId;
+    outputTag->deviceResult.code.type = inputTag->deviceResult.code.type;
+    outputTag->deviceResult.code.codeLen = inputTag->deviceResult.code.codeLen;
+
+    outputCurrentBuffer += sizeof(CommMBCScanningResultTAG);
+    inputCurrentBuffer += sizeof(CommMBCScanningResultTAG);
+
+    outputTag->deviceResult.code.code = (char*)outputCurrentBuffer;
+    memcpy(outputTag->deviceResult.code.code, inputCurrentBuffer, outputTag->deviceResult.code.codeLen);
+    outputCurrentBuffer += outputTag->deviceResult.code.codeLen;
+    outputUsedSize = (MbcDataSize_t)(outputCurrentBuffer - outputBuffer);
+    return 0;
+  } while (0);
+
+  return -1;
+}
+
 #endif // _CONF_COMM_MBC_PURE_DATA_PROCESSOR_ENABLED

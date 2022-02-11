@@ -150,6 +150,7 @@ typedef uint16_t                                          MbcDataSize_t;
 typedef uint8_t                                           CommId_t;
 typedef uint8_t                                           DbTableId_t;
 typedef uint8_t                                           UIMessageId_t;
+typedef uint16_t                                          Seq_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 

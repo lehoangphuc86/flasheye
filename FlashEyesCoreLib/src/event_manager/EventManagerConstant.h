@@ -107,7 +107,7 @@ public:
     // UI 
     , UiMessage
     // Trigger
-    , TriggerStartScanning
+    , ScanningControl
     // Scanning
     , ScanningGetReady
     , ScanningStart
@@ -177,7 +177,7 @@ public:
     case EventManagerConstant::EventMessageId::CommHttpStop:
     case EventManagerConstant::EventMessageId::CommHttpFinished:
     case EventManagerConstant::EventMessageId::UiMessage:
-    case EventManagerConstant::EventMessageId::TriggerStartScanning:
+    case EventManagerConstant::EventMessageId::ScanningControl:
     case EventManagerConstant::EventMessageId::ScanningGetReady:
     case EventManagerConstant::EventMessageId::ScanningStart:
     case EventManagerConstant::EventMessageId::ScanningStop:

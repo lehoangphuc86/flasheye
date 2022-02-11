@@ -7,6 +7,7 @@
 // INCLUDE
 #include "os_system/SystemCommon.h"
 #include "data_manager/BufferDataManager.h"
+#include "../task_scanner/ScanningTaskConstant.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -62,12 +63,15 @@ typedef struct _mainControllerConfigTag
   } config;
 } MainControllerConfigTAG;
 
+typedef ScanningParamsTAG TrgStartScanningParamTAG;
 // events
-typedef struct _eventTriggerStartScanningTag
+typedef struct _eventScanningControlTag
 {
-  byte source;
-} EventTriggerStartScanningTAG;
-
+  Seq_t sequenceId;
+  bool isStart : 1;
+  byte reserved : 7;
+  TrgStartScanningParamTAG trgParams; // for start
+} EventScanningControlTAG;
 
 typedef struct _eventSysPowerTag
 {

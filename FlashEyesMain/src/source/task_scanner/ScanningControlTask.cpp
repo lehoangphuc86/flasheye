@@ -41,13 +41,10 @@ char scanningTaskLogBuf[SYSTEM_CONSOLE_OUT_BUF_LEN];
 ScanningControlTask::ScanningControlTask(void)
   : TaskManager()
   , sc_Controller(NULL)
-  , cur_Scan_SeqId(FEM_SCAN_SEQ_ID_INVALID)
-  , cur_Scan_Index(0)
-  , max_Scan_Count(0)
   , is_Busy(false)
   , parent_Eventer(NULL)
 {
-
+  memset(&this->scanning_Info, 0, sizeof(ScanningInfoTAG));
 }
 ScanningControlTask::~ScanningControlTask(void)
 {
@@ -64,6 +61,23 @@ bool ScanningControlTask::isBusy(void)
 bool ScanningControlTask::isValid(void)
 {
   return (this->sc_Controller == NULL ? false : true);
+}
+
+int ScanningControlTask::getSavedScanningResult(byte count, ScanningResultTAG outResult[SCANNING_SAVED_RESULT_COUNT_MAX])
+{
+  do
+  {
+    if (count > SCANNING_SAVED_RESULT_COUNT_MAX)
+    {
+      break;
+    }
+
+    SystemCriticalLocker locker(this->critical_Key);
+    memcpy(outResult, this->scanning_Info.savedResult, count*sizeof(ScanningResultTAG));
+
+    return 0;
+  } while (0);
+  return -1;
 }
 
 //int ScanningControlTask::inititialize(void)
@@ -277,9 +291,14 @@ int ScanningControlTask::onEventScanningStart(unsigned char* data, unsigned int 
     }
     this->isBusy(true);
     EventScanningStartTAG* eventData = (EventScanningStartTAG*)data;
-    this->cur_Scan_SeqId = eventData->seqId;
+    /*this->cur_Scan_SeqId = eventData->seqId;
     this->max_Scan_Count = eventData->maxScanCount;
-    this->cur_Scan_Index = 0;
+    this->time_Btw_Scan = eventData->timeBtwScan;
+    this->cur_Scan_Index = 0;*/
+    this->scanning_Info.trgParam.enabled = true;
+    memcpy(&this->scanning_Info.trgParam, &eventData->trgParams, sizeof(ScanningParamsTAG));
+    this->scanning_Info.curScanIndex = 0;
+    this->scanning_Info.curSequenceId = eventData->sequenceId;
 
     ret = this->sc_Controller->startScan();
     if (ret != 0)
@@ -431,26 +450,38 @@ int ScanningControlTask::onEventScanningDeviceSignal(unsigned char* data, unsign
         // read result
         // notify parent
         {
-          EventScanningResultTAG scanResult = EventScanningResultTAG();
-          scanResult.seqId = this->cur_Scan_SeqId;
-          scanResult.scanIndex = this->cur_Scan_Index;
-          this->cur_Scan_Index++;
-          ret = this->sc_Controller->readResult(scanResult.deviceResult);
+          EventScanningResultTAG scanResultEvent = EventScanningResultTAG();
+          memcpy(&scanResultEvent.result.trgParam, &this->scanning_Info.trgParam, sizeof(ScanningParamsTAG));
+          scanResultEvent.result.enabled = true;
+          scanResultEvent.result.sequenceId = this->scanning_Info.curSequenceId;
+          scanResultEvent.result.scanIndex = this->scanning_Info.curScanIndex;
+          this->scanning_Info.curScanIndex++;
+          ret = this->sc_Controller->readResult(scanResultEvent.result.deviceResult);
 #ifdef SCANNING_TASK_CONSOLE_DEBUG_ENABLE
-          CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] ssig %i %i", 11, ret);
+          CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] ssig %d %d %d", 11, ret, this->scanning_Info.curScanIndex);
 #endif // SCANNING_TASK_CONSOLE_DEBUG_ENABLE
-          ret |= this->notifyParent(EventManagerConstant::EventMessageId::ScanningResult, sizeof(EventScanningResultTAG), (unsigned char*)&scanResult);
+          ret |= this->notifyParent(EventManagerConstant::EventMessageId::ScanningResult, sizeof(EventScanningResultTAG), (unsigned char*)&scanResultEvent);
+          {
+            SystemCriticalLocker locker(this->critical_Key);
+            memcpy(&this->scanning_Info.savedResult[1], &this->scanning_Info.savedResult[0], sizeof(ScanningResultTAG));
+            memcpy(&this->scanning_Info.savedResult[0], &scanResultEvent.result, sizeof(ScanningResultTAG));
+          }
+#ifdef SCANNING_TASK_CONSOLE_DEBUG_ENABLE
+          CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] ssig %i %s", 121, this->scanning_Info.savedResult[0].deviceResult.code.code);
+          CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] ssig %i %d", 122, this->scanning_Info.savedResult[0].scanIndex);
+#endif // SCANNING_TASK_CONSOLE_DEBUG_ENABLE
         }
 
         if (ret == 0)
         {
-          if ((this->max_Scan_Count > 0)
-            && (this->cur_Scan_Index >= this->max_Scan_Count))
+          if ((this->scanning_Info.trgParam.maxScanCount > 0)
+            && (this->scanning_Info.curScanIndex >= this->scanning_Info.trgParam.maxScanCount))
           {
             isCompleted = true;
           }
           else
           {
+            SYSTEM_SLEEP(this->scanning_Info.trgParam.timeBtwScan);
             ret |= this->sc_Controller->startScan();
 #ifdef SCANNING_TASK_CONSOLE_DEBUG_ENABLE
             CONSOLE_LOG_BUF(scanningTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scCTsk] ssig %i %i", 12, ret);
@@ -474,9 +505,9 @@ int ScanningControlTask::onEventScanningDeviceSignal(unsigned char* data, unsign
 #endif // SCANNING_TASK_CONSOLE_DEBUG_ENABLE
           // enough
           EventScanningCompletedTAG scanCompleted = EventScanningCompletedTAG();
-          scanCompleted.seqId = this->cur_Scan_SeqId;
+          scanCompleted.sequenceId = this->scanning_Info.curSequenceId;// this->cur_Scan_SeqId;
           scanCompleted.errorId = (ret == 0? SCANNING_ERR_NONE: SCANNING_ERR_DEVICE_ERROR);
-          scanCompleted.scannedCount = (this->cur_Scan_Index + 1);
+          scanCompleted.scannedCount = (this->scanning_Info.curScanIndex + 1);
           this->notifyParent(EventManagerConstant::EventMessageId::ScanningCompleted, sizeof(EventScanningCompletedTAG), (unsigned char*)&scanCompleted);
           this->resetSequence();
         }
@@ -524,9 +555,13 @@ int ScanningControlTask::notifyParent(EventId_t messageId, EventSize_t eventSize
 void ScanningControlTask::resetSequence(void)
 {
   this->isBusy(false);
-  this->cur_Scan_SeqId = FEM_SCAN_SEQ_ID_INVALID;
-  this->max_Scan_Count = 0;
-  this->cur_Scan_Index = 0;
+  //this->cur_Scan_SeqId = FEM_SCAN_SEQ_ID_INVALID;
+  //this->max_Scan_Count = 0;
+  //this->cur_Scan_Index = 0;
+  //this->time_Btw_Scan = 0;
+  this->scanning_Info.curSequenceId = FEM_SCAN_SEQ_ID_INVALID;
+  this->scanning_Info.curScanIndex = 0;
+  memset(&this->scanning_Info.trgParam, 0, sizeof(ScanningParamsTAG));
 }
 
 void ScanningControlTask::cbScanningDeviceSignal(void* userArg, byte signalId, void* eventData, DataSize_t eventSize, bool* woken)

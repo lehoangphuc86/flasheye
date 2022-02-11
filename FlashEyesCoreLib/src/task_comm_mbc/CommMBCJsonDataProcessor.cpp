@@ -10,6 +10,7 @@
 #define COMM_MBC_JSON_MAKEUP_LEN_START1                 42
 #define COMM_MBC_JSON_MAKEUP_LEN_RESULT1                42
 #define COMM_MBC_JSON_MAKEUP_LEN_SYSTEM_SETTING         52
+#define COMM_MBC_JSON_MAKEUP_LEN_SCANNING_CONTROL       80
 #define COMM_MBC_JSON_FILL_BLANK_CHARACTER              ' '
 
 /////////////////////////////////////////////////
@@ -114,6 +115,9 @@ MbcDataSize_t CommMBCJsonDataProcessor::getMaxEncodedSize(MbcMessageId_t message
     case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
       maxSize = this->encodedHeaderSize() + sizeof(CommMBCSystemSettingTAG) + COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN + COMM_MBC_JSON_MAKEUP_LEN_SYSTEM_SETTING;
       break;
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningControl:
+      maxSize = this->encodedHeaderSize() + sizeof(CommMBCScanningControlTAG) + COMM_MBC_JSON_MAKEUP_LEN_SCANNING_CONTROL;
+      break;
     default:
       maxSize = 0;
       break;
@@ -144,6 +148,9 @@ MbcDataSize_t CommMBCJsonDataProcessor::getMaxDecodedSize(MbcMessageId_t message
       break;
     case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
       maxSize = sizeof(CommMBCHeaderTAG) + sizeof(CommMBCSystemSettingTAG) + COMM_MBC_SYSTEM_SETTING_DATA_MAX_LEN;
+      break;
+    case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningControl:
+      maxSize = sizeof(CommMBCHeaderTAG) + sizeof(CommMBCScanningControlTAG);
       break;
     default:
       maxSize = 0;
@@ -372,6 +379,122 @@ int CommMBCJsonDataProcessor::encodeSystemSetting(unsigned char* inputBuffer, Mb
 }
 
 
+int CommMBCJsonDataProcessor::encodeScanningControl(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSC %i", 0);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  do
+  {
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize < sizeof(CommMBCScanningControlTAG))
+      )
+    {
+      break;
+    }
+
+    CommMBCScanningControlTAG* inputTag = (CommMBCScanningControlTAG*)inputBuffer;
+    int printedLen = JsonSnprintf((char*)outputBuffer, outputSize,
+      "\"b\":{\"seqId\":%d,\"bSet1\":%d,\"eCode\":%d,\"trgP\":{\"timO\":%d,\"en\":%d,\"src\":%d,\"scMax\":%d,\"timW\":%d}}}"
+      , inputTag->sequenceId
+      , inputTag->bitSet1
+      , inputTag->errorCode
+      , inputTag->trgParams.timeout
+      , inputTag->trgParams.enabled
+      , inputTag->trgParams.trgSource
+      , inputTag->trgParams.maxScanCount
+      , inputTag->trgParams.timeBtwScan
+    );
+
+    if ((printedLen >= outputSize)
+      || (printedLen < 0)
+      )
+    {
+      break;
+    }
+
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSC %i %d", 90, inputTag->trgParams.timeBtwScan);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 20);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 40);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 60);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 80);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    outputUsedSize = printedLen;
+    outputBuffer += outputUsedSize;
+    outputSize -= outputUsedSize;
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSC %i", 99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSC %i", -99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+int CommMBCJsonDataProcessor::encodeScanningResult(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSR %i", 0);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  do
+  {
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize < sizeof(CommMBCScanningResultTAG))
+      )
+    {
+      break;
+    }
+
+    CommMBCScanningResultTAG* inputTag = (CommMBCScanningResultTAG*)inputBuffer;
+    int printedLen = JsonSnprintf((char*)outputBuffer, outputSize,
+      "\"b\":{\"seqId\":%d,\"bSet1\":%d,\"sIdx\":%d,\"eCode\":%d,\"devR\":{\"bSet1\":%d,\"eId\":%d,\"code\":{\"len\":%d,\"type\":%d,\"code\":%Q}}}}"
+      , inputTag->sequenceId
+      , inputTag->bitSet1
+      , inputTag->scanIndex
+      , inputTag->errorCode
+      , inputTag->deviceResult.bitSet1
+      , inputTag->deviceResult.errorId
+      , inputTag->deviceResult.code.codeLen
+      , inputTag->deviceResult.code.type
+      , inputTag->deviceResult.code.code
+    );
+
+    if ((printedLen >= outputSize)
+      || (printedLen < 0)
+      )
+    {
+      break;
+    }
+
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSR %i %d %d", 90, inputTag->deviceResult.bitSet1, inputTag->scanIndex);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 20);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 40);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 60);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] %s", outputBuffer + 80);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+
+    outputUsedSize = printedLen;
+    outputBuffer += outputUsedSize;
+    outputSize -= outputUsedSize;
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSR %i", 99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] enSR %i", -99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 int CommMBCJsonDataProcessor::decodeHeader(unsigned char* inputBuffer, MbcDataSize_t inputSize, CommMBCHeaderTAG& mbcHeader)
 {
   do
@@ -549,10 +672,10 @@ int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
       break;
     }
 
-    byte bitSet = 0;
+    byte bitSet1 = 0;
     ret |= this->js_Parser.getNumber("$.b.secId", outputTag->sectionId);
     ret |= this->js_Parser.getNumber("$.b.setId", outputTag->settingId);
-    ret |= this->js_Parser.getNumber("$.b.bSet1", bitSet);
+    ret |= this->js_Parser.getNumber("$.b.bSet1", bitSet1);
     ret |= this->js_Parser.getNumber("$.b.eCode", outputTag->errorCode);
     ret |= this->js_Parser.getNumber("$.b.sLen", outputTag->sLen);
 
@@ -564,7 +687,7 @@ int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
       break;
     }
 
-    memcpy(&outputTag->bitSet1, &bitSet, sizeof(outputTag->bitSet1));
+    memcpy(&outputTag->bitSet1, &bitSet1, sizeof(outputTag->bitSet1));
 
     outputTag->data.sVal = (char*)outputCurrentBuffer;
 //#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
@@ -606,6 +729,163 @@ int CommMBCJsonDataProcessor::decodeSystemSetting(unsigned char* inputBuffer, Mb
   this->js_Parser.end();
 //#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
 //  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSS %i", -99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+int CommMBCJsonDataProcessor::decodeScanningControl(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSC %i", 0);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  do
+  {
+    int ret = 0;
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize <= 0)
+      || (outputSize <= 0)
+      )
+    {
+      break;
+    }
+
+    unsigned char* outputCurrentBuffer = outputBuffer;
+    CommMBCScanningControlTAG* outputTag = (CommMBCScanningControlTAG*)outputCurrentBuffer;
+    outputCurrentBuffer += sizeof(CommMBCScanningControlTAG);
+    ret = this->js_Parser.begin((char*)inputBuffer, inputSize);
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSC %i %i", 2, ret);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    byte bitSet1 = 0;
+    ret |= this->js_Parser.getNumber("$.b.seqId", outputTag->sequenceId);
+    ret |= this->js_Parser.getNumber("$.b.bSet1", bitSet1);
+    ret |= this->js_Parser.getNumber("$.b.eCode", outputTag->errorCode);
+    ret |= this->js_Parser.getNumber("$.b.trgP.timO", outputTag->trgParams.timeout);
+    ret |= this->js_Parser.getNumber("$.b.trgP.en", outputTag->trgParams.enabled);
+    ret |= this->js_Parser.getNumber("$.b.trgP.src", outputTag->trgParams.trgSource);
+    ret |= this->js_Parser.getNumber("$.b.trgP.scMax", outputTag->trgParams.maxScanCount);
+    ret |= this->js_Parser.getNumber("$.b.trgP.timW", outputTag->trgParams.timeBtwScan);
+
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSC %i %i", 30, ret);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSC %d %d %d %d %d", 31, outputTag->sequenceId, bitSet1, outputTag->errorCode, (uint16_t)outputTag->trgParams.timeout);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSC %d %d %d %d %d", 32, 
+//      outputTag->trgParams.enabled, outputTag->trgParams.trgSource, outputTag->trgParams.maxScanCount, (uint16_t)outputTag->trgParams.timeBtwScan);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    memcpy(&outputTag->bitSet1, &bitSet1, sizeof(outputTag->bitSet1));
+    outputUsedSize = (MbcDataSize_t)(outputCurrentBuffer - outputBuffer);
+    this->js_Parser.end();
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSC %i", 99, outputUsedSize, outputTag->bitSet1.isStart);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+  this->js_Parser.end();
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSC %i", -99);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+int CommMBCJsonDataProcessor::decodeScanningResult(unsigned char* inputBuffer, MbcDataSize_t inputSize, unsigned char* outputBuffer, MbcDataSize_t outputSize, MbcDataSize_t& outputUsedSize)
+{
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %i", 0);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+  do
+  {
+    int ret = 0;
+    if ((inputBuffer == NULL)
+      || (outputBuffer == NULL)
+      || (inputSize <= 0)
+      || (outputSize <= 0)
+      )
+    {
+      break;
+    }
+
+    unsigned char* outputCurrentBuffer = outputBuffer;
+    CommMBCScanningResultTAG* outputTag = (CommMBCScanningResultTAG*)outputCurrentBuffer;
+    outputCurrentBuffer += sizeof(CommMBCScanningResultTAG);
+    ret = this->js_Parser.begin((char*)inputBuffer, inputSize);
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %i %i", 2, ret);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    byte bitSet1 = 0;
+    byte devBitSet = 0;
+    ret |= this->js_Parser.getNumber("$.b.seqId", outputTag->sequenceId);
+    ret |= this->js_Parser.getNumber("$.b.bSet1", bitSet1);
+    ret |= this->js_Parser.getNumber("$.b.sIdx", outputTag->scanIndex);
+    ret |= this->js_Parser.getNumber("$.b.eCode", outputTag->errorCode);
+    ret |= this->js_Parser.getNumber("$.b.devR.bSet1", devBitSet);
+    ret |= this->js_Parser.getNumber("$.b.devR.eId", outputTag->deviceResult.errorId);
+    ret |= this->js_Parser.getNumber("$.b.devR.code.len", outputTag->deviceResult.code.codeLen);
+    ret |= this->js_Parser.getNumber("$.b.devR.code.type", outputTag->deviceResult.code.type);
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %i %i", 20, ret);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    outputTag->deviceResult.code.code = (char*)outputCurrentBuffer;
+    outputCurrentBuffer += outputTag->deviceResult.code.codeLen;
+
+    if (outputTag->deviceResult.code.codeLen > 0)
+    {
+      ret |= this->js_Parser.getString("$.b.devR.code.code", outputTag->deviceResult.code.code, COMM_MBC_SCANNING_DEVICE_BARCODE_LEN_MAX, outputTag->deviceResult.code.codeLen);
+    }
+    else
+    {
+      outputTag->deviceResult.code.code[0] = '\0';
+    }
+    
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %i %i", 30, ret);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %d %d %d %d %d", 
+//      31, outputTag->sequenceId, bitSet1, outputTag->scanIndex, outputTag->errorCode);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %d %d %d %d %d",
+//      32, devBitSet, outputTag->deviceResult.errorId, outputTag->deviceResult.code.codeLen, outputTag->deviceResult.code.type);
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %d %s",
+//      33, outputTag->deviceResult.code.code);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    
+    memcpy(&outputTag->deviceResult.bitSet1, &devBitSet, sizeof(outputTag->deviceResult.bitSet1));
+    memcpy(&outputTag->bitSet1, &bitSet1, sizeof(outputTag->bitSet1));
+    outputUsedSize = (MbcDataSize_t)(outputCurrentBuffer - outputBuffer);
+    this->js_Parser.end();
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %i", 99, outputUsedSize);
+//#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+  this->js_Parser.end();
+//#ifdef COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
+//  CONSOLE_LOG_BUF(commMbcJsonProcessorLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mJP] dSR %i", -99);
 //#endif // COMM_MBC_JSON_PROCESSOR_CONSOLE_DEBUG_ENABLE
   return -1;
 }

@@ -308,6 +308,15 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 #define FEM_SCAN_OP_TIMEOUT                           10000 // ms
 #define FEM_SCAN_OP_MAX_SCAN_COUNT                    1
 
+#define FEM_SCAN_TRG_SRC_HTTP                         1
+#define FEM_SCAN_TRG_SRC_SERIAL                       2
+#define FEM_SCAN_TRG_SRC_BUTTON                       3
+
+#define FEM_SCAN_ERR_CODE_NONE                        0
+#define FEM_SCAN_ERR_CODE_NOT_AVAI                    1
+#define FEM_SCAN_ERR_CODE_NOT_VALID                   2
+#define FEM_SCAN_ERR_CODE_OP_ERR                      3
+
 // main 
 #define FEM_MAIN_DM_BUFF_SIZE                         200
 #define FEM_MAIN_DM_BUFF_COUNT                        5
@@ -369,7 +378,6 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 
 /////////////////////////////////////////////////
 // DATA TYPE (TYPEDEF)
-typedef uint16_t                                      Seq_t;
 typedef uint8_t                                       SysMode_t;
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)

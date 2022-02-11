@@ -225,6 +225,7 @@ int JsonParser::getString(const char* jsStr, DataSize_t jsLen, const char* path,
 {
   do
   {
+    desBuff[0] = '\0';
     int ret = mjson_get_string(jsStr, jsLen, path, desBuff, desLen);
     if (ret == -1)
     {

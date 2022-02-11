@@ -68,7 +68,7 @@ void MainNormalController::regEventSize(void)
   this->registerHanldingEventStructSize(sizeof(EventTimerFiredTAG));
   this->registerHanldingEventStructSize(sizeof(EventScanningResultTAG));
   this->registerHanldingEventStructSize(sizeof(EventScanningCompletedTAG));
-  this->registerHanldingEventStructSize(sizeof(EventTriggerStartScanningTAG));
+  this->registerHanldingEventStructSize(sizeof(EventScanningControlTAG));
 }
 
 int MainNormalController::prepare(void)
@@ -163,9 +163,9 @@ int MainNormalController::onEventHandling(EventDataItem* eventData)
         this->onEventScanningDeviceSettingCompleted(eventData->bufferAddress(), eventData->dataLength());
         break;
       }
-      case (int)EventManagerConstant::EventMessageId::TriggerStartScanning:
+      case (int)EventManagerConstant::EventMessageId::ScanningControl:
       {
-        this->onEventTriggerStartScanning(eventData->bufferAddress(), eventData->dataLength());
+        this->onEventScanningControl(eventData->bufferAddress(), eventData->dataLength());
         break;
       }
       case (int)EventManagerConstant::EventMessageId::ScanningResult:

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FlashEye</title>
+  <script type="text/javascript" src="js/SysCommon.js"></script>
+  <script type="text/javascript" src="js/MBCHttpClient.js"></script>
+  <script type="text/javascript">
+    const DATA_SEC_ID_NAME = 'data-secId';
+    //const DATA_SET_ID_NAME = 'data-setId';
+    //const DATA_TYPE_ID_NAME = 'data-type';
+    const LBL_STATUS_ID = 'lblStatus';
+    const NUM_MAX_SCAN_ID = 'numMaxScan';
+    const NUM_BRK_TIME_ID = 'numBreakTime';
+    const NUM_TIME_OUT_ID = 'numTimeout';
+    const TXT_SCAN_IDX_ID = 'txtScanIdx';
+    const TXT_SEV_ERR_ID = 'txtSevErrCode';
+    const TXT_DEV_ERR_ID = 'txtDevErrCode';
+    const TXT_CODE_TYPE_ID = 'txtCodeType';
+    const TXT_CODE_LEN_ID = 'txtCodeLen';
+    const TXT_CODE_ID = 'txtCode';
+    const TXT_RESULT_ID = 'txtResult';
+    const TXT_SEQID_ID = 'txtSeqId';
+    const BTN_START_ID = 'btnStart';
+    const BTN_STOP_ID = 'btnStop';
+    
+    const STA_LEVEL_NORMAL = 0;
+    const STA_LEVEL_WARNING = 1;
+    const STA_LEVEL_ERROR = 2;
+
+    class ScanningParamsTAG {
+      constructor(enabled, timeout, trgSource, maxScanCount, timeBtwScan) {
+        this.timeout = timeout;
+        this.enabled = enabled;
+        this.trgSource = trgSource;
+        this.maxScanCount = maxScanCount;
+        this.timeBtwScan = timeBtwScan;
+      }
+    }
+
+    class ScanningControlTAG {
+      //constructor(sequenceId, isStart, errorCode, trgParams) {
+      //  this.sequenceId = sequenceId;
+      //  this.isStart = isStart;
+      //  this.errorCode = errorCode;
+      //  this.trgParams = trgParams;
+      //}
+
+      constructor() {
+        this.sequenceId = 0;
+        this.isStart = 0;
+        this.errorCode = 0;
+        this.trgParams = new ScanningParamsTAG();
+      }
+    }
+
+    //class ScanningQueryResultParamTAG {
+    //  constructor() {
+    //    this.scanningControl = new ScanningControlTAG();
+    //    this.reqCommMBCPackage = new CommMBCPackageTAG();
+    //    this.resCommMBCPackage = new CommMBCPackageTAG();
+    //    this.timeExpired = 0;
+    //  }
+    //} 
+      
+
+    class ScannerController {
+      constructor() {
+        this.commMBCHttpClient = new CommMBCHttpClient();
+        this.sequenceId = 0;
+        this.isBusy = false;
+        this.scannedCount = 0;
+        this.interrupted = false;
+        //this.scanningQueryResultParam = new ScanningQueryResultParamTAG();
+      }
+
+      nextSeqId() {
+        this.sequenceId++;
+        if (this.sequenceId == 0) {
+          this.sequenceId++;
+        }
+
+        if (this.sequenceId > 0xFFFF) {
+          this.sequenceId = 1;
+        }
+        return this.sequenceId;
+      }
+
+      control(scanningControl) {
+        if (scanningControl.isStart != 0) {
+          return this.startScanning(scanningControl);
+        }
+        return this.stopScanning(scanningControl);
+      }
+
+      startScanning(scanningControl) {
+        var ret = 0;
+        var status = "";
+        do {
+          if (this.isBusy != false) {
+            return -1;
+          }
+
+          this.stopScanning();
+          this.changeCtrlStates(0, false); // disable params
+          this.setButtonState(0);
+          if ((scanningControl.trgParams.enabled == 0)
+            || (scanningControl.trgParams.timeout < 0)
+            || (scanningControl.trgParams.timeout > 10000)
+            || (scanningControl.trgParams.trgSource != FEM_SCAN_TRG_SRC_HTTP)
+            || (scanningControl.trgParams.maxScanCount < 1)
+            || (scanningControl.trgParams.maxScanCount > 100)
+            || (scanningControl.trgParams.timeBtwScan < 10)
+            || (scanningControl.trgParams.timeBtwScan > 1000)
+          ) {
+            status += "Invalid params.";
+            break;
+          }
+          scanningControl.sequenceId = this.nextSeqId();
+          this.showSeqId(scanningControl.sequenceId);
+          // 1. set status -> scanning
+          // 2. post scan control data
+          // 3. get response from server
+            // 3.1. error: break
+          // 4. while (max count)
+            // 4.1. sleep (timeBtwScan)
+            // 4.2. send get result
+            // 4.3. check response
+            //   4.3.1. error: break all
+            // 4.4. display code
+            // 4.5. maxcount --
+          // 5. reset
+
+          // 1. set status -> scanning
+          this.isBusy = true;
+          this.scannedCount = 0;
+          this.updateStatus("Scanning (" + this.scannedCount + "/" + scanningControl.trgParams.maxScanCount + ")");
+          // 2. post scan control data
+          {
+            var commMBCScanningControl = new CommMBCScanningControlTAG();
+            commMBCScanningControl.sequenceId = scanningControl.sequenceId;
+            commMBCScanningControl.bitSet1 = 0b00000000;
+            commMBCScanningControl.bitSet1 |= 1; // isStart = 1
+            commMBCScanningControl.bitSet1 |= (1 << 0); // isReply = 0
+            console.log("[ScannerController::startScanning] bitSet1=" + commMBCScanningControl.bitSet1);
+            commMBCScanningControl.errorCode = 0;
+            commMBCScanningControl.trgParams = new CommMBCScanningParamsTAG();
+            commMBCScanningControl.trgParams.enabled = 1;
+            commMBCScanningControl.trgParams.timeout = scanningControl.trgParams.timeout;
+            commMBCScanningControl.trgParams.trgSource = scanningControl.trgParams.trgSource;
+            commMBCScanningControl.trgParams.maxScanCount = scanningControl.trgParams.maxScanCount;
+            commMBCScanningControl.trgParams.timeBtwScan = scanningControl.trgParams.timeBtwScan;
+
+            var reqCommMBCPackage = new CommMBCPackageTAG(COMM_MBC_MESS_ID_SCANNING_CONTROL, commMBCScanningControl);
+            var resCommMBCPackage = new CommMBCPackageTAG(0, null);
+            ret = this.commMBCHttpClient.send(reqCommMBCPackage, resCommMBCPackage, false);
+            if (ret != 0) {
+              status += "Failed to send scanning control request";
+              break;
+            }
+            // 3. get response from server
+
+            // 3.1. error: break
+            if (resCommMBCPackage.messageId != COMM_MBC_MESS_ID_SCANNING_CONTROL) {
+              status += "Wrong message. Rev:" + resCommMBCPackage.messageId + " Expected:" + COMM_MBC_MESS_ID_SCANNING_CONTROL;
+              break;
+            }
+          
+            if (resCommMBCPackage.body.errorCode != 0) {
+              status += "Error rev:" + resCommMBCPackage.body.errorCode;
+              break;
+            }
+          }
+
+          //this.scanningQueryResultParam.scanningControl = scanningControl;
+          var commMBCscanningResult = new CommMBCScanningResultTAG();
+          commMBCscanningResult.sequenceId = scanningControl.sequenceId;
+          commMBCscanningResult.bitSet1 = 0;
+          commMBCscanningResult.scanIndex = 0;
+          commMBCscanningResult.errorCode = 0;
+          commMBCscanningResult.deviceResult = new CommMBCScanningDeviceResultTAG();
+          commMBCscanningResult.deviceResult.bitSet1 = 0;
+          commMBCscanningResult.deviceResult.errorId = 0;
+          commMBCscanningResult.deviceResult.code = new CommMBCScanningBarCodeTAG();
+          commMBCscanningResult.deviceResult.code.type = 0;
+          commMBCscanningResult.deviceResult.code.codeLen = 0;
+          commMBCscanningResult.deviceResult.code.code = "";
+
+          var reqCommMBCPackage = new CommMBCPackageTAG(COMM_MBC_MESS_ID_SCANNING_RESULT, commMBCscanningResult);
+          var resCommMBCPackage = new CommMBCPackageTAG(0, null);
+          var timeExpired = new Date().getTime() + scanningControl.trgParams.timeout;
+          this.interrupted = false;
+          //setTimeout(this.queryScanningResult(this.scanningQueryResultParam.scanningControl, this.scanningQueryResultParam.reqCommMBCPackage, this.scanningQueryResultParam.resCommMBCPackage, this.scanningQueryResultParam.timeExpired), scanningControl.trgParams.numBrkTime);
+          setTimeout(this.queryScanningResult(scanningControl, reqCommMBCPackage, resCommMBCPackage, timeExpired), scanningControl.trgParams.numBrkTime);
+          return 0;
+        } while (0);
+        this.stopScanning();
+        this.updateStatus(status, STA_LEVEL_ERROR);
+        return -1;
+      }
+
+      queryScanningResult(scanningControl, reqCommMBCPackage, resCommMBCPackage, timeExpired) {
+        var ret = 0;
+        do {
+          // 4. while (max count)
+          this.updateStatus("Scanning (" + this.scannedCount + "/" + scanningControl.trgParams.maxScanCount + ")");
+          if (this.interrupted != false) {
+            console.log("[ScannerController::queryScanningResult] 10 scCnt=" + this.scannedCount);
+            this.queryScanningResultComplete(scanningControl);
+            return 0;
+          }
+          // check time out
+          if ((scanningControl.trgParams.timeout > 0)
+            && ((new Date().getTime()) > timeExpired)
+          ) {
+            // timeout
+            status += "Timed out";
+            break;
+          }
+          // 4.1. sleep (timeBtwScan)
+          //Utility.asyncSleep(scanningControl.trgParams.numBrkTime);
+          // 4.2. send get result
+
+          ret = this.commMBCHttpClient.send(reqCommMBCPackage, resCommMBCPackage, false);
+          if (ret != 0) {
+            status += "Failed to send scanning result request";
+            break;
+          }
+          //   4.3.1. error: break all
+          if (resCommMBCPackage.messageId != COMM_MBC_MESS_ID_SCANNING_RESULT) {
+            status += "Wrong message. Rev:" + resCommMBCPackage.messageId + " Expected:" + COMM_MBC_MESS_ID_SCANNING_RESULT;
+            break;
+          }
+
+          // error: break
+          if ((resCommMBCPackage.body.errorCode != FEM_SCAN_ERR_CODE_NONE)
+            && (resCommMBCPackage.body.errorCode != FEM_SCAN_ERR_CODE_NOT_AVAI)
+            ) {
+            status += "Error rev:" + resCommMBCPackage.body.errorCode;
+            break;
+          }
+
+          // validate result
+          if (((resCommMBCPackage.body.bitSet1 & 0x01) == 0) // not enabled 
+            || (resCommMBCPackage.body.scanIndex < this.scannedCount)
+          ) {
+            setTimeout(this.queryScanningResult(scanningControl, reqCommMBCPackage, resCommMBCPackage, timeExpired), scanningControl.trgParams.numBrkTime/2);
+            return;
+          }
+
+          if ((resCommMBCPackage.body.sequenceId != scanningControl.sequenceId)
+            || ((resCommMBCPackage.body.bitSet1 & 0x02) == 0) // not reply
+          ) {
+            status += "Invalid scanning result(" + this.scannedCount + ")";
+            break;
+          }
+
+          var scannRet = resCommMBCPackage.body.deviceResult;
+          if (((scannRet.bitSet1 & 0x01) == 0) // not enabled 
+            || (scannRet.errorId != 0) // error occured
+          ) {
+            status += "Invalid scanning result(" + this.scannedCount + ")";
+            break;
+          }
+
+          this.scannedCount++;
+          // 4.4. display code
+          this.showScanningResult(resCommMBCPackage.body);
+          // 4.5. maxcount --
+          if (this.scannedCount >= scanningControl.trgParams.maxScanCount) {
+            this.queryScanningResultComplete(scanningControl);
+            return 0;
+          }
+          //repeat
+          setTimeout(this.queryScanningResult(scanningControl, reqCommMBCPackage, resCommMBCPackage, timeExpired), scanningControl.trgParams.numBrkTime);
+          return 0;
+        } while (0);
+        this.stopScanning();
+        this.updateStatus(status, STA_LEVEL_ERROR);
+        this.reset();
+        return -1;
+      }
+
+      queryScanningResultComplete(scanningControl) {
+        // 5. reset
+        this.updateStatus("Scanning completed (" + this.scannedCount + "/" + scanningControl.trgParams.maxScanCount + ")");
+        this.reset();
+        this.changeCtrlStates(0, true);
+      }
+
+      stopScanning(scanningControl) {
+        var ret = 0;
+        do {
+
+          if (this.isBusy == false) {
+            this.reset();
+            return;
+          }
+
+          this.interrupted = true;
+          this.setButtonState(-1); // wait start loop stop
+          return;
+        } while (0);
+        this.reset();
+        return;
+      }
+
+      showSeqId(seqId) {
+        var txtSeqId = document.getElementById(TXT_SEQID_ID);
+        txtSeqId.value = seqId;
+      }
+
+      showScanningResult(commMBCscanningResult) {
+        var txtResult = document.getElementById(TXT_RESULT_ID);
+        var strResult = txtResult.value + "\n";
+        strResult += "-----------Ret[" + commMBCscanningResult.sequenceId + ":" + commMBCscanningResult.scanIndex + "]----------\n"; 
+        strResult += "Sev Err:\t" + commMBCscanningResult.errorCode + "\n";
+        strResult += "Dev Err:\t" + commMBCscanningResult.deviceResult.errorId + "\n";
+        strResult += "Code type:\t" + commMBCscanningResult.deviceResult.code.type + "\n";
+        strResult += "Code len:\t" + commMBCscanningResult.deviceResult.code.codeLen + "\n";
+        strResult += "Code:\t" + commMBCscanningResult.deviceResult.code.code + "\n";
+
+        txtResult.value = strResult;
+      }
+
+      reset() {
+        this.isBusy = false;
+        this.scannedCount = 0;
+        this.setButtonState(1);
+        this.changeCtrlStates(0, true);
+      }
+
+      setButtonState(opCode) {
+        var btnStart = document.getElementById(BTN_START_ID);
+        var btnStop = document.getElementById(BTN_STOP_ID);
+        switch (opCode) {
+          case 0: // start
+          case 1: // stop
+            btnStart.disabled = !(opCode == 0? false : true);
+            btnStop.disabled = (opCode == 0 ? false : true);
+            break;
+          default:
+            btnStart.disabled = true;
+            btnStop.disabled = true;
+            break;
+        }
+        
+      }
+
+      changeCtrlStates(sectionId, isEnabled) {
+        if (sectionId < 0) {
+          changeCtrlStates(0, isEnabled);
+          changeCtrlStates(1, isEnabled);
+          return;
+        }
+
+        var selector = "[" + DATA_SEC_ID_NAME + "='" + sectionId + "']";
+        const setElements = document.querySelectorAll(selector);
+        for (var wkIdx = 0; wkIdx < setElements.length; wkIdx++) {
+          setElements[wkIdx].disabled = !isEnabled;
+        }
+      }
+
+      updateStatus(txtStatus, level, isAppend = false) {
+        var lblStatusEl = document.getElementById(LBL_STATUS_ID);
+        if (isAppend != false) {
+          txtStatus = lblStatusEl.textContent + "\n" + txtStatus;
+        }
+
+        lblStatusEl.textContent = txtStatus;
+        var color = 'green';
+        switch (level) {
+          case STA_LEVEL_WARNING:
+            color = 'blueviolet';
+            break;
+          case STA_LEVEL_ERROR:
+            color = 'red';
+            break;
+          case STA_LEVEL_NORMAL:
+          default:
+            color = 'green';
+            break;
+        }
+        lblStatusEl.style.color = color;
+      }
+    }
+
+    var g_ScannerCtrl = new ScannerController();
+    document.addEventListener('DOMContentLoaded', loaded, false);
+
+    async function loaded() {
+      return 0; // do nothing
+    }
+
+    async function startScanning() {
+      var ret = 0;
+      do {
+        g_ScannerCtrl.setButtonState(-1);
+        g_ScannerCtrl.updateStatus("Start scanning..");
+        document.getElementById(TXT_RESULT_ID).value = ""; // clear result
+        await Utility.asyncSleep(1);
+        var params = new ScanningControlTAG();
+        params.sequenceId = 0; // g_ScannerCtrl would generate
+        params.isStart = 1;
+        params.errorCode = 0;
+        params.trgParams = new ScanningParamsTAG();
+        params.trgParams.enabled = 1;
+        params.trgParams.trgSource = FEM_SCAN_TRG_SRC_HTTP;
+        var numScanCount = document.getElementById(NUM_MAX_SCAN_ID);
+        var numTimeOut = document.getElementById(NUM_TIME_OUT_ID);
+        var numBrkTime = document.getElementById(NUM_BRK_TIME_ID);
+        params.trgParams.maxScanCount =  parseInt(numScanCount.value);
+        params.trgParams.timeBtwScan = parseInt(numBrkTime.value);
+        console.log("[startScanning] " + params.trgParams.timeBtwScan);
+        params.trgParams.timeout = parseInt(numTimeOut.value);
+        ret = g_ScannerCtrl.control(params);
+        if (ret != 0) {
+          break;
+        }
+        return 0;
+      } while (0);
+      return -1;
+    }
+
+    async function stopScanning() {
+      var ret = 0;
+      do {
+        await Utility.asyncSleep(1);
+        var params = new ScanningControlTAG();
+        params.sequenceId = 0;
+        params.isStart = 0;
+        params.errorCode = 0;
+        params.trgParams = new ScanningParamsTAG();
+        params.trgParams.enabled = 1;
+        params.trgParams.trgSource = FEM_SCAN_TRG_SRC_HTTP;
+        params.trgParams.maxScanCount = 0;
+        params.trgParams.timeBtwScan = 0;
+        params.trgParams.timeout = 0;
+        ret = g_ScannerCtrl.control(params);
+        if (ret != 0) {
+          break;
+        }
+        return 0;
+      } while (0);
+      return -1;
+    }
+  </script>
+</head>
+<body>
+  <h2>SeqId</h2>
+  <label for="txtSeqId">SeqId:</label>
+  <input type="text" id="txtSeqId" value="" maxlength="8" disabled />
+  <br />
+  <h2>Params</h2>
+  <label for="numTimeout">Timeout (ms):</label>
+  <input type="number" id="numTimeout" data-secId='0' min="100" max="10000" step="100" value="10000" />
+  <br />
+
+  <label for="numMaxScan">Scan count:</label>
+  <input type="number" id="numMaxScan" data-secId='0' min="1" max="100" step="1" value="1" />
+  <br />
+
+  <label for="numBreakTime">Break time (ms):</label>
+  <input type="number" id="numBreakTime" data-secId='0' min="10" max="1000" step="10" value="1000" />
+  <br />
+
+
+  <input type="submit" value="Start" onclick="startScanning()" id="btnStart">
+  <input type="submit" value="Stop" onclick="stopScanning()" id="btnStop" disabled>
+
+  <br />
+  <label for="lblStatus">Status:</label>
+  <label id="lblStatus"></label>
+
+  <h2>Result</h2>
+  <textarea id="txtResult" cols="40" rows="10" disabled></textarea>
+
+</body>
+</html>
+

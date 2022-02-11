@@ -447,6 +447,7 @@ int ScanningEVController::readResult(ScanningDeviceResultTAG& scanResult)
 {
   int ret = 0;
   scanResult.errorId = SCANNING_ERR_NONE;
+  scanResult.bitSet1.enabled = 0;
 #ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] rre %i", 0);
 #endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -457,6 +458,7 @@ int ScanningEVController::readResult(ScanningDeviceResultTAG& scanResult)
     {
       break;
     }
+    scanResult.bitSet1.enabled = 1;
 #ifdef SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(scEVControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scev] rre %i %s", 99, scanResult.code.code);
 #endif // SC_EV_CONTROLLER_CONSOLE_DEBUG_ENABLE

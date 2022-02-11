@@ -268,6 +268,12 @@ int CommMBCEngine::encodeData(MbcMessageId_t messageId, unsigned char* inputBuff
       case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
         ret = this->mbc_Processor->encodeSystemSetting(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
         break;
+      case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningControl:
+        ret = this->mbc_Processor->encodeScanningControl(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
+        break;
+      case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningResult:
+        ret = this->mbc_Processor->encodeScanningResult(inputBuffer, inputSize, bodyBuffer, bodyBufferSize, outputBodyUsedSize);
+        break;
       default:
         ret = -1;
         break;
@@ -397,6 +403,12 @@ int CommMBCEngine::decodeData(bool isHeadless, unsigned char* inputBuffer, MbcDa
         break;
       case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
         ret = this->mbc_Processor->decodeSystemSetting(inputbodyBuffer, inputBodyBufferSize, outBuffer, outSize, decodedSize);
+        break;
+      case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningControl:
+        ret = this->mbc_Processor->decodeScanningControl(inputbodyBuffer, inputBodyBufferSize, outBuffer, outSize, decodedSize);
+        break;
+      case (MbcMessageId_t)CommMBCConstant::CommMBCMessageId::CommMBCScanningResult:
+        ret = this->mbc_Processor->decodeScanningResult(inputbodyBuffer, inputBodyBufferSize, outBuffer, outSize, decodedSize);
         break;
       default:
         ret = -1;

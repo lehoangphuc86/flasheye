@@ -390,6 +390,7 @@ int ExCommManager::startTaskHttpServer0(void)
     // reg message id
     this->http_Server_0->registerMessageId(CommMBCConstant::CommMBCMessageId::CommMBCHeadLess, FEM_HTTP_SERVER_BUFF_SIZE);
     this->http_Server_0->registerMessageId(CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting);
+    this->http_Server_0->registerMessageId(CommMBCConstant::CommMBCMessageId::CommMBCScanningControl);
     
     // start task
     {
@@ -715,43 +716,6 @@ int ExCommManager::cbHttpClientResponseClient(CommMBCHttpClient* mbcHttpClient, 
   resPackage->releaseData();
   return -1;
 }
-
-//
-//int ExCommManager::mbcMessageProceed(ExCommMBCParamTAG& mbcParams, TimePoint_t resWaitTimeMs)
-//{
-//  int ret = 0;
-//  bool notify = false;
-//  do
-//  {
-//    mbcParams.resPackage.valid = true;
-//    mbcParams.resPackage.messId = mbcParams.reqPackage.messId;
-//    mbcParams.resPackage.data = mbcParams.reqPackage.data;
-//    mbcParams.resPackage.dataSize = mbcParams.reqPackage.dataSize;
-//
-//    switch (mbcParams.reqPackage.messId)
-//    {
-//      case (int)CommMBCConstant::CommMBCMessageId::CommMBCSystemSetting:
-//        notify = true;
-//        break;
-//      default:
-//        break;
-//    }
-//
-//    if (notify == false)
-//    {
-//      return 0;
-//    }
-//
-//    ret = this->notifyParent((int)EventManagerConstant::EventMessageId::ExCommReceived, sizeof(EventExCommReceivedTAG), (unsigned char*)&mbcParams);
-//    if (ret != 0)
-//    {
-//      break;
-//    }
-//
-//    return 0;
-//  } while (0);
-//  return -1;
-//}
 
 int ExCommManager::cbHttpUriHandlerServer0(void* arg, CommMBCHttpUriRequestTAG* uriReqInfo)
 {

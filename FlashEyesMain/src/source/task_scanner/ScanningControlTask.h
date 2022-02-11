@@ -62,6 +62,7 @@ public:
   virtual ~ScanningControlTask(void);
   bool                                                          isBusy(void);
   bool                                                          isValid(void);
+  int                                                           getSavedScanningResult(byte count, ScanningResultTAG outResult[SCANNING_SAVED_RESULT_COUNT_MAX]);
   //virtual int                                                   inititialize(void);
   virtual int                                                   startTask(ScanningTaskConfigTAG& scanningConfig);
   virtual void                                                  stopTask(void);
@@ -81,9 +82,12 @@ private:
   static void                                                   cbScanningDeviceSignal(void* userArg, byte signalId, void* eventData, DataSize_t eventSize, bool* woken);
 protected:
   ScanningController*                                           sc_Controller;
-  Seq_t                                                         cur_Scan_SeqId;
+  /*Seq_t                                                         cur_Scan_SeqId;
   byte                                                          cur_Scan_Index;
   byte                                                          max_Scan_Count;
+  byte                                                          trg_Source;
+  TimePoint_t                                                   time_Btw_Scan;*/
+  ScanningInfoTAG                                               scanning_Info;
   SystemCriticalSession                                         critical_Key;
   bool                                                          is_Busy;
   EventManager*                                                 parent_Eventer;

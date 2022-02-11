@@ -69,6 +69,7 @@ protected:
   void                                                          isBusy(bool flag);
   Seq_t                                                         curSeqId(void);
   Seq_t                                                         nextSeqId(void);
+  Seq_t                                                         nextSeqId(Seq_t inSeqId);
   virtual void                                                  regEventSize(void);
   virtual void                                                  proc(void) override;
   virtual int                                                   prepare(void);
@@ -92,7 +93,9 @@ protected:
   // event handlers
   virtual int                                                   onEventScanningDeviceSetting(unsigned char* data, unsigned int dataSize);
   virtual int                                                   onEventScanningDeviceSettingCompleted(unsigned char* data, unsigned int dataSize);
-  virtual int                                                   onEventTriggerStartScanning(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventScanningControl(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventScanningStart(unsigned char* data, unsigned int dataSize);
+  virtual int                                                   onEventScanningStop(unsigned char* data, unsigned int dataSize);
   virtual int                                                   onEventScanningResult(unsigned char* data, unsigned int dataSize);
   virtual int                                                   onEventScanningCompleted(unsigned char* data, unsigned int dataSize);
   virtual int                                                   onEventTimerFired1(unsigned char* data, unsigned int dataSize);
@@ -101,6 +104,8 @@ protected:
   // mbc comm handler
   virtual int                                                   onMbcCommMBCStart1(ExCommMBCParamTAG& mbcParams);
   virtual int                                                   onMbcCommMBCSystemSetting(ExCommMBCParamTAG& mbcParams);
+  virtual int                                                   onMbcCommMBCScanningControl(ExCommMBCParamTAG& mbcParams);
+  virtual int                                                   onMbcCommMBCScanningResult(ExCommMBCParamTAG& mbcParams);
 
   // common functions
   virtual void                                                  resetSequence(void);
@@ -114,6 +119,7 @@ protected:
   byte                                                          is_Busy;
   Seq_t                                                         sequence_Id;
   SystemCriticalSession                                         is_Busy_Key;
+  SystemCriticalSession                                         operation_Key;
   SystemMutex                                                   mutex_Operating;
   //###########below variables are defined but used inside inherited classes#############
   ScanningControlTask                                           scanning_Task;

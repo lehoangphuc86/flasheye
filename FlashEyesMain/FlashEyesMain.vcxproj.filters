@@ -68,9 +68,6 @@
     <Filter Include="src\source\task_ui">
       <UniqueIdentifier>{e84524f6-1b0e-418d-b215-bef22f372e4b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\source\task_scanning">
-      <UniqueIdentifier>{6735bf29-9cf1-4fec-876c-666b1bd0275b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\libs\scanner">
       <UniqueIdentifier>{d045424c-4f8a-4b98-892d-074e10f3d208}</UniqueIdentifier>
     </Filter>
@@ -85,6 +82,9 @@
     </Filter>
     <Filter Include="src\source\task_excomm">
       <UniqueIdentifier>{f6dbdbc6-e653-4f2c-97c2-0afa51959f6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\task_scanner">
+      <UniqueIdentifier>{6735bf29-9cf1-4fec-876c-666b1bd0275b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -224,19 +224,19 @@
       <Filter>src\source\task_ui</Filter>
     </ClInclude>
     <ClInclude Include="src\source\task_scanner\ScanningController.h">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClInclude>
     <ClInclude Include="src\source\task_scanner\ScanningControllerFactory.h">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClInclude>
     <ClInclude Include="src\source\task_scanner\ScanningControlTask.h">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClInclude>
     <ClInclude Include="src\source\task_scanner\ScanningEVController.h">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClInclude>
     <ClInclude Include="src\source\task_scanner\ScanningTaskConstant.h">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClInclude>
     <ClInclude Include="src\libs\scanner\EV\EV_ER080.h">
       <Filter>src\libs\scanner\EV</Filter>
@@ -254,7 +254,7 @@
       <Filter>src\source\settings</Filter>
     </ClInclude>
     <ClInclude Include="src\source\task_scanner\ScanningSettingDefinition.h">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClInclude>
     <ClInclude Include="src\source\system\SystemSettingDefinition.h">
       <Filter>src\source\system</Filter>
@@ -367,16 +367,16 @@
       <Filter>src\source\task_ui</Filter>
     </ClCompile>
     <ClCompile Include="src\source\task_scanner\ScanningController.cpp">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClCompile>
     <ClCompile Include="src\source\task_scanner\ScanningControllerFactory.cpp">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClCompile>
     <ClCompile Include="src\source\task_scanner\ScanningControlTask.cpp">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClCompile>
     <ClCompile Include="src\source\task_scanner\ScanningEVController.cpp">
-      <Filter>src\source\task_scanning</Filter>
+      <Filter>src\source\task_scanner</Filter>
     </ClCompile>
     <ClCompile Include="src\source\task_switch\SwitchManager.cpp">
       <Filter>src\source\task_switch</Filter>
