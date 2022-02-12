@@ -9,6 +9,8 @@
 #include "../task_ui/UiManager.h"
 #include "mess_broker/MessBrokerManager.h"
 #include "../task_excomm/ExCommManager.h"
+#include "../task_switch/SwitchManager.h"
+#include "../task_button/ButtonManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 #define MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -296,6 +298,58 @@ void MainController::clear(void)
 
 //###############below functions are implemented but called inside inherited classes##############
 // start sub tasks
+int MainController::startButtonTask(void)
+{
+  int ret = 0;
+  do
+  {
+    {
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stBtn %i", 0);
+
+      if ( (FEM_PIN_SCAN_BUTTON == FEM_PIN_SW_1)
+         || (FEM_PIN_RESET_BUTTON == FEM_PIN_SW_2)
+        )
+      {
+        SwitchManager::getInstance().stop();
+      }
+
+      //set btn
+      ButtonManagerConfigTAG btnConfig = ButtonManagerConfigTAG();
+      ButtonItemTAG btnItems[FEM_BTN_BUTTON_COUNT];
+      memset(&btnItems, 0, FEM_BTN_BUTTON_COUNT * sizeof(ButtonItemTAG));
+      btnItems[0].pin = FEM_PIN_SCAN_BUTTON;
+      btnItems[0].gpioFunc = FEM_GPIO_FUNC_SCAN_BUTTON;
+      btnItems[0].triggerType = FEM_ISR_TYPE_SCAN_BUTTON;
+      btnItems[0].opCode = FEM_OPCODE_SCAN_BUTTON;
+      btnItems[0].cbOnPressedEx = MainController::cbButtonPressed;
+      btnItems[0].cbOnPressedExArg = this;
+
+      btnItems[1].pin = FEM_PIN_RESET_BUTTON;
+      btnItems[1].gpioFunc = FEM_GPIO_FUNC_RESET_BUTTON;
+      btnItems[1].triggerType = FEM_ISR_TYPE_RESET_BUTTON;
+      btnItems[1].opCode = FEM_OPCODE_RESET_BUTTON;
+      btnItems[1].cbOnPressedEx = MainController::cbButtonPressed;
+      btnItems[1].cbOnPressedExArg = this;
+
+      btnConfig.config.bounceTime = FEM_BTN_BUTTON_BOUNCE_TIME;
+      btnConfig.config.items = btnItems;
+      btnConfig.config.itemCount = FEM_BTN_BUTTON_COUNT;
+      ret = ButtonManager::getInstance().start(btnConfig);
+      if (ret != 0)
+      {
+        CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stBtn %d", -90);
+        break;
+      }
+    }
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stBtn %d", 99);
+    return 0;
+  } while (0);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stBtn %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 int MainController::startMessBroker(void)
 {
 #if (_CONF_MESS_BROKER_MANAGER_ENABLED)
@@ -556,6 +610,13 @@ void MainController::stopMessBroker(void)
   return;
 }
 
+
+void MainController::stopButtonTask(void)
+{
+  ButtonManager::getInstance().stop();
+  return;
+}
+
 int MainController::onEventScanningDeviceSetting(unsigned char* data, unsigned int dataSize)
 {
   int ret = 0;
@@ -597,6 +658,7 @@ int MainController::onEventScanningDeviceSetting(unsigned char* data, unsigned i
     {
       break;
     }
+    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SETTING, UI_MESS_SYS_STATE_SUB_START);
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] setS %i %i", 99, eventData->seqId);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -638,6 +700,7 @@ int MainController::onEventScanningDeviceSettingCompleted(unsigned char* data, u
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] seC %i %ld", 97, (long)(eventData->result.errorSet0 >> 32));
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] seC %i %ld", 98, (long)eventData->result.errorSet0);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SETTING, UI_MESS_SYS_STATE_SUB_END);
     this->resetSequence();
     return 0;
   } while (0);
@@ -715,6 +778,7 @@ int MainController::onEventScanningStart(unsigned char* data, unsigned int dataS
     {
       break;
     }
+    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_START);
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sTrg %i %i %i", 99, scanningStartEvent.sequenceId, scanningStartEvent.trgParams.maxScanCount);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -744,12 +808,18 @@ int MainController::onEventScanningStop(unsigned char* data, unsigned int dataSi
     }
 
     EventScanningControlTAG* controlEvent = (EventScanningControlTAG*)data;
-    if (controlEvent->sequenceId != this->curSeqId())
+    if ( (controlEvent->sequenceId!=0) 
+      && (controlEvent->sequenceId != this->curSeqId())
+      )
     {
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sStp %i", -20);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
       return -1;
     }
 
     this->resetSequence();
+    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_END);
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sStp %i", 99);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -787,12 +857,12 @@ int MainController::onEventScanningResult(unsigned char* data, unsigned int data
     {
       break;
     }
-
-//#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-//    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %i %i %i", 10, eventData->result.sequenceId, eventData->result.scanIndex, eventData->result.deviceResult.errorId);
-//    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %i %i", 11, eventData->result.deviceResult.code.type, eventData->result.deviceResult.code.codeLen);
-//    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %s", 12, eventData->result.deviceResult.code.code);
-//#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    //@@
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %i %i %i", 10, eventData->result.sequenceId, eventData->result.scanIndex, eventData->result.deviceResult.errorId);
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %i %i", 11, eventData->result.deviceResult.code.type, eventData->result.deviceResult.code.codeLen);
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %s", 12, eventData->result.deviceResult.code.code);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
 
@@ -828,6 +898,7 @@ int MainController::onEventScanningCompleted(unsigned char* data, unsigned int d
       break;
     }
     this->resetSequence();
+    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_END);
     return 0;
   } while (0);
 
@@ -1331,5 +1402,53 @@ int MainController::cbExCommRev(void* arg, ExCommMBCParamTAG& mbcParams)
     return 0;
   } while (0);
   return -1;
+}
+
+void MainController::cbButtonPressed(void* arg, byte opCode, bool* woken)
+{
+  int ret = 0;
+  do
+  {
+//#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+//    CONSOLE_LOG_ISR(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] cbBP %d %d", 0, opCode);
+//#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (arg == NULL)
+    {
+      break;
+    }
+
+    switch (opCode)
+    {
+      case FEM_BTN_OPCODE_SCAN_BTN:
+      {
+        EventScanningControlTAG scanningCtrlEvent = EventScanningControlTAG();
+        scanningCtrlEvent.sequenceId = 0;
+        scanningCtrlEvent.isStart = 1;
+        scanningCtrlEvent.trgParams.enabled = 1;
+        scanningCtrlEvent.trgParams.maxScanCount = FEM_SCAN_OP_MAX_SCAN_COUNT;
+        scanningCtrlEvent.trgParams.timeBtwScan = FEM_SCAN_OP_BREAK_TIME;
+        scanningCtrlEvent.trgParams.timeout = FEM_SCAN_OP_TIMEOUT;
+        scanningCtrlEvent.trgParams.trgSource = FEM_SCAN_TRG_SRC_BUTTON;
+        ret = ((MainController*)arg)->notifyFromISR((int)EventManagerConstant::EventMessageId::ScanningControl, sizeof(EventScanningControlTAG), (unsigned char*)&scanningCtrlEvent, woken);
+        break;
+      }
+      case FEM_BTN_OPCODE_RESET_BTN:
+      {
+        EventScanningControlTAG scanningCtrlEvent = EventScanningControlTAG();
+        scanningCtrlEvent.sequenceId = 0;
+        scanningCtrlEvent.isStart = 0;
+        scanningCtrlEvent.trgParams.enabled = 1;
+        scanningCtrlEvent.trgParams.maxScanCount = FEM_SCAN_OP_MAX_SCAN_COUNT;
+        scanningCtrlEvent.trgParams.timeBtwScan = FEM_SCAN_OP_BREAK_TIME;
+        scanningCtrlEvent.trgParams.timeout = FEM_SCAN_OP_TIMEOUT;
+        scanningCtrlEvent.trgParams.trgSource = FEM_SCAN_TRG_SRC_BUTTON;
+        ret = ((MainController*)arg)->notifyFromISR((int)EventManagerConstant::EventMessageId::ScanningControl, sizeof(EventScanningControlTAG), (unsigned char*)&scanningCtrlEvent, woken);
+        break;
+      }
+      default:
+        break;
+    }
+  } while (0);
+  
 }
 #endif // _CONF_MAIN_CONTROLLER_ENABLED

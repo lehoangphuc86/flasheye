@@ -71,7 +71,7 @@ OpCodeMenu::~OpCodeMenu(void)
   this->clear();
 }
 
-int OpCodeMenu::appendItem(OpCodeMenuItemTAG* menuItem, byte* outIndexP)
+int OpCodeMenu::appendItem(OpCodeMenuItemConfigTAG* menuItem, byte* outIndexP)
 {
   byte outIndex = TASK_OPCODE_MENU_ITEM_INDEX_INVALID;
   do
@@ -113,22 +113,26 @@ int OpCodeMenu::appendItem(OpCodeMenuItemTAG* menuItem, byte* outIndexP)
     }
 
     outIndex = wkIdx;
+    this->item_List[outIndex].notIsr = menuItem->notIsr;
+    this->item_List[outIndex].opCode = menuItem->opCode;
+    this->item_List[outIndex].cbOnPressEx = menuItem->cbOnPressEx;
+    this->item_List[outIndex].cbOnPressExArg = menuItem->cbOnPressExArg;
+    this->item_List[outIndex].pin = menuItem->pin;
+    this->item_List[outIndex].triggerType = menuItem->triggerType;
+    memcpy(this->item_List[outIndex].description, menuItem->description, TASK_OPCODE_MENU_ITEM_DESCRIPTION_LEN_MAX);
 #ifdef SYSTEM_ARDUINO_BASED
     PIN_MODE(menuItem->pin, menuItem->gpioFunc);
     if (menuItem->notIsr == false)
     {
-      if (menuItem->cbOnPressed == NULL)
-      {
-        menuItem->cbOnPressed = this->item_Isr[outIndex];
-      }
-      ATTACH_ISR(menuItem->pin, menuItem->cbOnPressed, menuItem->triggerType);
+#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_ISR(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opM] ap %d %d", 0, outIndex);
+#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+      ATTACH_ISR(menuItem->pin, this->item_Isr[outIndex], menuItem->triggerType);
     }
 #endif // SYSTEM_ARDUINO_BASED
-
-    memcpy(&this->item_List[outIndex], menuItem, sizeof(OpCodeMenuItemTAG));
-    this->item_List[outIndex].isSelected = false;
+    this->item_List[outIndex].isSelected = 0;
     this->item_List[outIndex].lastSelected = 0;
-    this->item_List[outIndex].enabled = true;
+    this->item_List[outIndex].enabled = 1;
     this->item_Count++;
 
     if (outIndexP != NULL)
@@ -560,24 +564,46 @@ int OpCodeMenu::getOpCode(int* outOpCodes, int outOpCodeMaxCount, int& outOpCode
   return -1;
 }
 
-void OpCodeMenu::onButtonPressed(byte buttonIndex)
+void OpCodeMenu::onButtonPressed(byte buttonIndex, bool* woken)
 {
 #ifdef SYSTEM_ARDUINO_BASED
   do
   {
+#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_ISR(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opM] cbBP %d %d", 0, buttonIndex);
+#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
     if (buttonIndex >= TASK_OPCODE_MENU_ITEM_COUNT_MAX)
     {
+#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_ISR(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opM] cbBP %d", -10);
+#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
       break;
     }
     TimePoint_t nowMs = TimerManager::getInstance().nowMsFromISR();
     OpCodeMenuItemTAG* menuItem = &this->item_List[buttonIndex];
-    if ((nowMs - menuItem->lastSelected) < (this->bounce_Time*TIMER_DEVICE_TIMER_MS_2_UNIT))
+    if ((nowMs - menuItem->lastSelected) < (this->bounce_Time)) // * TIMER_DEVICE_TIMER_MS_2_UNIT))
     { // Debounce
+#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_ISR(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opM] cbBP %d", -20);
+#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
       return;
     }
     menuItem->isSelected = true;
     menuItem->lastSelected = nowMs;
+    if ((menuItem->notIsr != false)
+      || (menuItem->cbOnPressEx == NULL)
+      )
+    {
+#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_ISR(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opM] cbBP %d", -30);
+#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+      return;
+    }
 
+    menuItem->cbOnPressEx(menuItem->cbOnPressExArg, menuItem->opCode, woken);
+#ifdef TASK_OPCODE_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_ISR(taskOpCodeLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[opM] cbBP %d", 99);
+#endif // TASK_OPCODE_CONSOLE_DEBUG_ENABLE
   } while (0);
 #else
   return;
@@ -586,42 +612,58 @@ void OpCodeMenu::onButtonPressed(byte buttonIndex)
 
 void OpCodeMenu::isrButtonPressed00(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(0);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(0, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 void OpCodeMenu::isrButtonPressed01(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(1);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(1, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 void OpCodeMenu::isrButtonPressed02(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(2);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(2, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 void OpCodeMenu::isrButtonPressed03(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(3);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(3, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 void OpCodeMenu::isrButtonPressed04(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(4);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(4, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 void OpCodeMenu::isrButtonPressed05(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(5);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(5, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 void OpCodeMenu::isrButtonPressed06(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(6);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(6, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 void OpCodeMenu::isrButtonPressed07(void)
 {
-  OpCodeMenu::getInstance().onButtonPressed(7);
+  bool woken = false;
+  OpCodeMenu::getInstance().onButtonPressed(7, &woken);
+  SYSTEM_YEILD_FROM_ISR(woken);
 }
 
 
@@ -665,7 +707,7 @@ void OpcodeInputTask::isRunning(bool state)
   }
 }
 
-int OpcodeInputTask::appendMenuItem(OpCodeMenuItemTAG* menuItem, byte* outIndex)
+int OpcodeInputTask::appendMenuItem(OpCodeMenuItemConfigTAG* menuItem, byte* outIndex)
 {
   return OpCodeMenu::getInstance().appendItem(menuItem, outIndex);
 }

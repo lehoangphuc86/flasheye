@@ -86,6 +86,9 @@
     <Filter Include="src\source\task_scanner">
       <UniqueIdentifier>{6735bf29-9cf1-4fec-876c-666b1bd0275b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\task_button">
+      <UniqueIdentifier>{a7494cc3-86e5-4212-ab26-17d68827709d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -277,6 +280,12 @@
     <ClInclude Include="src\source\task_excomm\ExCommManager.h">
       <Filter>src\source\task_excomm</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_button\ButtonManager.h">
+      <Filter>src\source\task_button</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_button\TaskButtonConstant.h">
+      <Filter>src\source\task_button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -395,6 +404,9 @@
     </ClCompile>
     <ClCompile Include="src\source\task_excomm\ExCommManager.cpp">
       <Filter>src\source\task_excomm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_button\ButtonManager.cpp">
+      <Filter>src\source\task_button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

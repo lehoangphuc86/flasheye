@@ -53,7 +53,7 @@ public:
   //int                                                           setConfig(OpCodeMenuConfigTAG& menuConfig);
   int                                                           prepare(OpCodeMenuConfigTAG& menuConfig);
   void                                                          clear(void);
-  int                                                           appendItem(OpCodeMenuItemTAG* menuItem, byte* outIndexP);
+  int                                                           appendItem(OpCodeMenuItemConfigTAG* menuItem, byte* outIndexP);
   int                                                           removeItemByIndex(byte opIndex);
   int                                                           removeItemByOpCode(byte opCode);
   byte                                                          menuItemCount(void);
@@ -69,7 +69,7 @@ protected:
   int                                                           getOpCode(void);
   int                                                           getOpCode(int* outOpCodes, int outOpCodeMaxCount, int &outOpCodeCount);
 
-  void                                                          onButtonPressed(byte buttonIndex);
+  void                                                          onButtonPressed(byte buttonIndex, bool* woken);
   static void                                                   isrButtonPressed00(void);
   static void                                                   isrButtonPressed01(void);
   static void                                                   isrButtonPressed02(void);
@@ -104,7 +104,7 @@ public:
                                                                   , TaskManagerConfigTAG& taskConfig
                                                                   , bool useTask = true
   );*/
-  int                                                           appendMenuItem(OpCodeMenuItemTAG* menuItem, byte* outIndex);
+  int                                                           appendMenuItem(OpCodeMenuItemConfigTAG* menuItem, byte* outIndex);
   int                                                           start(OpCodeInputTaskConfigTAG& inputTaskConfig);
   void                                                          stop(void);
   void                                                          cleanUp(void);

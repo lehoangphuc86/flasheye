@@ -79,6 +79,7 @@ protected:
 
   //###############below functions are implemented but called inside inherited classes##############
   // start sub tasks
+  virtual int                                                   startButtonTask(void);
   virtual int                                                   startMessBroker(void);
   virtual int                                                   startNetManager(void);
   virtual int                                                   startExCommManager(void);
@@ -89,6 +90,7 @@ protected:
   virtual void                                                  stopExCommManager(void);
   virtual void                                                  stopNetManager(void);
   virtual void                                                  stopMessBroker(void);
+  virtual void                                                  stopButtonTask(void);
 
   // event handlers
   virtual int                                                   onEventScanningDeviceSetting(unsigned char* data, unsigned int dataSize);
@@ -128,6 +130,7 @@ protected:
 protected:
   static void                                                   cbTimerFired(TimerId_t timerId, void* extraArg, bool* woken);
   static int                                                    cbExCommRev(void* arg, ExCommMBCParamTAG& mbcParams);
+  static void                                                   cbButtonPressed(void* arg, byte opCode, bool* woken);
 };
 
 #endif // _MAIN_CONTROLLER_H

@@ -301,12 +301,12 @@ int main(void)
       memset(&swItems, 0, FEM_SW_BUTTON_COUNT*sizeof(SwitchItemTAG));
       swItems[0].pin = FEM_PIN_SCAN_BUTTON;
       swItems[0].gpioFunc = FEM_GPIO_FUNC_SCAN_BUTTON;
-      swItems[0].triggerType = FEM_ISR_TYPE_SYSMODE_SCAN_BUTTON;
+      swItems[0].triggerType = FEM_ISR_TYPE_SCAN_BUTTON;
       swItems[0].opCode = FEM_OPCODE_SCAN_BUTTON;
       
       swItems[1].pin = FEM_PIN_RESET_BUTTON;
       swItems[1].gpioFunc = FEM_GPIO_FUNC_RESET_BUTTON;
-      swItems[1].triggerType = FEM_ISR_TYPE_SYSMODE_RESET_BUTTON;
+      swItems[1].triggerType = FEM_ISR_TYPE_RESET_BUTTON;
       swItems[1].opCode = FEM_OPCODE_RESET_BUTTON;
       
       swConfig.switchConfig.bounceTime = FEM_SW_BUTTON_BOUNCE_TIME;

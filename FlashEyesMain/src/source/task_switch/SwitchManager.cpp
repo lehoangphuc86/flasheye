@@ -83,7 +83,7 @@ int SwitchManager::start(SwitchManagerConfigTAG& swManagerConfig)
 
     this->sw_Count = swManagerConfig.switchConfig.switchItemCount;
 
-    OpCodeMenuItemTAG menuItems[TASK_SWITCH_ITEM_COUNT_MAX];
+    OpCodeMenuItemConfigTAG menuItems[TASK_SWITCH_ITEM_COUNT_MAX];
     for (byte wkIdx = 0; wkIdx < this->sw_Count; wkIdx++)
     {
       menuItems[wkIdx].pin = swManagerConfig.switchConfig.switchItems[wkIdx].pin;
@@ -91,7 +91,8 @@ int SwitchManager::start(SwitchManagerConfigTAG& swManagerConfig)
       menuItems[wkIdx].triggerType = swManagerConfig.switchConfig.switchItems[wkIdx].triggerType;
       menuItems[wkIdx].opCode = swManagerConfig.switchConfig.switchItems[wkIdx].opCode;
       menuItems[wkIdx].notIsr = 1;
-      menuItems[wkIdx].cbOnPressed = NULL;
+      menuItems[wkIdx].cbOnPressEx = NULL;
+      menuItems[wkIdx].cbOnPressExArg = NULL;
       menuItems[wkIdx].description[0] = '\0';
       this->sw_Opcode[wkIdx] = menuItems[wkIdx].opCode;
     }

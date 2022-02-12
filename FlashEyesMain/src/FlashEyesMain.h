@@ -41,16 +41,42 @@
 #define FEM_SW_SYS_MODE_SETTING_BIT                   (FEM_SW_ITEM_2_OPCODE)
 #define FEM_SW_PRESS_TIME_REQUIRED                    2
 
+#define FEM_PIN_SW_1                                  32
+#define FEM_ISR_TYPE_SW_1                             ISR_FALLING
+#define FEM_ISR_TYPE_SYSMODE_SW_1                     ISR_ONLOW
+#define FEM_GPIO_FUNC_SW_1                            GPIO_INPUT_PULLUP
+#define FEM_OPCODE_SW_1                               FEM_SW_ITEM_1_OPCODE
+#define FEM_DESC_SW_1                                 "Scan"
+
+#define FEM_PIN_SW_2                                  33
+#define FEM_ISR_TYPE_SW_2                             ISR_FALLING
+#define FEM_ISR_TYPE_SYSMODE_SW_2                     ISR_ONLOW
+#define FEM_GPIO_FUNC_SW_2                            GPIO_INPUT_PULLUP
+#define FEM_OPCODE_SW_2                               FEM_SW_ITEM_2_OPCODE
+#define FEM_DESC_SW_2                                 "Reset"
+
+// Btn settings
+#define FEM_BTN_SYS_MODE_TRY_TIME                     5
+#define FEM_BTN_SYS_MODE_WAIT_TIME                    1000
+#define FEM_BTN_BUTTON_COUNT                          2
+#define FEM_BTN_BUTTON_BOUNCE_TIME                    (200) // ms
+
+#define FEM_BTN_ITEM_2_OPCODE                         (0x02)
+#define FEM_BTN_SYS_MODE_RESET_BIT                    (FEM_SW_ITEM_1_OPCODE | FEM_SW_ITEM_2_OPCODE)
+#define FEM_BTN_SYS_MODE_SCANING_BIT                  (FEM_SW_ITEM_1_OPCODE)
+#define FEM_BTN_SYS_MODE_SETTING_BIT                  (FEM_SW_ITEM_2_OPCODE)
+#define FEM_BTN_PRESS_TIME_REQUIRED                   2
+
 #define FEM_PIN_SCAN_BUTTON                           32
+#define FEM_BTN_OPCODE_SCAN_BTN                       (0x01)
 #define FEM_ISR_TYPE_SCAN_BUTTON                      ISR_FALLING
-#define FEM_ISR_TYPE_SYSMODE_SCAN_BUTTON              ISR_ONLOW
 #define FEM_GPIO_FUNC_SCAN_BUTTON                     GPIO_INPUT_PULLUP
 #define FEM_OPCODE_SCAN_BUTTON                        FEM_SW_ITEM_1_OPCODE
 #define FEM_DESC_SCAN_BUTTON                          "Scan"
 
 #define FEM_PIN_RESET_BUTTON                          33
+#define FEM_BTN_OPCODE_RESET_BTN                      (0x02)
 #define FEM_ISR_TYPE_RESET_BUTTON                     ISR_FALLING
-#define FEM_ISR_TYPE_SYSMODE_RESET_BUTTON             ISR_ONLOW
 #define FEM_GPIO_FUNC_RESET_BUTTON                    GPIO_INPUT_PULLUP
 #define FEM_OPCODE_RESET_BUTTON                       FEM_SW_ITEM_2_OPCODE
 #define FEM_DESC_RESET_BUTTON                         "Reset"
@@ -307,6 +333,7 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 
 #define FEM_SCAN_OP_TIMEOUT                           10000 // ms
 #define FEM_SCAN_OP_MAX_SCAN_COUNT                    1
+#define FEM_SCAN_OP_BREAK_TIME                        100
 
 #define FEM_SCAN_TRG_SRC_HTTP                         1
 #define FEM_SCAN_TRG_SRC_SERIAL                       2

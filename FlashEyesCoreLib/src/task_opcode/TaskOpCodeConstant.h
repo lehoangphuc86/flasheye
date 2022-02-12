@@ -40,11 +40,28 @@
 // DATA TYPE (TYPEDEF)
 typedef bool(*CbOnOpCodeRecevied)(int opCode);
 typedef void(*IsrButtonPressed)();
+typedef void(*IsrButtonPressedEx)(void* arg, byte opCode, bool* woken);
 /////////////////////////////////////////////////
 // DATA TYPE (ENUM)
 
 /////////////////////////////////////////////////
 // DATA TYPE (STRUCT)
+
+
+typedef struct _opCodeMenuItemConfigTAG
+{
+  bool enabled : 1; // internal used
+  bool notIsr : 1;
+  byte reserved : 6;
+  byte opCode;
+  byte pin;
+  byte gpioFunc; // GPIO_INPUT/ GPIO_OUTPUT/ GPIO_PULLUP/ GPIO_INPUT_PULLUP
+  byte triggerType; // ISR_RISING / ISR_FALLING/ ISR_CHANGE/ ISR_ONLOW/ ISR_ONHIGH/ ISR_ONLOW_WE/ ISR_ONHIGH_WE
+  IsrButtonPressedEx cbOnPressEx; // this callback would be called if irs is triggerred
+  void* cbOnPressExArg;
+  char description[TASK_OPCODE_MENU_ITEM_DESCRIPTION_LEN_MAX]; // optional
+} OpCodeMenuItemConfigTAG;
+
 
 typedef struct _opCodeMenuItemTAG
 {
@@ -54,9 +71,9 @@ typedef struct _opCodeMenuItemTAG
   byte reserved     : 5;
   byte opCode;
   byte pin;
-  byte gpioFunc; // GPIO_INPUT/ GPIO_OUTPUT/ GPIO_PULLUP/ GPIO_INPUT_PULLUP
   byte triggerType; // ISR_RISING / ISR_FALLING/ ISR_CHANGE/ ISR_ONLOW/ ISR_ONHIGH/ ISR_ONLOW_WE/ ISR_ONHIGH_WE
-  IsrButtonPressed cbOnPressed; // if it is null, predefined isr would be assigned
+  IsrButtonPressedEx cbOnPressEx; // this callback would be called if irs is triggerred
+  void* cbOnPressExArg;
   char description[TASK_OPCODE_MENU_ITEM_DESCRIPTION_LEN_MAX]; // optional
   TimePoint_t lastSelected; // internal used
 } OpCodeMenuItemTAG;
@@ -68,7 +85,7 @@ typedef struct _buttonPressedParamsTAG
 
 typedef struct _opCodeMenuConfigTag
 {
-  OpCodeMenuItemTAG* menuItems;
+  OpCodeMenuItemConfigTAG* menuItems;
   byte menuItemCount;
   uint16_t bounceTime;
   CbOnOpCodeRecevied cbOnOpCodeRev;

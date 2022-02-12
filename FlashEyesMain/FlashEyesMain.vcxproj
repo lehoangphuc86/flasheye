@@ -141,6 +141,8 @@
     <ClInclude Include="src\source\settings\SettingManagerConstant.h" />
     <ClInclude Include="src\source\settings\SystemSettingCollection.h" />
     <ClInclude Include="src\source\system\SystemSettingDefinition.h" />
+    <ClInclude Include="src\source\task_button\ButtonManager.h" />
+    <ClInclude Include="src\source\task_button\TaskButtonConstant.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpConstant.h" />
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.h" />
@@ -196,6 +198,7 @@
     <ClCompile Include="src\source\settings\SettingItem.cpp" />
     <ClCompile Include="src\source\settings\SettingManager.cpp" />
     <ClCompile Include="src\source\settings\SystemSettingCollection.cpp" />
+    <ClCompile Include="src\source\task_button\ButtonManager.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.cpp" />
     <ClCompile Include="src\source\task_excomm\ExCommManager.cpp" />

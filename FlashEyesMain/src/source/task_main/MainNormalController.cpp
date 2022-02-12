@@ -88,7 +88,7 @@ int MainNormalController::prepare(void)
       break;
     }
 
-    ret = this->startNetManager();
+    ret = this->startButtonTask();
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 2, ret);
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -97,7 +97,7 @@ int MainNormalController::prepare(void)
       break;
     }
 
-    ret = this->startExCommManager();
+    ret = this->startNetManager();
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 3, ret);
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -106,9 +106,18 @@ int MainNormalController::prepare(void)
       break;
     }
 
-    ret = this->startScanningTask();
+    ret = this->startExCommManager();
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 4, ret);
+#endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    ret = this->startScanningTask();
+#ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 5, ret);
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
