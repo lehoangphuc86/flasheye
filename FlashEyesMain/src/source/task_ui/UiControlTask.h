@@ -70,6 +70,9 @@ protected:
   int                                                           onUiMessMessage(EventUiMessageTAG* eventData);
   int                                                           onUiMessSysState(EventUiMessageTAG* eventData);
   int                                                           onUiMessNetState(EventUiMessageTAG* eventData);
+  int                                                           onUiMessOpMode(EventUiMessageTAG* eventData);
+  int                                                           onUiMessScanResult(EventUiMessageTAG* eventData);
+  int                                                           onUiMessBatteryStatus(EventUiMessageTAG* eventData);
 protected:
   DataSize_t                                                    max_Data_Size;
   BufferDataManager                                             data_Manager;

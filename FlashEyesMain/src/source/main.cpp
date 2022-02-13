@@ -253,6 +253,9 @@ int main(void)
       UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessMessage);
       UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessSysState);
       UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessNetState);
+      UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessOpMode);
+      UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessScanResult);
+      UiManager::getInstance().regUIMessageId(UIConstant::UIMessageId::UiMessBatteryStatus);
 
       UiManagerConfigTAG uiConfig = UiManagerConfigTAG();
       uiConfig.dpProcType = FEM_UI_CONTROL_TYPE;
@@ -272,14 +275,16 @@ int main(void)
       uiConfig.dpProcConfig.deviceConfig.columnNo = FEM_UI_DEV_DEVICE_COL;
       uiConfig.dpProcConfig.deviceConfig.rowNo = FEM_UI_DEV_DEVICE_ROW;
       uiConfig.dpProcConfig.deviceConfig.id = FEM_UI_DEV_DEVICE_ID;
-      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.instanceIndex = FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX;
+      /*uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.instanceIndex = FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX;
       uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.baudrate = FEM_UI_DEV_DEVICE_SC_BAUDRATE;
       uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.bitPerByte = FEM_UI_DEV_DEVICE_SC_BIT_PER_BYTE;
       uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.parityType = FEM_UI_DEV_DEVICE_SC_PARITY_TYPE;
       uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.stopBitNum = FEM_UI_DEV_DEVICE_SC_STOP_BIT;
       uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.timeout = FEM_UI_DEV_DEVICE_SC_TIMEOUT;
       uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.pin_RX = FEM_UI_DEV_DEVICE_SC_PIN_RX;
-      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.pin_TX = FEM_UI_DEV_DEVICE_SC_PIN_TX;
+      uiConfig.dpProcConfig.deviceConfig.spec.serialConsole.pin_TX = FEM_UI_DEV_DEVICE_SC_PIN_TX;*/
+      uiConfig.dpProcConfig.deviceConfig.spec.jmd.pin_SCL = FEM_UI_DEV_DEVICE_JMD_PIN_SCL;
+      uiConfig.dpProcConfig.deviceConfig.spec.jmd.pin_SDA = FEM_UI_DEV_DEVICE_JMD_PIN_SDA;
 
       ret = UiManager::getInstance().startTask(uiConfig);
       if (ret != 0)
@@ -290,6 +295,14 @@ int main(void)
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "UI running");
       
       UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_BOOTING, UI_MESS_SYS_STATE_SUB_START);
+    }
+
+    // show battery
+    {
+      UiMessBatteryStatusTAG baterryStatus = UiMessBatteryStatusTAG();
+      baterryStatus.percentage = 100;
+      baterryStatus.warningLevel = 0;
+      UiManager::getInstance().show(UIConstant::UIMessageId::UiMessBatteryStatus, sizeof(baterryStatus), (unsigned char*)&baterryStatus);
     }
 
     //######################SW menu: start##########################
@@ -343,7 +356,7 @@ int main(void)
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set SysMode=%i", systemMode);
 
-      //@@SwitchManager::getInstance().stop();
+      UiManager::getInstance().showOpMode(systemMode);
     }
 
     // generate main controller
@@ -382,6 +395,8 @@ int main(void)
     }
     //######################Completed##########################
     CONSOLE_LOG_BUF(mainBufLog, SYSTEM_CONSOLE_OUT_BUF_LEN, "[m] set %s", "System running");
+    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_BOOTING, UI_MESS_SYS_STATE_SUB_END);
+
     return 0;
   } while (0);
 

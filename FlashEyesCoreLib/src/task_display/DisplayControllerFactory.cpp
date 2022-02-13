@@ -6,6 +6,7 @@
 #include "DisplayLCDController.h"
 #include "DisplayLCDCI2CController.h"
 #include "DisplaySCController.h"
+#include "DisplayJMDController.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -64,6 +65,9 @@ DisplayController* DisplayControllerFactory::generate(byte deviceType)
       break;
     case DisplayDeviceTypeUN::DisplaySerialConsoleDevice:
       controller = new DisplaySCController();
+      break;
+    case DisplayDeviceTypeUN::DisplayJMDDevice:
+      controller = new DisplayJMDController();
       break;
     default:
       break;

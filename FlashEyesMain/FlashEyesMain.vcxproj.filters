@@ -89,6 +89,9 @@
     <Filter Include="src\source\task_button">
       <UniqueIdentifier>{a7494cc3-86e5-4212-ab26-17d68827709d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\drivers\esp32\lcd">
+      <UniqueIdentifier>{57fd74b7-d5ec-4bed-9dbf-ec39555c4519}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -286,6 +289,9 @@
     <ClInclude Include="src\source\task_button\TaskButtonConstant.h">
       <Filter>src\source\task_button</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_ui\UiDpJMDProcessor.h">
+      <Filter>src\source\task_ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -407,6 +413,9 @@
     </ClCompile>
     <ClCompile Include="src\source\task_button\ButtonManager.cpp">
       <Filter>src\source\task_button</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_ui\UiDpJMDProcessor.cpp">
+      <Filter>src\source\task_ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

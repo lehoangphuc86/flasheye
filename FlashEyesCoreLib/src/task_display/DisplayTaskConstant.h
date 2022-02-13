@@ -29,6 +29,18 @@
 #define DISPLAY_DEVICE_ROW_MIN                  1
 #define DISPLAY_DEVICE_COLUMN_MIN               1
 
+
+#define DISPLAY_DEVICE_DRAW_UPPER_RIGHT         0x01
+#define DISPLAY_DEVICE_DRAW_UPPER_LEFT          0x02
+#define DISPLAY_DEVICE_DRAW_LOWER_LEFT          0x04
+#define DISPLAY_DEVICE_DRAW_LOWER_RIGHT         0x08
+#define DISPLAY_DEVICE_DRAW_ALL                 (DISPLAY_DEVICE_DRAW_UPPER_RIGHT|DISPLAY_DEVICE_DRAW_UPPER_LEFT|DISPLAY_DEVICE_DRAW_LOWER_RIGHT|DISPLAY_DEVICE_DRAW_LOWER_LEFT)
+
+//# font
+#define DISPLAY_FONT_IDX_PCSENIOR_8F            0
+#define DISPLAY_FONT_IDX_6x13_MF                1
+#define DISPLAY_FONT_IDX_MAX                    2
+
 // Serial console
 #define DISPLAY_DEVICE_PIN_LIB_DEFAULT          -1
 //#########################Setting enum###############
@@ -86,6 +98,7 @@ typedef enum _displayDeviceTypeUN
   DisplayLCDDevice =0,
   DisplayLCDI2CDevice,
   DisplaySerialConsoleDevice,
+  DisplayJMDDevice,
   DisplayDeviceTypeMax
 } DisplayDeviceTypeUN;
 
@@ -128,6 +141,12 @@ typedef struct _displaySCDeviceConfigTag
   byte pin_RX;
 } DisplaySCDeviceConfigTAG;
 
+typedef struct _displayJMDDeviceConfigTag
+{
+  byte pin_SCL; // currently always use 22
+  byte pin_SDA; // currently always use 21
+} DisplayJMDDeviceConfigTAG;
+
 typedef struct
 {
   byte deviceType;
@@ -139,6 +158,7 @@ typedef struct
     DisplayLcdDeviceConfigTAG lcd;
     DisplayLcdI2CDeviceConfigTAG lcdI2C;
     DisplaySCDeviceConfigTAG serialConsole;
+    DisplayJMDDeviceConfigTAG jmd;
   } spec;
 } DisplayDeviceConfig;
 

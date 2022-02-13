@@ -57,7 +57,10 @@ public:
   virtual int                                                   uiMessRaw(UiMessRawTAG* param) = 0;
   virtual int                                                   uiMessMessage(UiMessMessageTAG* param) = 0;
   virtual int                                                   uiMessSysState(UiMessSysStateTAG* param) = 0;
-  virtual int                                                   uiMessNetState(UiMessNetStateTAG* param) { return 0; }; // @@
+  virtual int                                                   uiMessNetState(UiMessNetStateTAG* param) { return 0; };
+  virtual int                                                   uiMessOpMode(UiMessOpModeTAG* param) { return 0; };
+  virtual int                                                   uiMessScanResult(UiMessScanResultTAG* param) { return 0; };
+  virtual int                                                   uiMessBatteryStatus(UiMessBatteryStatusTAG* param) { return 0; };
 
 protected:
   byte                                                          proc_Type;

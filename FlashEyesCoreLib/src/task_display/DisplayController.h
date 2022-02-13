@@ -103,6 +103,32 @@ public:
   virtual size_t                                                println(double param1, int param2 = 2) = 0;
   virtual size_t                                                println(const Printable& param) = 0;
   virtual size_t                                                println(void) = 0;
+
+  // support u8g2
+  virtual uint8_t                                               getMaxCharWidth(void) { return 1; };
+  virtual uint8_t                                               getMaxCharHeight(void) { return 1; };
+  virtual void                                                  drawPixel(uint8_t x, uint8_t y) {};
+  virtual void                                                  drawHLine(uint8_t x, uint8_t y, uint8_t w) {};
+  virtual void                                                  drawVLine(uint8_t x, uint8_t y, uint8_t h) {};
+  virtual void                                                  drawHVLine(uint8_t x, uint8_t y, uint8_t len, uint8_t dir) {};
+  virtual void                                                  drawFrame(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {};
+  virtual void                                                  drawRFrame(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t r) {};
+  virtual void                                                  drawBox(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {};
+  virtual void                                                  drawRBox(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t r) {};
+  virtual void                                                  drawCircle(uint8_t x0, uint8_t y0, uint8_t rad, uint8_t opt = DISPLAY_DEVICE_DRAW_ALL) {};
+  virtual void                                                  drawDisc(uint8_t x0, uint8_t y0, uint8_t rad, uint8_t opt = DISPLAY_DEVICE_DRAW_ALL) {};
+  virtual void                                                  drawEllipse(uint8_t x0, uint8_t y0, uint8_t rx, uint8_t ry, uint8_t opt = DISPLAY_DEVICE_DRAW_ALL) {};
+  virtual void                                                  drawFilledEllipse(uint8_t x0, uint8_t y0, uint8_t rx, uint8_t ry, uint8_t opt = DISPLAY_DEVICE_DRAW_ALL) {};
+  virtual void                                                  drawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {};
+  virtual void                                                  drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {};
+  virtual void                                                  setFont(uint8_t fontIndx) {};
+  virtual void                                                  setFontMode(uint8_t  is_transparent) {};
+  virtual void                                                  setFontDirection(uint8_t dir) {};
+  virtual void                                                  setDrawColor(uint8_t color) {};
+  virtual uint8_t                                               drawGlyph(uint8_t x, uint8_t y, uint16_t encoding) { return 0; };
+  virtual uint8_t                                               drawStr(uint8_t x, uint8_t y, const char* s) { return 0; };
+  virtual void                                                  sendBuffer(void) {};
+  virtual void                                                  clearBuffer(void) {};
 protected:
   byte                                                          device_Type;
 };

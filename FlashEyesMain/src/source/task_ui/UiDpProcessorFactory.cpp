@@ -6,6 +6,7 @@
 #include "UiDpLcdProcessor.h"
 #include "UiDpLcdI2CProcessor.h"
 #include "UiDpSCProcessor.h"
+#include "UiDpJMDProcessor.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -64,6 +65,9 @@ UiDpProcessor* UiDpProcessorFactory::generate(byte procType)
       break;
     case UIControlTypeUN::UIControlSerialConsoleDevice:
       dpProcessor = new UiDpSCProcessor();
+      break;
+    case UIControlTypeUN::UIControlJMDDevice:
+      dpProcessor = new UiDpJMDProcessor();
       break;
     default:
       break;

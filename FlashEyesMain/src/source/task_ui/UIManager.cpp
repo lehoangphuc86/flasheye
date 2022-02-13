@@ -160,4 +160,21 @@ int UiManager::showSysState(byte stateId, byte stateSubId)
   sysStateTag.stateSubId = stateSubId;
   return this->show(UIConstant::UIMessageId::UiMessSysState, sizeof(sysStateTag), (unsigned char*)&sysStateTag);
 }
+
+int UiManager::showOpMode(byte mode)
+{
+  UiMessOpModeTAG opModeTag = UiMessOpModeTAG();
+  opModeTag.mode = mode;
+  return this->show(UIConstant::UIMessageId::UiMessOpMode, sizeof(UiMessOpModeTAG), (unsigned char*)&opModeTag);
+}
+
+int UiManager::showMessage(char* message)
+{
+  UiMessMessageTAG messTag = UiMessMessageTAG();
+  messTag.messType = 0;
+  messTag.messLen = strlen(message);
+  memcpy(messTag.mess, message, SYSTEM_MIN(messTag.messLen, UI_MESS_MESSAGE_LEN_MAX -1));
+  messTag.mess[UI_MESS_MESSAGE_LEN_MAX - 1] = '\0';
+  return this->show(UIConstant::UIMessageId::UiMessMessage, sizeof(UiMessMessageTAG), (unsigned char*)&messTag);
+}
 #endif // _CONF_UI_MANAGER_ENABLED

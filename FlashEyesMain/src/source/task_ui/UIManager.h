@@ -64,6 +64,8 @@ public:
   void                                                          stopTask(void);
   int                                                           show(UIMessageId_t uiMessageId, DataSize_t dataSize, unsigned char* data);
   int                                                           showSysState(byte stateId, byte stateSubId);
+  int                                                           showOpMode(byte mode);
+  int                                                           showMessage(char* message);
 protected:
   UiControlTask                                                 control_Task;
 };

@@ -104,6 +104,15 @@ DataSize_t UiControlTask::getUIMessageParamSize(UIMessageId_t messageId)
       case (UIMessageId_t)UIConstant::UIMessageId::UiMessNetState:
         maxSize = sizeof(UiMessNetStateTAG);
         break;
+      case (UIMessageId_t)UIConstant::UIMessageId::UiMessOpMode:
+        maxSize = sizeof(UiMessOpModeTAG);
+        break;
+      case (UIMessageId_t)UIConstant::UIMessageId::UiMessScanResult:
+        maxSize = sizeof(UiMessScanResultTAG);
+        break;
+      case (UIMessageId_t)UIConstant::UIMessageId::UiMessBatteryStatus:
+        maxSize = sizeof(UiMessBatteryStatusTAG);
+        break;
       default:
         maxSize = 0;
         break;
@@ -313,6 +322,21 @@ int UiControlTask::onEventUiMessage(unsigned char* data, unsigned int dataSize)
         this->onUiMessNetState(eventData);
         break;
       }
+      case (byte)UIConstant::UIMessageId::UiMessOpMode:
+      {
+        this->onUiMessOpMode(eventData);
+        break;
+      }
+      case (byte)UIConstant::UIMessageId::UiMessScanResult:
+      {
+        this->onUiMessScanResult(eventData);
+        break;
+      }
+      case (byte)UIConstant::UIMessageId::UiMessBatteryStatus:
+      {
+        this->onUiMessBatteryStatus(eventData);
+        break;
+      }
       default:
         break;
     }
@@ -411,9 +435,9 @@ int UiControlTask::onUiMessSysState(EventUiMessageTAG* eventData)
 //#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
     ret = this->dp_Processor->uiMessSysState(param);
 
-    LedManager::getInstance().turnOn(FEM_LED_YELLOW, LED_DEVICE_INTENSITY_LEVEL_MAX, 0);
-    BuzzerManager::getInstance().turnOn(FEM_BUZZER_0, NOTE_A4, 1000);
-    LedManager::getInstance().turnOff(FEM_LED_YELLOW);
+    //LedManager::getInstance().turnOn(FEM_LED_YELLOW, LED_DEVICE_INTENSITY_LEVEL_MAX, 0);
+    //BuzzerManager::getInstance().turnOn(FEM_BUZZER_0, NOTE_A4, 1000);
+    //LedManager::getInstance().turnOff(FEM_LED_YELLOW);
 
 #ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSS %i %i", 99, ret);
@@ -460,4 +484,98 @@ int UiControlTask::onUiMessNetState(EventUiMessageTAG* eventData)
 #endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
   return -1;
 }
+
+int UiControlTask::onUiMessOpMode(EventUiMessageTAG* eventData)
+{
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oOpM %i", 0);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  int ret = 0;
+  do
+  {
+    // play sound
+    // play led
+    if ((eventData->buffItem == NULL)
+      || (eventData->buffItem->dataLength() < sizeof(UiMessOpModeTAG))
+      )
+    {
+      break;
+    }
+
+    UiMessOpModeTAG* param = (UiMessOpModeTAG*)eventData->buffItem->bufferAddress();
+    ret = this->dp_Processor->uiMessOpMode(param);
+    if (ret != 0)
+    {
+      break;
+    }
+    return 0;
+  } while (0);
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oOpM %i", -99);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+int UiControlTask::onUiMessScanResult(EventUiMessageTAG* eventData)
+{
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSRet %i", 0);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  int ret = 0;
+  do
+  {
+    // play sound
+    // play led
+    if ((eventData->buffItem == NULL)
+      || (eventData->buffItem->dataLength() < sizeof(UiMessScanResultTAG))
+      )
+    {
+      break;
+    }
+
+    UiMessScanResultTAG* param = (UiMessScanResultTAG*)eventData->buffItem->bufferAddress();
+    ret = this->dp_Processor->uiMessScanResult(param);
+    if (ret != 0)
+    {
+      break;
+    }
+    return 0;
+  } while (0);
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oSRet %i", -99);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
+int UiControlTask::onUiMessBatteryStatus(EventUiMessageTAG* eventData)
+{
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oBatS %i", 0);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  int ret = 0;
+  do
+  {
+    // play sound
+    // play led
+    if ((eventData->buffItem == NULL)
+      || (eventData->buffItem->dataLength() < sizeof(UiMessBatteryStatusTAG))
+      )
+    {
+      break;
+    }
+
+    UiMessBatteryStatusTAG* param = (UiMessBatteryStatusTAG*)eventData->buffItem->bufferAddress();
+    ret = this->dp_Processor->uiMessBatteryStatus(param);
+    if (ret != 0)
+    {
+      break;
+    }
+    return 0;
+  } while (0);
+#ifdef UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(uiControlTaskLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[uiCTsk] oBatS %i", -99);
+#endif // UI_CONTROL_TASK_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 #endif // _CONF_UI_CONTROL_TASK_ENABLED

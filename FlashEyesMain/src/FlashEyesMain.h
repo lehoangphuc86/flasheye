@@ -59,7 +59,7 @@
 #define FEM_BTN_SYS_MODE_TRY_TIME                     5
 #define FEM_BTN_SYS_MODE_WAIT_TIME                    1000
 #define FEM_BTN_BUTTON_COUNT                          2
-#define FEM_BTN_BUTTON_BOUNCE_TIME                    (200) // ms
+#define FEM_BTN_BUTTON_BOUNCE_TIME                    (300) // ms
 
 #define FEM_BTN_ITEM_2_OPCODE                         (0x02)
 #define FEM_BTN_SYS_MODE_RESET_BIT                    (FEM_SW_ITEM_1_OPCODE | FEM_SW_ITEM_2_OPCODE)
@@ -112,15 +112,15 @@
 // led manager
 #define FEM_LED_DEVICE_COUNT                          3
 #define FEM_LED_DEVICE_0_CHANNEL_ID                   0
-#define FEM_LED_DEVICE_0_PIN                          21
+#define FEM_LED_DEVICE_0_PIN                          12
 #define FEM_LED_DEVICE_0_DEFAULT_INTENSITY            252
 #define FEM_LED_DEVICE_0_IS_PWM                       false
 #define FEM_LED_DEVICE_1_CHANNEL_ID                   1
-#define FEM_LED_DEVICE_1_PIN                          22
+#define FEM_LED_DEVICE_1_PIN                          13
 #define FEM_LED_DEVICE_1_DEFAULT_INTENSITY            253
 #define FEM_LED_DEVICE_1_IS_PWM                       false
 #define FEM_LED_DEVICE_2_CHANNEL_ID                   2
-#define FEM_LED_DEVICE_2_PIN                          23
+#define FEM_LED_DEVICE_2_PIN                          14
 #define FEM_LED_DEVICE_2_DEFAULT_INTENSITY            254
 #define FEM_LED_DEVICE_2_IS_PWM                       false
 
@@ -129,7 +129,7 @@
 #define FEM_LED_YELLOW                                FEM_LED_DEVICE_2_CHANNEL_ID
 
 // ui manager
-#define FEM_UI_CONTROL_TYPE                           UIControlTypeUN::UIControlSerialConsoleDevice
+#define FEM_UI_CONTROL_TYPE                           UIControlTypeUN::UIControlJMDDevice
 #define FEM_UI_DM_BUFF_SIZE                           0
 #define FEM_UI_DM_BUFF_COUNT                          5
 #define FEM_UI_DM_USE_POOL                            false
@@ -141,10 +141,13 @@
 #define FEM_UI_TM_MEM                                 2096
 #define FEM_UI_TM_PRIORITY                            FEM_TASK_PRIORITY_DEFAULT
 
-#define FEM_UI_DEV_DEVICE_TYPE                        DisplayDeviceTypeUN::DisplaySerialConsoleDevice
-#define FEM_UI_DEV_DEVICE_COL                         42
-#define FEM_UI_DEV_DEVICE_ROW                         18
+#define FEM_UI_DEV_DEVICE_TYPE                        DisplayDeviceTypeUN::DisplayJMDDevice
+#define FEM_UI_DEV_DEVICE_COL                         128
+#define FEM_UI_DEV_DEVICE_ROW                         32
 #define FEM_UI_DEV_DEVICE_ID                          0
+
+#define FEM_UI_DEV_DEVICE_JMD_PIN_SCL                 22
+#define FEM_UI_DEV_DEVICE_JMD_PIN_SDA                 21
 
 #define FEM_UI_DEV_DEVICE_SC_INSTANCE_IDX             1
 #define FEM_UI_DEV_DEVICE_SC_BAUDRATE                 DISPLAY_SET_COMM_BAUD_9600

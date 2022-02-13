@@ -458,6 +458,7 @@ int MainController::startNetManager(void)
         UiMessNetStateTAG netStateTag = UiMessNetStateTAG();
         netStateTag.stateId = UI_MESS_NET_STATE_CONNECTED;
         netStateTag.stateSubId = UI_MESS_NET_STATE_SUB_NONE;
+        netStateTag.mode = (FEM_WIFI_IS_AP == false ? UI_MESS_NET_MODE_STA : UI_MESS_NET_MODE_AP);
         SYSTEM_PRINT_BUF(netStateTag.ip4, UI_MESS_IP4_LEN_MAX, "%d.%d.%d.%d", NET_IP4_2_STR(ipConfig.IPV4));
         UiManager::getInstance().show(UIConstant::UIMessageId::UiMessNetState, sizeof(netStateTag), (unsigned char*)&netStateTag);
       }
@@ -700,7 +701,6 @@ int MainController::onEventScanningDeviceSettingCompleted(unsigned char* data, u
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] seC %i %ld", 97, (long)(eventData->result.errorSet0 >> 32));
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] seC %i %ld", 98, (long)eventData->result.errorSet0);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SETTING, UI_MESS_SYS_STATE_SUB_END);
     this->resetSequence();
     return 0;
   } while (0);
@@ -819,7 +819,7 @@ int MainController::onEventScanningStop(unsigned char* data, unsigned int dataSi
     }
 
     this->resetSequence();
-    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_END);
+    //UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_END);
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sStp %i", 99);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -857,7 +857,17 @@ int MainController::onEventScanningResult(unsigned char* data, unsigned int data
     {
       break;
     }
-    //@@
+
+    {
+      UiMessScanResultTAG scanResult = UiMessScanResultTAG();
+      scanResult.sequenceId = eventData->result.sequenceId;
+      scanResult.scanIndex = eventData->result.scanIndex;
+      scanResult.code.type = eventData->result.deviceResult.code.type;
+      scanResult.code.codeLen = eventData->result.deviceResult.code.codeLen;
+      memcpy(scanResult.code.code, eventData->result.deviceResult.code.code, SYSTEM_MIN(scanResult.code.codeLen, eventData->result.deviceResult.code.codeLen));
+      UiManager::getInstance().show(UIConstant::UIMessageId::UiMessScanResult, sizeof(scanResult), (unsigned char*)&scanResult);
+    }
+    
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %i %i %i", 10, eventData->result.sequenceId, eventData->result.scanIndex, eventData->result.deviceResult.errorId);
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sre %i %i %i", 11, eventData->result.deviceResult.code.type, eventData->result.deviceResult.code.codeLen);
@@ -898,7 +908,6 @@ int MainController::onEventScanningCompleted(unsigned char* data, unsigned int d
       break;
     }
     this->resetSequence();
-    UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_END);
     return 0;
   } while (0);
 
@@ -1268,6 +1277,7 @@ void MainController::resetSequence(void)
   this->stopTimer();
   this->stopScanning();
   this->isBusy(false);
+  UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_END);
 }
 
 int MainController::startTimer(TimePoint_t timeout)
