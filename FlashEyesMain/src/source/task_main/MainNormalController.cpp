@@ -124,6 +124,17 @@ int MainNormalController::prepare(void)
       break;
     }
 
+    ret = this->startDistSensorTask();
+#ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 6, ret);
+#endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    this->resetSequence();
+
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i", 99);
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -139,6 +150,7 @@ void MainNormalController::clear(void)
 {
   do
   {
+    this->stopDistSensorTask();
     this->stopScanningTask();
     this->stopExCommManager();
     this->stopNetManager();

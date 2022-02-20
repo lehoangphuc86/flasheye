@@ -150,6 +150,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceController.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceInfo.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorEngine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorController.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControllerFactory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControlTask.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorHCSR04Controller.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_led\LedController.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceInfo.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceManager.cpp" />
@@ -256,6 +260,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorDeviceInfo.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorEngine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_distance_sensor\DistanceSensorTaskCommon.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorController.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControllerFactory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControlTask.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorHCSR04Controller.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorTaskConstant.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedController.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceInfo.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\task_led\LedDeviceManager.h" />

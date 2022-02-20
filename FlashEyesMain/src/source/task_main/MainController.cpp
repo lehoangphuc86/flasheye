@@ -574,7 +574,68 @@ int MainController::startScanningTask(void)
   return -1;
 }
 
+
+int MainController::startDistSensorTask(void)
+{
+  int ret = 0;
+  do
+  {
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stSS %d", 0);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    {
+      DistSensorTaskConfigTAG distSensorConfig = DistSensorTaskConfigTAG();
+      distSensorConfig.taskManagerConfig.eventItemNumber = FEM_DIST_SS_EM_EVENT_NUM;
+      distSensorConfig.taskManagerConfig.eventUsePool = FEM_DIST_SS_EM_USE_POOL;
+
+      distSensorConfig.taskThreadConfig.enabled = true;
+      distSensorConfig.taskThreadConfig.useThreadPool = FEM_DIST_SS_TM_USE_POOL;
+      distSensorConfig.taskThreadConfig.usStackDepth = FEM_DIST_SS_TM_MEM;
+      distSensorConfig.taskThreadConfig.uxPriority = FEM_DIST_SS_TM_PRIORITY;
+      
+      
+      distSensorConfig.config.measuringInterval = FEM_DIST_SS_MEAS_INTERVAL;
+      distSensorConfig.config.opMode = FEM_DIST_SS_OP_MODE;
+      distSensorConfig.config.trgCb = MainController::cbDistSensorTrg;
+      distSensorConfig.config.trgUserArg = this;
+      distSensorConfig.config.validRange.rangeBegin = FEM_DIST_SS_VALID_RANGE_BEGIN;
+      distSensorConfig.config.validRange.rangeEnd = FEM_DIST_SS_VALID_RANGE_END;
+
+      
+
+      distSensorConfig.deviceConfig.deviceId = FEM_DIST_SS_DEV_ID;
+      distSensorConfig.deviceConfig.deviceType = FEM_DIST_SS_DEV_DEVICE_TYPE;
+      distSensorConfig.deviceConfig.spec.hrc04.pin_Echo = FEM_DIST_SS_DEV_DEVICE_HRC04_PIN_ECHO;
+      distSensorConfig.deviceConfig.spec.hrc04.pin_Trigger = FEM_DIST_SS_DEV_DEVICE_HRC04_PIN_TRG;
+
+      ret = this->dist_Sensor_Task.startTask(distSensorConfig);
+      if (ret != 0)
+      {
+        break;
+      }
+    }
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stSS %d", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    return 0;
+  } while (0);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stSS %d", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 // stop sub tasks
+
+void MainController::stopDistSensorTask(void)
+{
+  this->dist_Sensor_Task.stopTask();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopSs %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return;
+}
+
 void MainController::stopScanningTask(void)
 {
   this->scanning_Task.stopTask();
@@ -1277,6 +1338,14 @@ void MainController::resetSequence(void)
   this->stopTimer();
   this->stopScanning();
   this->isBusy(false);
+  {
+    DistSensorControlParamsTAG ssStrParam = DistSensorControlParamsTAG();
+    ssStrParam.opCode = DIST_SENSOR_CTRL_OPCODE_START;
+    ssStrParam.deviceId = FEM_DIST_SS_DEV_ID;
+    ssStrParam.sequenceId = 0;
+    ssStrParam.mode = FEM_DIST_SS_OP_MODE;
+    this->dist_Sensor_Task.control(ssStrParam);
+  }
   UiManager::getInstance().showSysState(UI_MESS_SYS_STATE_SCANNING, UI_MESS_SYS_STATE_SUB_END);
 }
 
@@ -1460,5 +1529,29 @@ void MainController::cbButtonPressed(void* arg, byte opCode, bool* woken)
     }
   } while (0);
   
+}
+
+void MainController::cbDistSensorTrg(void* userArg, Seq_t sequenceId, Dist_t distance, byte mode)
+{
+  int ret = 0;
+  do
+  {
+    if (userArg == NULL)
+    {
+      break;
+    }
+
+    EventScanningControlTAG scanningCtrlEvent = EventScanningControlTAG();
+    scanningCtrlEvent.sequenceId = 0;
+    scanningCtrlEvent.isStart = 1;
+    scanningCtrlEvent.trgParams.enabled = 1;
+    scanningCtrlEvent.trgParams.maxScanCount = FEM_SCAN_OP_MAX_SCAN_COUNT;
+    scanningCtrlEvent.trgParams.timeBtwScan = FEM_SCAN_OP_BREAK_TIME;
+    scanningCtrlEvent.trgParams.timeout = FEM_SCAN_OP_TIMEOUT;
+    scanningCtrlEvent.trgParams.trgSource = FEM_SCAN_TRG_SRC_SENSOR;
+    ((MainController*)userArg)->notify((int)EventManagerConstant::EventMessageId::ScanningControl, sizeof(EventScanningControlTAG), (unsigned char*)&scanningCtrlEvent);
+    
+  } while (0);
+
 }
 #endif // _CONF_MAIN_CONTROLLER_ENABLED

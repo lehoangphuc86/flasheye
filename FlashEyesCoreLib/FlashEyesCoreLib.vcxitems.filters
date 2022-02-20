@@ -115,6 +115,9 @@
     <Filter Include="src\libs\lcd\U8g2\clib">
       <UniqueIdentifier>{4e0f5f1c-a249-405b-a5d1-d8fe049958e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\task_dist_sensor">
+      <UniqueIdentifier>{fbafb663-7625-4e24-bed6-64d34b0c250c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
@@ -574,6 +577,18 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\libs\lcd\U8g2\clib\u8x8_u16toa.c">
       <Filter>src\libs\lcd\U8g2\clib</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorController.cpp">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControllerFactory.cpp">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControlTask.cpp">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorHCSR04Controller.cpp">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\FlashEyesCoreLib.h">
@@ -899,6 +914,21 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\libs\lcd\U8g2\clib\u8x8.h">
       <Filter>src\libs\lcd\U8g2\clib</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorController.h">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControllerFactory.h">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorControlTask.h">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorHCSR04Controller.h">
+      <Filter>src\task_dist_sensor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\task_dist_sensor\DistSensorTaskConstant.h">
+      <Filter>src\task_dist_sensor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

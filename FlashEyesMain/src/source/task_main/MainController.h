@@ -15,6 +15,7 @@
 #include "../task_scanner/ScanningControlTask.h"
 #include "mess_broker/MessBrokerManager.h"
 #include "../task_excomm/ExCommConstant.h"
+#include "task_dist_sensor/DistSensorControlTask.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -84,8 +85,10 @@ protected:
   virtual int                                                   startNetManager(void);
   virtual int                                                   startExCommManager(void);
   virtual int                                                   startScanningTask(void);
+  virtual int                                                   startDistSensorTask(void);
   
   // stop sub tasks
+  virtual void                                                  stopDistSensorTask(void);
   virtual void                                                  stopScanningTask(void);
   virtual void                                                  stopExCommManager(void);
   virtual void                                                  stopNetManager(void);
@@ -125,12 +128,14 @@ protected:
   SystemMutex                                                   mutex_Operating;
   //###########below variables are defined but used inside inherited classes#############
   ScanningControlTask                                           scanning_Task;
+  DistSensorControlTask                                         dist_Sensor_Task;
   TimerId_t                                                     timer_Id;
   
 protected:
   static void                                                   cbTimerFired(TimerId_t timerId, void* extraArg, bool* woken);
   static int                                                    cbExCommRev(void* arg, ExCommMBCParamTAG& mbcParams);
   static void                                                   cbButtonPressed(void* arg, byte opCode, bool* woken);
+  static void                                                   cbDistSensorTrg(void* userArg, Seq_t sequenceId, Dist_t distance, byte mode);
 };
 
 #endif // _MAIN_CONTROLLER_H

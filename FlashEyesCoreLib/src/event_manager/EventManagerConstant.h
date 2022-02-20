@@ -63,6 +63,7 @@ public:
     , DistanceRequest
     , DistanceReceived
     , DistanceTriggered
+    , DistanceControl
     // CommI2C
     , CommI2COnRequest
     , CommI2COnReceived
@@ -142,6 +143,7 @@ public:
     case EventManagerConstant::EventMessageId::DistanceRequest:
     case EventManagerConstant::EventMessageId::DistanceReceived:
     case EventManagerConstant::EventMessageId::DistanceTriggered:
+    case EventManagerConstant::EventMessageId::DistanceControl:
     case EventManagerConstant::EventMessageId::CommI2COnRequest:
     case EventManagerConstant::EventMessageId::CommI2COnReceived:
     case EventManagerConstant::EventMessageId::CommI2CSendRequested:

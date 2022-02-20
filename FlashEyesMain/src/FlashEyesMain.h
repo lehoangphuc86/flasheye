@@ -341,11 +341,32 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5\n\
 #define FEM_SCAN_TRG_SRC_HTTP                         1
 #define FEM_SCAN_TRG_SRC_SERIAL                       2
 #define FEM_SCAN_TRG_SRC_BUTTON                       3
+#define FEM_SCAN_TRG_SRC_SENSOR                       4
 
 #define FEM_SCAN_ERR_CODE_NONE                        0
 #define FEM_SCAN_ERR_CODE_NOT_AVAI                    1
 #define FEM_SCAN_ERR_CODE_NOT_VALID                   2
 #define FEM_SCAN_ERR_CODE_OP_ERR                      3
+
+
+// dist sensor task
+#define FEM_DIST_SS_EM_EVENT_NUM                      5
+#define FEM_DIST_SS_EM_USE_POOL                       false
+
+#define FEM_DIST_SS_TM_USE_POOL                       false
+#define FEM_DIST_SS_TM_MEM                            2096
+#define FEM_DIST_SS_TM_PRIORITY                       FEM_TASK_PRIORITY_DEFAULT
+
+#define FEM_DIST_SS_DEV_ID                            0
+#define FEM_DIST_SS_DEV_DEVICE_TYPE                   DistSensorDeviceTypeUN::DistSensorHRCS04Device
+#define FEM_DIST_SS_DEV_DEVICE_HRC04_PIN_TRG          27
+#define FEM_DIST_SS_DEV_DEVICE_HRC04_PIN_ECHO         26
+
+#define FEM_DIST_SS_MEAS_INTERVAL                     200 // ms
+#define FEM_DIST_SS_OP_MODE                           DistSensorOpModeUN::DistSensorRangeMode
+#define FEM_DIST_SS_VALID_RANGE_BEGIN                 5 // cm
+#define FEM_DIST_SS_VALID_RANGE_END                   15 // cm
+
 
 // main 
 #define FEM_MAIN_DM_BUFF_SIZE                         200
