@@ -5,7 +5,7 @@
 #include "timer_manager/TimerManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
-#define COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+//#define COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -137,7 +137,9 @@ int CommMBCHttpClient::request(CommMBCHttpClientRequestParamsTAG& mbcParams, Htt
     httpRequestParam.notifier.expiredTime = mbcParams.notifier.expiredTime;
     // request
     ret = CommHttpClient::request(httpRequestParam, reqId);
+#ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i %d", "set", 97, reqId);
+#endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
 #ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
@@ -317,6 +319,9 @@ int CommMBCHttpClient::cbHttpClientResponse(void* arg, CommHttpUriRequestTAG* ht
   CommMBCHttpUriRequestTAG mbcUriRequest = CommMBCHttpUriRequestTAG();
   DataSize_t mbcDecodedLen = 0;
   int ret = 0;
+#ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mHtC] cbClRes %d", 0);
+#endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
   do
   {
     if (arg == NULL)
@@ -393,17 +398,31 @@ int CommMBCHttpClient::cbHttpClientResponse(void* arg, CommHttpUriRequestTAG* ht
       )
     {
 #ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
-      CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mmHtC] %s", "went off");
+      CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mmHtC] cbClRes %s", "went off");
 #endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
       break; // went off.
     }
     // callback 
-    mbcUriRequest.resNoti.callback(mbcUriRequest.resNoti.agr, &mbcUriRequest);
-
+#ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mmHtC] cbClRes %d", 96);
+#endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    if (mbcUriRequest.resNoti.callback != NULL)
+    {
+#ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mmHtC] cbClRes %d", 97);
+#endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+      mbcUriRequest.resNoti.callback(mbcUriRequest.resNoti.agr, &mbcUriRequest);
+    }
+#ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mmHtC] cbClRes %d", 98);
+#endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
 
     // release
     mbcUriRequest.reqData.releaseData();
     mbcUriRequest.resData.releaseData();
+#ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mHtC] cbClRes %d", 99);
+#endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     return 0;
   } while (0);
   if ((mbcHandler != NULL)
@@ -416,6 +435,9 @@ int CommMBCHttpClient::cbHttpClientResponse(void* arg, CommHttpUriRequestTAG* ht
   httpResPackage->releaseData();
   mbcUriRequest.reqData.releaseData();
   mbcUriRequest.resData.releaseData();
+#ifdef COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(commMbcHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mHtC] cbClRes %d", -99);
+#endif // COMM_MBC_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
   return -1;
 }
 

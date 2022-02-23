@@ -16,6 +16,7 @@
 #include "mess_broker/MessBrokerManager.h"
 #include "../task_excomm/ExCommConstant.h"
 #include "task_dist_sensor/DistSensorControlTask.h"
+#include "../task_export/ExportManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
 
@@ -84,12 +85,14 @@ protected:
   virtual int                                                   startMessBroker(void);
   virtual int                                                   startNetManager(void);
   virtual int                                                   startExCommManager(void);
+  virtual int                                                   startExportManager(void);
   virtual int                                                   startScanningTask(void);
   virtual int                                                   startDistSensorTask(void);
   
   // stop sub tasks
   virtual void                                                  stopDistSensorTask(void);
   virtual void                                                  stopScanningTask(void);
+  virtual void                                                  stopExportManager(void);
   virtual void                                                  stopExCommManager(void);
   virtual void                                                  stopNetManager(void);
   virtual void                                                  stopMessBroker(void);

@@ -123,6 +123,8 @@ public:
     , ExCommSendRequest
     // sys
     , SysPower
+    // export
+    , ExportScanResult
   };
 
 public:
@@ -191,6 +193,7 @@ public:
     case EventManagerConstant::EventMessageId::ExCommReceived:
     case EventManagerConstant::EventMessageId::ExCommSendRequest:
     case EventManagerConstant::EventMessageId::SysPower:
+    case EventManagerConstant::EventMessageId::ExportScanResult:
       return true;
     default:
       return false;

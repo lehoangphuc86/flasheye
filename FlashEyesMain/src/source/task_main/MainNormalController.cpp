@@ -115,7 +115,7 @@ int MainNormalController::prepare(void)
       break;
     }
 
-    ret = this->startScanningTask();
+    ret = this->startExportManager();
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 5, ret);
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -124,9 +124,18 @@ int MainNormalController::prepare(void)
       break;
     }
 
-    ret = this->startDistSensorTask();
+    ret = this->startScanningTask();
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 6, ret);
+#endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    ret = this->startDistSensorTask();
+#ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 7, ret);
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
@@ -152,6 +161,7 @@ void MainNormalController::clear(void)
   {
     this->stopDistSensorTask();
     this->stopScanningTask();
+    this->stopExportManager();
     this->stopExCommManager();
     this->stopNetManager();
     MainController::clear();

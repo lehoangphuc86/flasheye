@@ -524,6 +524,43 @@ int MainController::startExCommManager(void)
   return -1;
 }
 
+int MainController::startExportManager(void)
+{
+  int ret = 0;
+  do
+  {
+    // start task
+    ExportManagerConfigTAG exportMgrConfig = ExportManagerConfigTAG();
+    exportMgrConfig.taskManagerConfig.eventItemNumber = FEM_EXPORT_EM_EVENT_NUM;
+    exportMgrConfig.taskManagerConfig.eventUsePool = FEM_EXPORT_EM_USE_POOL;
+
+    exportMgrConfig.taskThreadConfig.enabled = true;
+    exportMgrConfig.taskThreadConfig.useThreadPool = FEM_EXPORT_TM_USE_POOL;
+    exportMgrConfig.taskThreadConfig.usStackDepth = FEM_EXPORT_TM_MEM;
+    exportMgrConfig.taskThreadConfig.uxPriority = FEM_EXPORT_TM_PRIORITY;
+
+    exportMgrConfig.exportProcConfig.exportProcType = ExportProcessorTypeUN::ExportProcessorHttpClient;
+    exportMgrConfig.exportProcConfig.spec.httpClient.client = ExCommManager::getInstance().httpClient0();
+    exportMgrConfig.exportProcConfig.spec.httpClient.reqParam.reqMethod = FEM_EXPORT_HTTP_CLIENT_REQ_METHOD;
+    exportMgrConfig.exportProcConfig.spec.httpClient.reqParam.reqUri = FEM_EXPORT_HTTP_CLIENT_REQ_URI;
+
+    ret = ExportManager::getInstance().startTask(exportMgrConfig);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stExp %i %i", 0, ret);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+    
+    return 0;
+  } while (0);
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTask] stExp %i", -99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return -1;
+}
+
 int MainController::startScanningTask(void)
 {
   int ret = 0;
@@ -641,6 +678,15 @@ void MainController::stopScanningTask(void)
   this->scanning_Task.stopTask();
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
   CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopSc %i", 99);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  return;
+}
+
+void MainController::stopExportManager(void)
+{
+  ExportManager::getInstance().stopTask();
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+  CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] stopExp %i", 99);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
   return;
 }
@@ -920,12 +966,22 @@ int MainController::onEventScanningResult(unsigned char* data, unsigned int data
     }
 
     {
+      ExportScanResultTAG scanResult = ExportScanResultTAG();
+      scanResult.sequenceId = eventData->result.sequenceId;
+      scanResult.scanIndex = eventData->result.scanIndex;
+      scanResult.code.type = eventData->result.deviceResult.code.type;
+      scanResult.code.codeLen = SYSTEM_MIN(eventData->result.deviceResult.code.codeLen, EXPORT_SCANNING_DEVICE_BARCODE_LEN_MAX);
+      memcpy(scanResult.code.code, eventData->result.deviceResult.code.code, scanResult.code.codeLen);
+      ExportManager::getInstance().exportScanResult(scanResult);
+    }
+
+    {
       UiMessScanResultTAG scanResult = UiMessScanResultTAG();
       scanResult.sequenceId = eventData->result.sequenceId;
       scanResult.scanIndex = eventData->result.scanIndex;
       scanResult.code.type = eventData->result.deviceResult.code.type;
-      scanResult.code.codeLen = eventData->result.deviceResult.code.codeLen;
-      memcpy(scanResult.code.code, eventData->result.deviceResult.code.code, SYSTEM_MIN(scanResult.code.codeLen, eventData->result.deviceResult.code.codeLen));
+      scanResult.code.codeLen = SYSTEM_MIN(eventData->result.deviceResult.code.codeLen, UI_SCANNING_DEVICE_BARCODE_LEN_MAX);
+      memcpy(scanResult.code.code, eventData->result.deviceResult.code.code, scanResult.code.codeLen);
       UiManager::getInstance().show(UIConstant::UIMessageId::UiMessScanResult, sizeof(scanResult), (unsigned char*)&scanResult);
     }
     

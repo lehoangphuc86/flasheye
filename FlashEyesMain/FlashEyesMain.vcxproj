@@ -148,6 +148,12 @@
     <ClInclude Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.h" />
     <ClInclude Include="src\source\task_excomm\ExCommConstant.h" />
     <ClInclude Include="src\source\task_excomm\ExCommManager.h" />
+    <ClInclude Include="src\source\task_export\ExportControlTask.h" />
+    <ClInclude Include="src\source\task_export\ExportHttpClientProcessor.h" />
+    <ClInclude Include="src\source\task_export\ExportManager.h" />
+    <ClInclude Include="src\source\task_export\ExportManagerConstant.h" />
+    <ClInclude Include="src\source\task_export\ExportProcessor.h" />
+    <ClInclude Include="src\source\task_export\ExportProcessorFactory.h" />
     <ClInclude Include="src\source\task_http\CommHttp.h" />
     <ClInclude Include="src\source\task_http\CommHttpClient.h" />
     <ClInclude Include="src\source\task_http\CommHttpConstant.h" />
@@ -203,6 +209,11 @@
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpClient.cpp" />
     <ClCompile Include="src\source\task_comm_mbc\task_comm_mbc_http\CommMBCHttpServer.cpp" />
     <ClCompile Include="src\source\task_excomm\ExCommManager.cpp" />
+    <ClCompile Include="src\source\task_export\ExportControlTask.cpp" />
+    <ClCompile Include="src\source\task_export\ExportHttpClientProcessor.cpp" />
+    <ClCompile Include="src\source\task_export\ExportManager.cpp" />
+    <ClCompile Include="src\source\task_export\ExportProcessor.cpp" />
+    <ClCompile Include="src\source\task_export\ExportProcessorFactory.cpp" />
     <ClCompile Include="src\source\task_http\CommHttp.cpp" />
     <ClCompile Include="src\source\task_http\CommHttpClient.cpp" />
     <ClCompile Include="src\source\task_http\CommHttpServer.cpp" />

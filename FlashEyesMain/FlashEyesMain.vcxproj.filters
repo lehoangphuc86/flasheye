@@ -92,6 +92,9 @@
     <Filter Include="src\drivers\esp32\lcd">
       <UniqueIdentifier>{57fd74b7-d5ec-4bed-9dbf-ec39555c4519}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\source\task_export">
+      <UniqueIdentifier>{7a6f8bd3-4ee9-4316-aa93-790d15d3a4f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="FlashEyesMain.ino" />
@@ -292,6 +295,24 @@
     <ClInclude Include="src\source\task_ui\UiDpJMDProcessor.h">
       <Filter>src\source\task_ui</Filter>
     </ClInclude>
+    <ClInclude Include="src\source\task_export\ExportControlTask.h">
+      <Filter>src\source\task_export</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_export\ExportHttpClientProcessor.h">
+      <Filter>src\source\task_export</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_export\ExportManager.h">
+      <Filter>src\source\task_export</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_export\ExportManagerConstant.h">
+      <Filter>src\source\task_export</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_export\ExportProcessor.h">
+      <Filter>src\source\task_export</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\task_export\ExportProcessorFactory.h">
+      <Filter>src\source\task_export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FlashEyesMain.rc" />
@@ -416,6 +437,21 @@
     </ClCompile>
     <ClCompile Include="src\source\task_ui\UiDpJMDProcessor.cpp">
       <Filter>src\source\task_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_export\ExportControlTask.cpp">
+      <Filter>src\source\task_export</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_export\ExportHttpClientProcessor.cpp">
+      <Filter>src\source\task_export</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_export\ExportManager.cpp">
+      <Filter>src\source\task_export</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_export\ExportProcessor.cpp">
+      <Filter>src\source\task_export</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\task_export\ExportProcessorFactory.cpp">
+      <Filter>src\source\task_export</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

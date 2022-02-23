@@ -1,0 +1,59 @@
+#include "ExportManagerConstant.h"
+
+#if (_CONF_EXPORT_PROCESSOR_FACTORY_ENABLED)
+
+#ifndef _EXPORT_PROCESSOR_FACTORY_H
+#define _EXPORT_PROCESSOR_FACTORY_H
+
+/////////////////////////////////////////////////
+// INCLUDE
+#include "ExportProcessor.h"
+/////////////////////////////////////////////////
+// PREPROCESSOR
+
+/////////////////////////////////////////////////
+// DEFINE
+
+/////////////////////////////////////////////////
+// MARCO
+
+/////////////////////////////////////////////////
+// GLOBAL VARIABLES
+
+/////////////////////////////////////////////////
+// GLOBAL FUNCTIONS
+
+/////////////////////////////////////////////////
+// DATA TYPE (TYPEDEF)
+
+/////////////////////////////////////////////////
+// DATA TYPE (ENUM)
+
+/////////////////////////////////////////////////
+// DATA TYPE (STRUCT)
+
+/////////////////////////////////////////////////
+// STATIC DATA
+
+/////////////////////////////////////////////////
+// STATIC FUNCTIONS
+
+/////////////////////////////////////////////////
+// EXTERN
+
+/////////////////////////////////////////////////
+// CLASS DEFINITION
+/*ExportProcessorFactory*/
+class ExportProcessorFactory
+{
+public:
+  ExportProcessorFactory(void);
+  // WARNING: if inherite from this class, deconstructor must be virtual
+  __ATTRIBUTE_VIRTUAL_OPTIMIZED ~ExportProcessorFactory(void);
+public:
+  static ExportProcessor*                                       generate(byte procType);
+  static void                                                   release(ExportProcessor*& exportProcessor);
+};
+#endif // _EXPORT_PROCESSOR_FACTORY_H
+
+#endif // _CONF_EXPORT_PROCESSOR_FACTORY_ENABLED

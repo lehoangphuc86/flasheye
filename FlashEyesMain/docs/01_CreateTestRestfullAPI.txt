@@ -1,0 +1,44 @@
+1. Install NodeJs https://nodejs.org/en/download/
+2. Install Json server
+  cd c:\Program Files\nodejs
+  npm install -g json-server
+3. Start json-server
+  Run cmd as adminstrator
+  cd c:\Program Files\nodejs
+  json-server --watch db.json --host 192.168.137.1
+4. Update c:\Program Files\nodejs\db.json server db
+  {
+    "posts": [
+      {
+        "id": 1,
+        "title": "json-server",
+        "author": "typicode"
+      }
+    ],
+    "comments": [
+      {
+        "id": 1,
+        "body": "some comment",
+        "postId": 1
+      }
+    ],
+    "profile": {
+      "name": "typicode"
+    },
+    "scanRes": [
+      {
+        "id": 1,
+        "seqId": 1,
+        "sIdx": 0,
+        "code": {
+          "len": 10,
+          "type": 2,
+          "code": "D111111111"
+        }
+      }
+    ]
+  }
+  
+5. Ref
+  https://medium.com/chaya-thilakumara/how-to-create-a-local-api-server-rest-api-for-testing-945bbb2d31b7
+  https://github.com/typicode/json-server

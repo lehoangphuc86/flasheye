@@ -11,7 +11,7 @@
 
 /////////////////////////////////////////////////
 // DEFINE
-#define EX_COMM_MANAGER_CONSOLE_DEBUG_ENABLE
+//#define EX_COMM_MANAGER_CONSOLE_DEBUG_ENABLE
 
 /////////////////////////////////////////////////
 // MARCO
@@ -550,8 +550,6 @@ int ExCommManager::cbHttpUriHandlerServer(CommMBCHttpServer* mbcHttpServer, Comm
   do
   {
     CommMBCHttpHeaderTAG* reqHeader = (CommMBCHttpHeaderTAG*)reqPackage->header();
-    CONSOLE_LOG_BUF(exCommMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[exCMgr] %s: %i id=%i mId=%i", "cbUH", 0, reqHeader->uriId, uriReqInfo->reqMessageId);
-    CONSOLE_LOG_BUF(exCommMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", reqHeader->uri);
     if (resPackage->setData(serverHandler->dataManager()) != 0)
     {
       break;
@@ -589,7 +587,6 @@ int ExCommManager::cbHttpUriHandlerServer(CommMBCHttpServer* mbcHttpServer, Comm
     resHeader->fileData = 0;
     resHeader->resStatusCode = COMM_HTTP_STATUS_CODE_200;
     resHeader->dataType = reqHeader->dataType;
-    CONSOLE_LOG_BUF(exCommMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[exCMgr] %i %i", 20, resHeader->dataType);
     MbcDataSize_t encodedSize = 0;
     if (mbcParam.resPackage.valid != false)
     {
@@ -663,7 +660,6 @@ int ExCommManager::sendCommHttpClient(CommMBCHttpClient* httpClient, ExCommMBCPa
       }
 
       ret = httpClient->request(requestParam, reqId);
-      CONSOLE_LOG_BUF(exCommMgrLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[%s]: %i %d", "set", 95, reqId);
       if (ret != 0)
       {
         break;

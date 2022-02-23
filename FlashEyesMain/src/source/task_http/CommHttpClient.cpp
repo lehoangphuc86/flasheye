@@ -6,7 +6,7 @@
 #include "timer_manager/TimerManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
-#define COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+//#define COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -189,6 +189,9 @@ int CommHttpClient::sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataS
     if (bufferLen < COMM_HTTP_PACKAGE_BUFF_CHUNK_SIZE)
     {
       httpRet = esp_http_client_open(this->http_Handler, bufferLen);
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] senB %d %d %d", 20, httpRet, bufferLen);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
       if (httpRet != HTTP_RET_OK)
       {
         break;
@@ -199,6 +202,7 @@ int CommHttpClient::sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataS
       {
         break;
       }
+      esp_http_client_close(this->http_Handler);
       return 0;
     }
 
@@ -211,6 +215,9 @@ int CommHttpClient::sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataS
     }
 
     httpRet = esp_http_client_open(this->http_Handler, bufferLen);
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] senB %d %d %d", 40, httpRet, bufferLen);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (httpRet != HTTP_RET_OK)
     {
       break;
@@ -237,8 +244,10 @@ int CommHttpClient::sendBuff(CommHttpUriRequestTAG* httpReq, char* buffer, DataS
       break;
     }
     clientSendChunk(this->http_Handler, NULL, 0, tempBuff, COMM_HTTP_DATA_SIZE_LEN);
+    esp_http_client_close(this->http_Handler);
     return 0;
   } while (0);
+  esp_http_client_close(this->http_Handler);
   return -1;
 }
 
@@ -305,8 +314,10 @@ int CommHttpClient::sendFileData(CommHttpUriRequestTAG* httpReq, char* buffer, D
     {
       break;
     }
+    esp_http_client_close(this->http_Handler);
     return 0;
   } while (0);
+  esp_http_client_close(this->http_Handler);
   return -1;
 }
 
@@ -512,18 +523,28 @@ int CommHttpClient::onEventCommHttpClientRequest(unsigned char* data, unsigned i
     }
 
     httpRet = esp_http_client_set_url(this->http_Handler, reqHeader->uri);
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %d %d", 10, httpRet);
+    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "%s", reqHeader->uri);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (httpRet != HTTP_RET_OK)
     {
       break;
     }
 
     httpRet = esp_http_client_set_method(this->http_Handler, COMM_HTTP_CLIENT_METHOD_TBL[reqHeader->reqMethod]);
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %d %d %d", 20, httpRet, reqHeader->reqMethod);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (httpRet != HTTP_RET_OK)
     {
       break;
     }
 
     httpRet = esp_http_client_set_header(this->http_Handler, COMM_HTTP_HEADER_CONTENT_NAME, COMM_HTTP_DATA_TYPE_STR_TBL[reqHeader->dataType]);
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %d %d %d %d", 30, httpRet, reqHeader->dataType, reqHeader->fileData);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (httpRet != HTTP_RET_OK)
     {
       break;
@@ -543,6 +564,9 @@ int CommHttpClient::onEventCommHttpClientRequest(unsigned char* data, unsigned i
     {
       ret = this->sendFileData(httpReq, reqPackage->body(), reqPackage->bodyLen());
     }
+#ifdef COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpClientLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtCTsk] ereq %d %d", 50, ret);
+#endif // COMM_HTTP_CLIENT_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
       break;
@@ -704,7 +728,7 @@ int CommHttpClient::cbEventCommHttpHandler(void* eventData)
       {
         EventCommHttpConnectionClosedTAG eventData = EventCommHttpConnectionClosedTAG();
         eventData.reserved = 0;
-        this->notify((int)EventManagerConstant::EventMessageId::CommHttpConnectionClosed, sizeof(EventCommHttpConnectionClosedTAG), (unsigned char*)&eventData);
+        //@@this->notify((int)EventManagerConstant::EventMessageId::CommHttpConnectionClosed, sizeof(EventCommHttpConnectionClosedTAG), (unsigned char*)&eventData);
         break;
       }
       case HTTP_EVENT_ON_DATA:
