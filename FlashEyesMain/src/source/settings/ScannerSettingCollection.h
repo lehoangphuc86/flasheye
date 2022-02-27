@@ -81,6 +81,12 @@ public:
   void                                                          customCodeFormat(uint8_t newVal, bool updateDB = false);
   uint8_t                                                       messTerminator(void);
   void                                                          messTerminator(uint8_t newVal, bool updateDB = false);
+  uint8_t                                                       triggerMode(void);
+  void                                                          triggerMode(uint8_t newVal, bool updateDB = false);
+  uint8_t                                                       distSSRangeBegin(void);
+  void                                                          distSSRangeBegin(uint8_t newVal, bool updateDB = false);
+  uint8_t                                                       distSSRangeEnd(void);
+  void                                                          distSSRangeEnd(uint8_t newVal, bool updateDB = false);
 
 protected:
   NumSettingItem<uint8_t>                                       comm_Baudrate;
@@ -98,6 +104,9 @@ protected:
   StrSettingItem                                                custom_Suffix;
   NumSettingItem<uint8_t>                                       custom_Code_Format;
   NumSettingItem<uint8_t>                                       mess_Terminator;
+  NumSettingItem<uint8_t>                                       trigger_Mode;
+  NumSettingItem<uint8_t>                                       dist_SS_Range_Begin;
+  NumSettingItem<uint8_t>                                       dist_SS_Range_End;
 };
 #endif // _CONF_SCANNER_SETTING_COLLECTION_ENABLED
 

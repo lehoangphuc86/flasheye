@@ -303,7 +303,8 @@ int ExCommManager::startCommHttpClient0(bool waitCompletion)
     // start conn
     {
       CommMBCHttpConnectionConfigTAG httpConnConfig = CommMBCHttpConnectionConfigTAG();
-      httpConnConfig.config.client.url = FEM_HTTP_CLIENT_PATH;
+      size_t urlLen = strlen(SettingManager::getInstance().system().httpCliUri());
+      httpConnConfig.config.client.url = (urlLen <= 0? FEM_HTTP_CLIENT_PATH_DEFAULT : SettingManager::getInstance().system().httpCliUri());
       httpConnConfig.config.client.certPem = FEM_HTTP_CLIENT_REQ_CERT;
       ret = this->http_Client_0->startHttp(httpConnConfig, waitCompletion);
 #ifdef EX_COMM_MANAGER_CONSOLE_DEBUG_ENABLE
@@ -439,6 +440,8 @@ int ExCommManager::startCommHttpServer0(bool waitCompletion)
     // start conn
     {
       CommMBCHttpConnectionConfigTAG httpConnConfig = CommMBCHttpConnectionConfigTAG();
+      httpConnConfig.config.server.lruPurge = FEM_HTTP_SERVER_LRU_PURGE;
+      httpConnConfig.config.server.stackSize = FEM_HTTP_SERVER_STACK_SIZE;
       httpConnConfig.config.server.basePath = FEM_HTTP_SERVER_BASE_PATH;
       httpConnConfig.config.server.port = FEM_HTTP_SERVER_PORT;
       httpConnConfig.config.server.uriMaxCount = FEM_HTTP_SERVER_URI_COUNT_MAX;
@@ -631,7 +634,7 @@ int ExCommManager::sendCommHttpClient(CommMBCHttpClient* httpClient, ExCommMBCPa
       requestParam.header.dataType = FEM_HTTP_CLIENT_REQ_DATATYPE;
       requestParam.header.fileData = 0;
       requestParam.header.reqMethod = FEM_HTTP_CLIENT_REQ_METHOD;
-      requestParam.header.uri = FEM_HTTP_CLIENT_REQ_URI;
+      requestParam.header.uri = SettingManager::getInstance().system().httpCliUri();
       requestParam.header.uriId = FEM_HTTP_CLIENT_REQ_URI_ID;
 
       requestParam.reqMessageId = mbcParams.reqPackage.messId;

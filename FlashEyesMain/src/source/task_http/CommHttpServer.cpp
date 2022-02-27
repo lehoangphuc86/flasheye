@@ -6,7 +6,7 @@
 #include "timer_manager/TimerManager.h"
 /////////////////////////////////////////////////
 // PREPROCESSOR
-#define COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+//#define COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
 /////////////////////////////////////////////////
 // DEFINE
 
@@ -193,19 +193,31 @@ int CommHttpServer::onEventCommHttpStart(unsigned char* data, unsigned int dataS
     if ((dataSize != sizeof(EventCommHttpStartTAG))
       || (data == NULL))
     {
+#ifdef COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(commHttpServerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtST] eSta %d", -10);
+#endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
     if (this->isStarted() != false)
     {
+#ifdef COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(commHttpServerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtST] eSta %d", -20);
+#endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
     EventCommHttpStartTAG* eventData = (EventCommHttpStartTAG*)data;
     CommHttpServerConfigTAG* serverConfig = &eventData->config.server;
 
+#ifdef COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpServerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtST] eSta %d %d %d", 30, serverConfig->uriMaxCount, serverConfig->stackSize);
+#endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
     if (this->uri_List.initialize(serverConfig->uriMaxCount) != 0)
     {
+#ifdef COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(commHttpServerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtST] eSta %d", -30);
+#endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
       break;
     }
     if ((serverConfig->basePath == NULL)
@@ -213,13 +225,21 @@ int CommHttpServer::onEventCommHttpStart(unsigned char* data, unsigned int dataS
       || (strlen(serverConfig->basePath) > COMM_HTTP_SERVER_BASE_PATH_MAX_LEN)
       )
     {
+#ifdef COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(commHttpServerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtST] eSta %d", -40);
+#endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
       break;
     }
 
     strcpy(this->base_Path, serverConfig->basePath);
 
+#ifdef COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpServerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtST] eSta %d %d %d %d", 40, serverConfig->connMaxCount, serverConfig->addHeaderMaxCount, serverConfig->backlogConn);
+#endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
     httpd_config_t httpConfig = httpd_config_t();
     HTTP_SERVER_DEFAULT_CONFIG(httpConfig);
+    httpConfig.stack_size = serverConfig->stackSize;
+    httpConfig.lru_purge_enable = serverConfig->lruPurge;
     httpConfig.uri_match_fn = httpd_uri_match_wildcard;
     httpConfig.server_port = serverConfig->port;
     httpConfig.max_uri_handlers = serverConfig->uriMaxCount;
@@ -227,6 +247,9 @@ int CommHttpServer::onEventCommHttpStart(unsigned char* data, unsigned int dataS
     httpConfig.max_resp_headers = serverConfig->addHeaderMaxCount;
     httpConfig.backlog_conn = serverConfig->backlogConn;
     httpRet = httpd_start(&this->http_Handler, &httpConfig);
+#ifdef COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(commHttpServerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[HtST] eSta %d %d", 20, httpRet);
+#endif // COMM_HTTP_SERVER_CONSOLE_DEBUG_ENABLE
     if (httpRet != HTTP_RET_OK)
     {
       break;

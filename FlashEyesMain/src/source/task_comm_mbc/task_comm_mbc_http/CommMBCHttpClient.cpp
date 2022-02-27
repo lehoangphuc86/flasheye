@@ -235,10 +235,11 @@ int CommMBCHttpClient::startHttp(CommHttpConnectionConfigTAG& commHttpConnConfig
 int CommMBCHttpClient::startHttp(CommMBCHttpConnectionConfigTAG& commMbcHttpConnConfig, bool waitCompletion)
 {
   CommHttpConnectionConfigTAG httpConnConfig = CommHttpConnectionConfigTAG();
-  httpConnConfig.config.client.certPem = commMbcHttpConnConfig.config.client.certPem;
-  httpConnConfig.config.client.host = commMbcHttpConnConfig.config.client.host;
-  httpConnConfig.config.client.port = commMbcHttpConnConfig.config.client.port;
-  httpConnConfig.config.client.url = commMbcHttpConnConfig.config.client.url;
+  if (sizeof(CommMBCHttpConnectionConfigTAG) != sizeof(CommHttpConnectionConfigTAG))
+  {
+    return -1;
+  }
+  memcpy(&httpConnConfig, &commMbcHttpConnConfig, sizeof(CommMBCHttpConnectionConfigTAG));
   return CommHttpClient::startHttp(httpConnConfig, waitCompletion);
 }
 

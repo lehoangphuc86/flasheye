@@ -37,7 +37,7 @@ typedef struct _exportHttpClientProcessorReqParamTag
 {
   byte reqMethod;
   const char* reqUri;
-  //byte reqUriId;
+  byte dataType;
 } ExportHttpClientProcessorReqParamTAG;
 
 typedef struct _exportHttpClientProcessorConfigTag

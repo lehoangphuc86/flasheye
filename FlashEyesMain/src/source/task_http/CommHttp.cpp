@@ -138,14 +138,14 @@ int CommHttp::startHttp(CommHttpConnectionConfigTAG& commHttpConnConfig, bool wa
       this->stopHttp();
     }
 #ifdef COMM_HTTP_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(commHttpLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[http] sh %i", 0);
+    CONSOLE_LOG_BUF(commHttpLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[http] sh %i %d", 0, commHttpConnConfig.config.server.stackSize);
 #endif // COMM_HTTP_CONSOLE_DEBUG_ENABLE
     {
       SystemMutexLocker locker(this->mutex_Operating);
       int ret = 0;
-      memcpy(&this->conn_Config, &commHttpConnConfig.config, sizeof(commHttpConnConfig.config));
+      memcpy(&this->conn_Config, &commHttpConnConfig, sizeof(CommHttpConnectionConfigTAG));
       EventCommHttpStartTAG eventStartData = EventCommHttpStartTAG();
-      memcpy(&eventStartData.config, &commHttpConnConfig.config, sizeof(commHttpConnConfig.config));
+      memcpy(&eventStartData.config, &commHttpConnConfig.config, sizeof(CommHttpConnectionConfigU));
       this->ret_Start = -1;
       this->mutex_wait_Start.unlock();
       this->mutex_wait_Start.lock();

@@ -34,3 +34,9 @@ INSERT INTO TBL_CF_SCAN (Id, Type, Value) VALUES(13, 2, '');
 INSERT INTO TBL_CF_SCAN (Id, Type, Value) VALUES(14, 1, 1);
 -- mess_Terminator
 INSERT INTO TBL_CF_SCAN (Id, Type, Value) VALUES(15, 1, 3);
+-- trigger_Mode
+INSERT INTO TBL_CF_SCAN (Id, Type, Value) VALUES(16, 1, 0);
+-- dist_SS_Range_Begin
+INSERT INTO TBL_CF_SCAN (Id, Type, Value) VALUES(17, 1, 5);
+-- dist_SS_Range_End
+INSERT INTO TBL_CF_SCAN (Id, Type, Value) VALUES(18, 1, 15);

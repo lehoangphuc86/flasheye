@@ -416,10 +416,10 @@ int MainController::startNetManager(void)
     //if (0)
     {
       WifiConnectionConfigTAG wifiConfig = WifiConnectionConfigTAG();
-      if (FEM_WIFI_IS_AP == false)
+      if (SettingManager::getInstance().system().wifiMode() != 0)
       {
-        wifiConfig.staConfig.ssid = (char*)FEM_WIFI_STA_SSID;
-        wifiConfig.staConfig.password = (char*)FEM_WIFI_STA_PWD;
+        wifiConfig.staConfig.ssid = SettingManager::getInstance().system().wifiSSID();
+        wifiConfig.staConfig.password = SettingManager::getInstance().system().wifiPwd();
         wifiConfig.staConfig.connRetryMax = FEM_WIFI_CONN_RETRY;
         wifiConfig.staConfig.authMode = FEM_WIFI_AUTH_MODE;
         wifiConfig.staConfig.netConfig.enabledStaticIP = 0;
@@ -429,8 +429,8 @@ int MainController::startNetManager(void)
       }
       else
       {
-        wifiConfig.apConfig.ssid = (char*)FEM_WIFI_AP_SSID;
-        wifiConfig.apConfig.password = (char*)FEM_WIFI_AP_PWD;
+        wifiConfig.apConfig.ssid = SettingManager::getInstance().system().wifiSSID();
+        wifiConfig.apConfig.password = SettingManager::getInstance().system().wifiPwd();
         wifiConfig.apConfig.channel = FEM_WIFI_AP_CHANNEL;
         wifiConfig.apConfig.authMode = FEM_WIFI_AUTH_MODE;
         wifiConfig.apConfig.maxConn = FEM_WIFI_AP_MAX_CONN;
@@ -458,7 +458,7 @@ int MainController::startNetManager(void)
         UiMessNetStateTAG netStateTag = UiMessNetStateTAG();
         netStateTag.stateId = UI_MESS_NET_STATE_CONNECTED;
         netStateTag.stateSubId = UI_MESS_NET_STATE_SUB_NONE;
-        netStateTag.mode = (FEM_WIFI_IS_AP == false ? UI_MESS_NET_MODE_STA : UI_MESS_NET_MODE_AP);
+        netStateTag.mode = (SettingManager::getInstance().system().wifiMode() != 0 ? UI_MESS_NET_MODE_STA : UI_MESS_NET_MODE_AP);
         SYSTEM_PRINT_BUF(netStateTag.ip4, UI_MESS_IP4_LEN_MAX, "%d.%d.%d.%d", NET_IP4_2_STR(ipConfig.IPV4));
         UiManager::getInstance().show(UIConstant::UIMessageId::UiMessNetState, sizeof(netStateTag), (unsigned char*)&netStateTag);
       }
@@ -529,6 +529,11 @@ int MainController::startExportManager(void)
   int ret = 0;
   do
   {
+    if (SettingManager::getInstance().system().exportMode() == FEM_EXPORT_MODE_NONE)
+    {
+      return 0;
+    }
+
     // start task
     ExportManagerConfigTAG exportMgrConfig = ExportManagerConfigTAG();
     exportMgrConfig.taskManagerConfig.eventItemNumber = FEM_EXPORT_EM_EVENT_NUM;
@@ -541,8 +546,9 @@ int MainController::startExportManager(void)
 
     exportMgrConfig.exportProcConfig.exportProcType = ExportProcessorTypeUN::ExportProcessorHttpClient;
     exportMgrConfig.exportProcConfig.spec.httpClient.client = ExCommManager::getInstance().httpClient0();
-    exportMgrConfig.exportProcConfig.spec.httpClient.reqParam.reqMethod = FEM_EXPORT_HTTP_CLIENT_REQ_METHOD;
-    exportMgrConfig.exportProcConfig.spec.httpClient.reqParam.reqUri = FEM_EXPORT_HTTP_CLIENT_REQ_URI;
+    exportMgrConfig.exportProcConfig.spec.httpClient.reqParam.dataType = SettingManager::getInstance().system().httpCliDataType();
+    exportMgrConfig.exportProcConfig.spec.httpClient.reqParam.reqMethod = SettingManager::getInstance().system().httpCliMethod();
+    exportMgrConfig.exportProcConfig.spec.httpClient.reqParam.reqUri = SettingManager::getInstance().system().httpCliUri();
 
     ret = ExportManager::getInstance().startTask(exportMgrConfig);
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
@@ -635,8 +641,8 @@ int MainController::startDistSensorTask(void)
       distSensorConfig.config.opMode = FEM_DIST_SS_OP_MODE;
       distSensorConfig.config.trgCb = MainController::cbDistSensorTrg;
       distSensorConfig.config.trgUserArg = this;
-      distSensorConfig.config.validRange.rangeBegin = FEM_DIST_SS_VALID_RANGE_BEGIN;
-      distSensorConfig.config.validRange.rangeEnd = FEM_DIST_SS_VALID_RANGE_END;
+      distSensorConfig.config.validRange.rangeBegin = SettingManager::getInstance().scanner().distSSRangeBegin();// FEM_DIST_SS_VALID_RANGE_BEGIN;
+      distSensorConfig.config.validRange.rangeEnd = SettingManager::getInstance().scanner().distSSRangeEnd();// FEM_DIST_SS_VALID_RANGE_END;
 
       
 
@@ -861,6 +867,13 @@ int MainController::onEventScanningStart(unsigned char* data, unsigned int dataS
     }
 
     EventScanningControlTAG* controlEvent = (EventScanningControlTAG*)data;
+    if (controlEvent->trgParams.trgSource != SettingManager::getInstance().scanner().triggerMode())
+    {
+#ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] sTrg %i", -2);
+#endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
+      return -1;
+    }
 
     EventScanningStartTAG scanningStartEvent = EventScanningStartTAG();
     scanningStartEvent.sequenceId = this->nextSeqId(controlEvent->sequenceId);
@@ -965,6 +978,7 @@ int MainController::onEventScanningResult(unsigned char* data, unsigned int data
       break;
     }
 
+    if (ExportManager::getInstance().isRunning() != false)
     {
       ExportScanResultTAG scanResult = ExportScanResultTAG();
       scanResult.sequenceId = eventData->result.sequenceId;
@@ -1183,7 +1197,7 @@ int MainController::onMbcCommMBCSystemSetting(ExCommMBCParamTAG& mbcParams)
     }
     
 #ifdef MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSS %d %d", 10, ret);
+    CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSS %d %d %d %d %d", 10, ret, resCommData->sectionId, resCommData->settingId, resCommData->sLen);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {
@@ -1291,6 +1305,12 @@ int MainController::onMbcCommMBCScanningResult(ExCommMBCParamTAG& mbcParams)
     CONSOLE_LOG_BUF(mainCtrlLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mTsk] mbcSCRe %i", 0);
 #endif // MAIN_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (mbcParams.reqPackage.data == NULL)
+    {
+      break;
+    }
+
+    // check if it is http mode
+    if (SettingManager::getInstance().scanner().triggerMode() != FEM_SCAN_TRG_SRC_HTTP)
     {
       break;
     }

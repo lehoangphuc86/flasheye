@@ -169,7 +169,7 @@ int ExportHttpClientProcessor::exportScanResult(ExportScanResultTAG* param)
     CommMBCHttpClientRequestParamsTAG reqParams = CommMBCHttpClientRequestParamsTAG();
     reqParams.reqMessageId = CommMBCConstant::CommMBCMessageId::CommMBCHeadLess;
 
-    reqParams.header.dataType = COMM_HTTP_DATA_TYPE_APP_JSON;
+    reqParams.header.dataType = this->req_Param.dataType;
     reqParams.header.fileData = 0;
     reqParams.header.reqMethod = this->req_Param.reqMethod;
     reqParams.header.uri = this->req_Param.reqUri;

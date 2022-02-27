@@ -69,14 +69,14 @@
 
 #define FEM_PIN_SCAN_BUTTON                           32
 #define FEM_BTN_OPCODE_SCAN_BTN                       (0x01)
-#define FEM_ISR_TYPE_SCAN_BUTTON                      ISR_FALLING
+#define FEM_ISR_TYPE_SCAN_BUTTON                      ISR_ONLOW
 #define FEM_GPIO_FUNC_SCAN_BUTTON                     GPIO_INPUT_PULLUP
 #define FEM_OPCODE_SCAN_BUTTON                        FEM_SW_ITEM_1_OPCODE
 #define FEM_DESC_SCAN_BUTTON                          "Scan"
 
 #define FEM_PIN_RESET_BUTTON                          33
 #define FEM_BTN_OPCODE_RESET_BTN                      (0x02)
-#define FEM_ISR_TYPE_RESET_BUTTON                     ISR_FALLING
+#define FEM_ISR_TYPE_RESET_BUTTON                     ISR_ONLOW
 #define FEM_GPIO_FUNC_RESET_BUTTON                    GPIO_INPUT_PULLUP
 #define FEM_OPCODE_RESET_BUTTON                       FEM_SW_ITEM_2_OPCODE
 #define FEM_DESC_RESET_BUTTON                         "Reset"
@@ -190,12 +190,6 @@
 #define FEM_NET_TASK_EVENT_NUM                        5
 
 // Wifi
-#define FEM_WIFI_IS_AP                                false
-#define FEM_WIFI_STA_SSID                             "SamsungJ7"
-#define FEM_WIFI_STA_PWD                              "donotconnect"
-
-#define FEM_WIFI_AP_SSID                              "SamsungJ7_2"
-#define FEM_WIFI_AP_PWD                               "donotconnect"
 #define FEM_WIFI_AP_CHANNEL                           WIFI_MGR_CHANNEL_DEFAULT
 #define FEM_WIFI_AP_MAX_CONN                          WIFI_MGR_MAX_CONN_DEFAULT
 
@@ -224,6 +218,8 @@
 
 #define FEM_HTTP_SERVER_BASE_PATH                     "/spiffs/web/public"
 #define FEM_HTTP_SERVER_PORT                          80
+#define FEM_HTTP_SERVER_STACK_SIZE                    5120
+#define FEM_HTTP_SERVER_LRU_PURGE                     false
 #define FEM_HTTP_SERVER_URI_COUNT_MAX                 5
 #define FEM_HTTP_SERVER_CONN_COUNT_MAX                2
 #define FEM_HTTP_SERVER_ADD_HEADER_COUNT_MAX          2
@@ -252,10 +248,8 @@
 #define FEM_HTTP_CLIENT_BUFF_SIZE                     200
 
 
-#define FEM_HTTP_CLIENT_PATH                          "http://192.168.137.1:3000/scanRes" //http://localhost:3000/scanRes"
-#define FEM_HTTP_CLIENT_REQ_URI                       FEM_HTTP_CLIENT_PATH //http://localhost:3000/scanRes"
+#define FEM_HTTP_CLIENT_PATH_DEFAULT                  "http://localhost/"
 #define FEM_HTTP_CLIENT_REQ_URI_ID                    1
-//#define FEM_HTTP_CLIENT_REQ_GET_URI                   "http://dummy.restapiexample.com/api/v1/create"
 #define FEM_HTTP_CLIENT_REQ_DATATYPE                  COMM_HTTP_DATA_TYPE_APP_JSON
 #define FEM_HTTP_CLIENT_REQ_METHOD                    COMM_HTTP_METHOD_POST
 
@@ -285,8 +279,8 @@
 #define FEM_EXPORT_TM_MEM                             2096
 #define FEM_EXPORT_TM_PRIORITY                        FEM_TASK_PRIORITY_DEFAULT
 
-#define FEM_EXPORT_HTTP_CLIENT_REQ_METHOD             COMM_HTTP_METHOD_POST
-#define FEM_EXPORT_HTTP_CLIENT_REQ_URI                FEM_HTTP_CLIENT_REQ_URI
+#define FEM_EXPORT_MODE_NONE                          0
+#define FEM_EXPORT_MODE_HTTP_CLI                      1
 
 // scanning task
 #define FEM_SCAN_SEQ_ID_INVALID                       0
@@ -317,10 +311,11 @@
 #define FEM_SCAN_OP_MAX_SCAN_COUNT                    1
 #define FEM_SCAN_OP_BREAK_TIME                        100
 
+#define FEM_SCAN_TRG_SRC_BUTTON                       0
 #define FEM_SCAN_TRG_SRC_HTTP                         1
 #define FEM_SCAN_TRG_SRC_SERIAL                       2
-#define FEM_SCAN_TRG_SRC_BUTTON                       3
-#define FEM_SCAN_TRG_SRC_SENSOR                       4
+//#define FEM_SCAN_TRG_SRC_BUTTON                       3
+#define FEM_SCAN_TRG_SRC_SENSOR                       3
 
 #define FEM_SCAN_ERR_CODE_NONE                        0
 #define FEM_SCAN_ERR_CODE_NOT_AVAI                    1
@@ -343,8 +338,6 @@
 
 #define FEM_DIST_SS_MEAS_INTERVAL                     200 // ms
 #define FEM_DIST_SS_OP_MODE                           DistSensorOpModeUN::DistSensorRangeMode
-#define FEM_DIST_SS_VALID_RANGE_BEGIN                 5 // cm
-#define FEM_DIST_SS_VALID_RANGE_END                   15 // cm
 
 
 // main 

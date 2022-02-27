@@ -133,9 +133,12 @@ int MainNormalController::prepare(void)
       break;
     }
 
-    ret = this->startDistSensorTask();
+    if (SettingManager::getInstance().scanner().triggerMode() == FEM_SCAN_TRG_SRC_SENSOR)
+    {
+      ret = this->startDistSensorTask();
+    }
 #ifdef MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
-    CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i", 7, ret);
+    CONSOLE_LOG_BUF(mainNormalControllerLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[mnTsk] pre %i %i %d", 7, ret, SettingManager::getInstance().scanner().triggerMode());
 #endif // MAIN_NORMAL_CONTROLLER_CONSOLE_DEBUG_ENABLE
     if (ret != 0)
     {

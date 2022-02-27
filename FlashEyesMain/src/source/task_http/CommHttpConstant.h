@@ -108,6 +108,8 @@ typedef struct _commHttpClientConfigTAG
 typedef struct _commHttpServerConfigTAG
 {
   const char* basePath;
+  uint16_t stackSize;
+  bool lruPurge;
   uint16_t port;
   byte uriMaxCount;
   byte connMaxCount;

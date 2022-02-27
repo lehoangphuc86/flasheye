@@ -283,9 +283,67 @@
     <option value=2>Normal</option>
   </select>
   <br>
+  <h3>Net</h3>
+  <label for="slSysWifiMode">Wifi mode:</label>
+  <select id="slSysWifiMode" data-secId='0' data-setId='2' data-type='1'>
+    <option value=0>Access point</option>
+    <option value=1>Station</option>
+  </select>
+  <br>
+  <label for="txtSysWifiSSID">Wifi SSID:</label>
+  <input type="text" id="txtSysWifiSSID" value="" data-secId='0' data-setId='3' data-type='2' maxlength=32 />
+  <br>
+  <label for="txtSysWifiPwd">Wifi Pwd:</label>
+  <input type="text" id="txtSysWifiPwd" value="" data-secId='0' data-setId='4' data-type='2' maxlength=32 />
+  <br>
+  <h3>Export</h3>
+  <label for="slSysExportMode">Method:</label>
+  <select id="slSysExportMode" data-secId='0' data-setId='8' data-type='1'>
+    <option value=0>None</option>
+    <option value=1>Http Client</option>
+  </select>
+  <br>
+  <h3>Http client</h3>
+  <label for="txtSysHttpCliUri">Uri:</label>
+  <input type="text" id="txtSysHttpCliUri" value="" data-secId='0' data-setId='5' data-type='2' maxlength=128 />
+  <br>
+  <label for="slSysHttpCliDataType">Data type:</label>
+  <select id="slSysHttpCliDataType" data-secId='0' data-setId='6' data-type='1'>
+    <option value=0>Text/Plain</option>
+    <option value=1>Text/Html</option>
+    <option value=2>App/Js</option>
+    <option value=3>Text/Css</option>
+    <option value=4>Img/Png</option>
+    <option value=5>Img/Icon</option>
+    <option value=6>Text/Xml</option>
+    <option value=7>App/Json</option>
+  </select>
+  <br>
+  <label for="slSysHttpCliMethod">Method:</label>
+  <select id="slSysHttpCliMethod" data-secId='0' data-setId='7' data-type='1'>
+    <option value=0>GET</option>
+    <option value=1>PUT</option>
+    <option value=2>POST</option>
+  </select>
+  <br>
   <input type="submit" value="Submit" data-secId='0' onclick="submit(this)" id="btnSubmitSys">
 
   <h2>Scanner</h2>
+  <h3>Control</h3>
+  <label for="slScanCtrlTrg">Trigger Mode:</label>
+  <select id="slScanCtrlTrg" data-secId='1' data-setId='16' data-type='1'>
+    <option value=0>Button</option>
+    <option value=1>Http</option>
+    <option value=3>Sensor</option>
+  </select>
+  <br>
+  
+  <label for="numScanCtrlRangeB">Sensor range:</label>
+  <input type="number" id="numScanCtrlRangeB" data-secId='1' data-setId='17' data-type='1' min="1" max="99" step="2" value="5" />
+  <label for="numScanCtrlRangeE">~</label>
+  <input type="number" id="numScanCtrlRangeE" data-secId='1' data-setId='18' data-type='1' min="1" max="100" step="2" value="15" />
+  <br>
+  
   <h3>Comm</h3>
   <label for="slScanComBaud">Baudrate:</label>
   <select id="slScanComBaud" data-secId='1' data-setId='1' data-type='1'>

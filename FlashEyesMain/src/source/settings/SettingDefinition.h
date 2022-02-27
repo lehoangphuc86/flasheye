@@ -36,17 +36,29 @@
 #define FEM_SET_DB_KEY_ID_SCANNER_CODE_SUFFIX_MOD       13
 #define FEM_SET_DB_KEY_ID_SCANNER_CODE_CUS_FORMAT       14
 #define FEM_SET_DB_KEY_ID_SCANNER_MESS_TER              15
+#define FEM_SET_DB_KEY_ID_SCANNER_TRIGGER_MODE          16
+#define FEM_SET_DB_KEY_ID_DIST_SS_RANGE_BEGIN           17
+#define FEM_SET_DB_KEY_ID_DIST_SS_RANGE_END             18
 
 //-------------------data len---------------------------
 #define FEM_SET_DB_STR_LEN_SCANNER_CODE_PREFIX_MOD      8
 #define FEM_SET_DB_STR_LEN_SCANNER_CODE_SUFFIX_MOD      8
-
+#define FEM_SET_DB_STR_LEN_SYS_WIFI_SSID                32
+#define FEM_SET_DB_STR_LEN_SYS_WIFI_PWD                 32
+#define FEM_SET_DB_STR_LEN_HTTP_CLI_URI                 128
 
 //#########################system##################
 //-------------------db table id------------------------
 #define FEM_SET_DB_TBL_ID_SYSTEM                        FEM_DB_TBL_ID_CF_SYS
 //-------------------db key id--------------------------
 #define FEM_SET_DB_KEY_ID_SYS_LAST_SYS_MODE             1
+#define FEM_SET_DB_KEY_ID_SYS_WIFI_MODE                 2
+#define FEM_SET_DB_KEY_ID_SYS_WIFI_SSID                 3
+#define FEM_SET_DB_KEY_ID_SYS_WIFI_PWD                  4
+#define FEM_SET_DB_KEY_ID_SYS_HTTP_CLI_URI              5
+#define FEM_SET_DB_KEY_ID_SYS_HTTP_CLI_DATA_TYPE        6
+#define FEM_SET_DB_KEY_ID_SYS_HTTP_CLI_METHOD           7
+#define FEM_SET_DB_KEY_ID_SYS_EXPORT_MODE               8
 
 /////////////////////////////////////////////////
 // MARCO

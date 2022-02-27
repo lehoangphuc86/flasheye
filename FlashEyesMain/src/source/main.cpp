@@ -182,14 +182,6 @@ int main(void)
         break;
       }
       CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %s", "Setting loaded");
-
-      
-      /*CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i %s", 1, SettingManager::getInstance().scanner().codePrefix());
-
-      SettingManager::getInstance().scanner().codePrefix("new", 3, true);
-      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i %s", 2, SettingManager::getInstance().scanner().codePrefix());
-      SettingManager::getInstance().scanner().load();
-      CONSOLE_LOG_BUF(mainBufLog, MAIN_CONSOLE_DEBUG_BUF_LEN, "[m] set %i %s", 3, SettingManager::getInstance().scanner().codePrefix());*/
     }
     //######################BUZZER: start##########################
     if (BuzzerManager::getInstance().isValid() == false)

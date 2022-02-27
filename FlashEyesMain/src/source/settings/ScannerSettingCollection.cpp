@@ -66,7 +66,7 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
       break;
     }
 
-    ret = SettingCollection::initItemList(15);
+    ret = SettingCollection::initItemList(18);
 #ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i %i", 2, ret);
 #endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
@@ -90,6 +90,9 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
     this->item_List[12] = &this->custom_Suffix;
     this->item_List[13] = &this->custom_Code_Format;
     this->item_List[14] = &this->mess_Terminator;
+    this->item_List[15] = &this->trigger_Mode;
+    this->item_List[16] = &this->dist_SS_Range_Begin;
+    this->item_List[17] = &this->dist_SS_Range_End;
 
     SettingItemConfigTAG itemConfig = SettingItemConfigTAG();
     itemConfig.dbTableId = this->db_Table_Id;
@@ -230,7 +233,41 @@ int ScannerSettingCollection::initialize(SettingCollectionConfigTAG& settingConf
       break;
     }
 
+    // trigger_Mode
+    itemConfig.dataType = SYS_DATA_T_8;
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_SCANNER_TRIGGER_MODE;
+    ret = this->trigger_Mode.initialize(itemConfig);
+#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scc] ini %i %i", 10, ret);
+#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
 
+    // dist_SS_Range_Begin
+    itemConfig.dataType = SYS_DATA_T_8;
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_DIST_SS_RANGE_BEGIN;
+    ret = this->dist_SS_Range_Begin.initialize(itemConfig);
+#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scc] ini %i %i", 10, ret);
+#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
+
+    // dist_SS_Range_End
+    itemConfig.dataType = SYS_DATA_T_8;
+    itemConfig.dbKeyId = FEM_SET_DB_KEY_ID_DIST_SS_RANGE_END;
+    ret = this->dist_SS_Range_End.initialize(itemConfig);
+#ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
+    CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[scc] ini %i %i", 10, ret);
+#endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
+    if (ret != 0)
+    {
+      break;
+    }
 #ifdef SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
     CONSOLE_LOG_BUF(scannerSettingCollectionLogBuf, SYSTEM_CONSOLE_OUT_BUF_LEN, "[snSC] ini %i", 99);
 #endif // SCANNER_SETTING_COLLECTION_CONSOLE_DEBUG_ENABLE
@@ -324,6 +361,21 @@ int ScannerSettingCollection::get(SettingParamTAG& settingParam)
       return this->mess_Terminator.get(settingParam);
       break;
     }
+    case FEM_SET_DB_KEY_ID_SCANNER_TRIGGER_MODE:
+    {
+      return this->trigger_Mode.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_DIST_SS_RANGE_BEGIN:
+    {
+      return this->dist_SS_Range_Begin.get(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_DIST_SS_RANGE_END:
+    {
+      return this->dist_SS_Range_End.get(settingParam);
+      break;
+    }
     default:
       return -1;
   }
@@ -407,6 +459,21 @@ int ScannerSettingCollection::set(SettingParamTAG& settingParam)
     case FEM_SET_DB_KEY_ID_SCANNER_MESS_TER:
     {
       return this->mess_Terminator.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_SCANNER_TRIGGER_MODE:
+    {
+      return this->trigger_Mode.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_DIST_SS_RANGE_BEGIN:
+    {
+      return this->dist_SS_Range_Begin.set(settingParam);
+      break;
+    }
+    case FEM_SET_DB_KEY_ID_DIST_SS_RANGE_END:
+    {
+      return this->dist_SS_Range_End.set(settingParam);
       break;
     }
     default:
@@ -592,5 +659,41 @@ void ScannerSettingCollection::customSuffix(char* newVal, DataSize_t newValLen, 
 {
   SystemMutexLocker locker(this->mutex_Key);
   this->custom_Suffix.set(newVal, newValLen, updateDB);
+}
+
+uint8_t ScannerSettingCollection::triggerMode(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->trigger_Mode.get();
+}
+
+void ScannerSettingCollection::triggerMode(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->trigger_Mode.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::distSSRangeBegin(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->dist_SS_Range_Begin.get();
+}
+
+void ScannerSettingCollection::distSSRangeBegin(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->dist_SS_Range_Begin.set(newVal, updateDB);
+}
+
+uint8_t ScannerSettingCollection::distSSRangeEnd(void)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  return this->dist_SS_Range_End.get();
+}
+
+void ScannerSettingCollection::distSSRangeEnd(uint8_t newVal, bool updateDB)
+{
+  SystemMutexLocker locker(this->mutex_Key);
+  this->dist_SS_Range_End.set(newVal, updateDB);
 }
 #endif // _CONF_SCANNER_SETTING_COLLECTION_ENABLED
